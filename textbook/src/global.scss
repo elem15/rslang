@@ -1,0 +1,31 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 150px;
+}
+
+.item {
+  position: relative;
+}
+
+.item__container {
+  position: absolute;
+  color: black;
+}
+
+.item__play-audio {
+    background-image: url('./assets/images/play.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+}
+
+audio {
+  display: flex;
+}
+
+.item__img {
+  max-width: 100%;
+  height: auto;
+}
