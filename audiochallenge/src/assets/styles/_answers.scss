@@ -5,13 +5,25 @@
   &__item{
     padding: .5rem 1rem;
     cursor: pointer;
+    color: whitesmoke;
+    &.correct{
+      background-color: rgba($color: lightgreen, $alpha: .5);
+        color: darkgreen;
+    }
     &:hover{
       background-color: rgba($color: #ffffff, $alpha: 0.25);
       border-radius: 4px;
+      &.correct{
+        background-color: rgba($color: lightgreen, $alpha: .5);
+        color: darkgreen;
+      }
+      &.incorrect{
+        background-color: lightcoral;
+        color: crimson;
+      }
     }
     span{
       padding: 0 .25rem 0 0;
-      color: whitesmoke;
       line-height: 1.5em;
       letter-spacing: .0125em;
     }
