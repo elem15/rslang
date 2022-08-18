@@ -1,4 +1,6 @@
-.wrapper {
+@import "~bootstrap/scss/bootstrap";
+
+.items-container {
   display: flex;
   flex-direction: column;
   gap: 150px;
@@ -13,6 +15,10 @@
   color: black;
 }
 
+.item__audio {
+    width: 50px;
+}
+
 .item__play-audio {
     background-image: url('./assets/images/play.svg');
     background-repeat: no-repeat;
@@ -21,11 +27,15 @@
     height: 50px;
 }
 
-audio {
-  display: flex;
-}
-
 .item__img {
   max-width: 100%;
   height: auto;
+}
+
+.form-select {
+    width: 200px;
+}
+
+.form-select_color-one {
+    color: red;
 }

@@ -95,7 +95,27 @@ module.exports = {
       },
       {
         test: /\.s[ac]ss$/, // FILE EXTENSION .SCSS
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'], // WORK WITH SCSS
+        use: [ 
+            {
+                loader: 'style-loader'
+            },
+            {
+                loader: 'css-loader'
+            }, 
+            {
+                loader: 'sass-loader'
+            },
+            {
+                loader: 'postcss-loader',
+                options: {
+                  postcssOptions: {
+                    plugins: () => [
+                      require('autoprefixer')
+                    ]
+                  }
+                }
+            },
+            ], // WORK WITH SCSS
       },
       {
         test: /\.ts$/i,
