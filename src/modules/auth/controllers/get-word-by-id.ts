@@ -1,4 +1,5 @@
 import * as a from 'axios';
+import { messageModal } from '../view/message-madal';
 import { host } from './hosts';
 
 const axios = a.default;
@@ -8,6 +9,6 @@ export const getWordById = async (wordId: string): Promise<string> => {
         const response = await axios.get(`${host}/words/${wordId}`);
         return response.data.word;
     } catch {
-        alert('Word not exist');
+        messageModal('Word not exist');
     }
 };

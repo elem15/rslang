@@ -24,5 +24,3 @@ export const renderWordsList = async (): Promise<void> => {
         Promise.allSettled(words);
     }
 };
-
-// Access to XMLHttpRequest at 'http://localhost:3500/users/62fc00347048040015f03cd6/aggregatedWords' from origin 'http://localhost:8080' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.

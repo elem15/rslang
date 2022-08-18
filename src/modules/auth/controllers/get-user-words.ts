@@ -1,11 +1,13 @@
 import * as a from 'axios';
+import { UserData } from '../../../types/user-types';
+import { messageModal } from '../view/message-madal';
 import { host } from './hosts';
 
 const axios = a.default;
 
 export const getUserWords = async () => {
     try {
-        const store = JSON.parse(localStorage.getItem('data'));
+        const store: UserData = JSON.parse(localStorage.getItem('data'));
         const { userId, token } = store;
         const response = await axios.get(`${host}/users/${userId}/words`, {
             headers: {
@@ -16,6 +18,6 @@ export const getUserWords = async () => {
         });
         return response;
     } catch {
-        alert('User is not authorized');
+        messageModal('User is not authorized');
     }
 };
