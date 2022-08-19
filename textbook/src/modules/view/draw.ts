@@ -15,9 +15,6 @@ pageTextbook.addEventListener('change', () => {
     draw(Number(pageTextbook.value), Number(chapterTextbook.value));
 });
 
-// const drawTextbookPage = () => {
-//     console.log(1);
-// };
 
 export const draw = async (page = 0, group = 0): Promise<void> => {
     const wordsForPage = await getWords(page, group);
