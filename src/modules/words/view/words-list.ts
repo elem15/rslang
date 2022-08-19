@@ -10,7 +10,7 @@ const renderListItem = async (id: string, list: HTMLUListElement) => {
     list.append(li);
 };
 export const renderWordsList = async (): Promise<void> => {
-    const root = document.querySelector('.root');
+    const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     const words = document.createElement('section');
     words.className = 'dictionary';

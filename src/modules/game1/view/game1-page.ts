@@ -1,5 +1,5 @@
 export const renderGame1Page = () => {
-    const root = document.querySelector('.root');
+    const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     const game1 = document.createElement('section');
     game1.className = 'game-1';

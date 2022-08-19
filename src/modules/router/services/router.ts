@@ -11,7 +11,7 @@ const removeClassActive = () => {
 };
 
 export const renderPage = (router: string, button: HTMLElement) => {
-    router = router ? router : localStorage.getItem('router') ? localStorage.getItem('router') : null;
+    router = router ? router : localStorage.getItem('router') ? localStorage.getItem('router') : Router.MAIN;
     button = button ? button : (document.querySelector(`.${router}`) as HTMLElement);
     removeClassActive();
     button.classList.add('active');

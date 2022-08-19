@@ -1,10 +1,9 @@
+import { renderPage } from '../../router/services/router';
 import { createUser } from '../controllers/create-user';
 import { logIn } from '../controllers/log-in';
-import { messageModal, removeModal } from './message-madal';
+import { messageModal, removeModal } from './message-modal';
 export const renderSign = async (signAction: string): Promise<void> => {
-    const oldModal = document.querySelector('.modal') as HTMLFormElement;
-    if (oldModal) oldModal.remove();
-    const modal = document.createElement('form') as HTMLFormElement;
+    const modal = document.createElement('div') as HTMLElement;
     modal.className = 'modal';
     modal.style.display = 'flex';
     modal.style.backgroundColor = 'rgba(100,100,100,0.3)';
@@ -49,6 +48,7 @@ export const renderSign = async (signAction: string): Promise<void> => {
                 const message = signAction === 'sign up' ? 'New user successfully register' : 'Уou are logged in';
                 messageModal(message);
             }
+            renderPage(null, null);
         }
     );
     removeModal(modal);
@@ -57,4 +57,5 @@ export const renderSign = async (signAction: string): Promise<void> => {
 export const renderSignOut = () => {
     localStorage.clear();
     messageModal('You are logged out');
+    renderPage(null, null);
 };

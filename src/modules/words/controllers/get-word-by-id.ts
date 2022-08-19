@@ -1,5 +1,5 @@
 import * as a from 'axios';
-import { messageModal } from '../../auth/view/message-madal';
+import { messageModal } from '../../auth/view/message-modal';
 import { host } from '../../auth/controllers/hosts';
 
 const axios = a.default;
