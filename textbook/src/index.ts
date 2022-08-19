@@ -1,5 +1,8 @@
 import './global.css';
 import './global.scss';
-import { draw } from './modules/view/draw';
+import { drawTextbookNav } from './modules/view/draw';
 
-draw();
+const chapterTextbookFromLocaleStorage = 1;
+const pageTextbookFromLocaleStorage = 1;
+
+drawTextbookNav(pageTextbookFromLocaleStorage, chapterTextbookFromLocaleStorage);
