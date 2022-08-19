@@ -26,10 +26,6 @@ export const renderSign = async (signAction: string): Promise<void> => {
             <label for="exampleInputPassword1" class="form-label">Password</label>
             <input type="password" name="password" minlength="8" class="form-control" id="exampleInputPassword1">
         </div>
-        <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div>
         <button type="submit" class="btn btn-primary sign-action">${signAction}</button>
     </form>  
     </div>
@@ -60,6 +56,5 @@ export const renderSign = async (signAction: string): Promise<void> => {
 
 export const renderSignOut = () => {
     localStorage.clear();
-    console.log(localStorage.getItem('data'));
     messageModal('You are logged out');
 };

@@ -1,7 +1,7 @@
 import * as a from 'axios';
 import { UserData } from '../../../types/user-types';
-import { messageModal } from '../view/message-madal';
-import { host } from './hosts';
+import { messageModal } from '../../auth/view/message-madal';
+import { host } from '../../auth/controllers/hosts';
 
 const axios = a.default;
 

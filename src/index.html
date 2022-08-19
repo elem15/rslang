@@ -12,7 +12,20 @@
     <header class="container card-header">
         <div class="row justify-content-between">
             <div class="col-4">
-                <button class="get-user-words btn">get user words</button>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active main" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">MAIN</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link dictionary" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">get user words</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link game-1" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">GAME 1</a>
+                    </li>
+                  </ul>
+                  <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><div class="root"></div> </div>
+                  </div>
             </div>
             <div class="col-4">
                 <button class="sign-up btn btn-primary">sign up</button>
@@ -20,7 +33,7 @@
                 <button class="sign-out btn btn-danger">sign out</button>
             </div>
         </div>
-    </header>    
+    </header>       
 </body>
 
 </html>
