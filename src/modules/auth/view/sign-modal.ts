@@ -2,6 +2,18 @@ import { renderPage } from '../../router/services/router';
 import { createUser } from '../controllers/create-user';
 import { logIn } from '../controllers/log-in';
 import { messageModal, removeModal } from './message-modal';
+
+export const addUserSymbol = (email: string) => {
+    const userSymbol = document.querySelector('.user') as HTMLSpanElement;
+    userSymbol.classList.add('logged');
+    userSymbol.innerText = email[0].toUpperCase();
+    localStorage.setItem('email', email);
+};
+export const removeUserSymbol = () => {
+    const userSymbol = document.querySelector('.user') as HTMLSpanElement;
+    userSymbol.classList.remove('logged');
+    userSymbol.innerText = '_';
+};
 export const renderSign = async (signAction: string): Promise<void> => {
     const modal = document.createElement('div') as HTMLElement;
     modal.className = 'modal';
@@ -39,14 +51,19 @@ export const renderSign = async (signAction: string): Promise<void> => {
             e.preventDefault();
             const errorMessage = document.querySelector('.error');
             if (errorMessage) errorMessage.remove();
+            const email = form.email.value;
+            const password = form.password.value;
             const response =
-                signAction === 'sign up'
-                    ? await createUser({ email: form.email.value, password: form.password.value })
-                    : await logIn({ email: form.email.value, password: form.password.value });
+                signAction === 'sign up' ? await createUser({ email, password }) : await logIn({ email, password });
             if (response) {
                 modal.remove();
                 const message = signAction === 'sign up' ? 'New user successfully register' : 'Уou are logged in';
-                messageModal(message);
+                if (signAction === 'sign up') {
+                    removeUserSymbol();
+                    localStorage.clear();
+                    messageModal(message);
+                }
+                if (signAction === 'sign in') addUserSymbol(email);
             }
             renderPage(null, null);
         }
@@ -57,5 +74,6 @@ export const renderSign = async (signAction: string): Promise<void> => {
 export const renderSignOut = () => {
     localStorage.clear();
     messageModal('You are logged out');
+    removeUserSymbol();
     renderPage(null, null);
 };
