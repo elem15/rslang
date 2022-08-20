@@ -13,6 +13,7 @@ export default class Game {
     progress: HTMLElement;
     container: HTMLElement;
     next: HTMLButtonElement;
+    audio: HTMLAudioElement;
 
     words: Word[] = [];
     group: number;
@@ -27,6 +28,7 @@ export default class Game {
         this.root = root;
         this.container = <HTMLElement>document.createElement('div');
         this.progress = <HTMLElement>document.createElement('div');
+        this.audio = new Audio();
         this.selected = [];
         this.count = 1;
         this.group = group ?? 0;
@@ -68,20 +70,19 @@ export default class Game {
     };
 
     onNext = async (): Promise<void> => {
-        if (this.count === 20) {
+        this.count += 1;
+        this.current = await this.getRandomWord();
+        const variants = await this.getRandomWords(this.current);
+        this.selected.push(this.current.id);
+
+        await clear(this.container);
+        await nextWord(this.container, this.current, variants);
+        this.container.append(this.next);
+        this.render();
+
+        if (this.count === this.words.length) {
             this.next.disabled = true;
             await this.onEndGame();
-        } else this.count !== this.words.length;
-        {
-            this.count += 1;
-            this.current = await this.getRandomWord();
-            this.selected.push(this.current.id);
-            const variants = await this.getRandomWords(this.current);
-
-            await clear(this.container);
-            await nextWord(this.container, this.current, variants);
-            this.container.append(this.next);
-            this.render();
         }
     };
 
@@ -96,14 +97,23 @@ export default class Game {
     onClickVariant = async (e: MouseEvent): Promise<void> => {
         const target = e.target as HTMLElement;
         this.wordCardUpdate();
+        this.container.append(this.audio);
 
         if (target.closest('.answers__item') && target.innerText === this.current?.wordTranslate) {
             const label = target.parentElement;
             label?.classList.add('correct');
             this.correct?.push(this.current.id);
+            this.audio.src = `assets/sounds/success.wav`;
+            this.audio.addEventListener('canplaythrough', async () => {
+                await this.audio.play();
+            });
         } else {
             const label = target.parentElement;
             label?.classList.add('incorrect');
+            this.audio.src = `assets/sounds/error.mp3`;
+            this.audio.addEventListener('canplaythrough', async () => {
+                await this.audio.play();
+            });
             const answers = Array.from(this.container.querySelectorAll('.answers__item')) as HTMLElement[];
             answers.forEach((item) => item.removeEventListener('click', this.onClickVariant));
             if (this.current) this.incorrect?.push(this.current.id);
