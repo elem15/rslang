@@ -6,9 +6,18 @@
     padding: .5rem 1rem;
     cursor: pointer;
     color: whitesmoke;
+    &.correct,
+    &.incorrect{
+      border-radius: 4px;
+    }
+    
     &.correct{
       background-color: rgba($color: lightgreen, $alpha: .5);
         color: darkgreen;
+    }
+    &.incorrect{
+      background-color: lightcoral;
+      color: darkred;
     }
     &:hover{
       background-color: rgba($color: #ffffff, $alpha: 0.25);
@@ -19,7 +28,7 @@
       }
       &.incorrect{
         background-color: lightcoral;
-        color: crimson;
+        color: darkred;
       }
     }
     span{
@@ -27,5 +36,25 @@
       line-height: 1.5em;
       letter-spacing: .0125em;
     }
+  }
+}
+
+.correct__answers,
+.incorrect__answers{
+  list-style: none;
+}
+
+.correct__answers,
+.incorrect__answers{
+    &_item{
+      & span{
+        &:first-of-type{
+          svg{
+            width: 24px;
+            height: 24px;
+            fill: #777;
+          }
+        }
+      }
   }
 }

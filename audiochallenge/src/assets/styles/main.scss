@@ -4,6 +4,7 @@ $base-font-family:Arial,sans-serif;
   font-family: $base-font-family;
 }
 
-@import '_start';
-@import '_buttons';
-@import '_answers';
+@import '~bootstrap-scss/bootstrap';
+@import 'start';
+@import 'buttons';
+@import 'answers';
