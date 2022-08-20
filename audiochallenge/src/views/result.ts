@@ -1,36 +1,60 @@
+import { soundIcon } from '../core/settings';
 import { Word } from '../types';
 
+const closeResult = (modal: HTMLElement) => {
+    modal.classList.remove('show');
+    setTimeout(() => {
+        document.body.removeChild(modal);
+    }, 200);
+};
+
 export const showResult = (correct: Word[], incorrect: Word[]) => {
-    const result = document.createElement('div') as HTMLElement;
-    const heading = document.createElement('h2') as HTMLElement;
-    const correctHeading = document.createElement('h4') as HTMLElement;
-    const incorrectHeading = document.createElement('h4') as HTMLElement;
+    const modal = document.createElement('div') as HTMLElement;
+    const dialog = document.createElement('div') as HTMLElement;
+    const content = document.createElement('div') as HTMLElement;
+    const body = document.createElement('div') as HTMLElement;
 
-    heading.classList.add('game__result_heading');
-    heading.innerText = 'Результат';
-    result.classList.add('modal game__result');
-    correctHeading.classList.add('game__results_heading-correct');
-    correctHeading.innerText = 'Верные';
-    incorrectHeading.classList.add('game__results_heading-incorrect');
-    incorrectHeading.innerText = 'Не верные';
+    modal.classList.add('modal', 'fade');
+    modal.style.display = 'block';
+    dialog.classList.add('modal-dialog', 'modal-dialog-centered', 'modal-dialog-scrollable');
+    content.classList.add('modal-content');
+    body.classList.add('modal-body');
 
-    result.append(
-        heading,
-        correctHeading,
-        ...correct.map((c) => {
-            const span = document.createElement('span') as HTMLElement;
-            span.classList.add('game__result_correct');
-            span.innerText = c.wordTranslate;
-            return span;
-        }),
-        incorrectHeading,
-        ...incorrect.map((c) => {
-            const span = document.createElement('span') as HTMLElement;
-            span.classList.add('game__result_incorrect');
-            span.innerText = c.wordTranslate;
-            return span;
-        })
+    content.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="modal-header">
+        <h5 class="modal-title">Result</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>`
     );
 
-    document.body.append(result);
+    body.innerHTML += `<ul class='correct__answers'>
+        ${correct
+            .map(
+                (word) =>
+                    `<li class="correct__answers_item"><span>${soundIcon}</span><span>${word.word}</span><span>${word.wordTranslate}</span></li>`
+            )
+            .join('')}
+    </ul>`;
+    body.innerHTML += `<ul class="incorrect__answers">
+        ${incorrect
+            .map(
+                (word) =>
+                    `<li class="incorrect__answers_item"><span>${soundIcon}</span><span>${word.word}</span><span>${word.wordTranslate}</span></li>`
+            )
+            .join('')}
+     </ul>`;
+
+    content.append(body);
+    dialog.append(content);
+    modal.append(dialog);
+
+    const close = content.querySelector('.btn-close') as HTMLButtonElement;
+    setTimeout(() => modal.classList.add('show'), 200);
+
+    close.addEventListener('click', () => {
+        closeResult(modal);
+    });
+
+    document.body.append(modal);
 };
