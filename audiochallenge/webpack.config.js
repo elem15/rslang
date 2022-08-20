@@ -74,18 +74,29 @@ module.exports = {
                 use: [MiniCssExtractPlugin.loader, 'css-loader'], // NEW FOR WORK WITH CSS
             },
             {
-                test: /\.(png|jpg|svg|gif)$/, // FILE EXTENSION PICTURE
-                type: 'asset/resource', // INSTEAD OF ['file-loader']?
+                test: /\.(png|jpg|svg|gif)$/,
+                type: 'asset/resource',
             },
             {
-                test: /\.(ttf|woff|woff2|eot)$/, // FILE EXTENSION FONTS
-                type: 'asset/resource', // INSTEAD OF ['file-loader']?
+                test: /\.(ttf|woff|woff2|eot)$/,
+                type: 'asset/resource',
             },
             {
-                test: /\.(scss)$/, // FILE EXTENSION .SCSS
+                test: /\.(mp3|wav)$/,
+                type: 'asset/resource',
+            },
+            {
+                test: /\.s[ac]ss$/, // FILE EXTENSION .SCSS
                 use: [
-                    'css-loader',
-                    'sass-loader',
+                    {
+                        loader: 'style-loader',
+                    },
+                    {
+                        loader: 'css-loader',
+                    },
+                    {
+                        loader: 'sass-loader',
+                    },
                     {
                         loader: 'postcss-loader',
                         options: {
@@ -94,7 +105,7 @@ module.exports = {
                             },
                         },
                     },
-                ], // WORK WITH SCSS
+                ],
             },
 
             {

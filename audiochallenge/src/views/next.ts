@@ -36,7 +36,7 @@ export const nextWord = async (container: HTMLElement, word: Word, answers: Word
     wordContainer.append(imageContainer, button, audio);
     card.className = 'answers';
 
-    [...answers, word].sort().forEach((word, index) => {
+    [...answers].sort().forEach((word, index) => {
         drawAnswersItem(card, word, index);
     });
 
