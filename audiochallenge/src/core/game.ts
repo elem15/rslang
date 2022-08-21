@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import { getWords } from '../services/words';
 import { Word } from '../types';
 import { clear, shuffle } from '../utils';
 import { drawlevels } from '../views/levels';
 import { nextWord } from '../views/next';
+import { progress } from '../views/progress';
 import { showResult } from '../views/result';
 import { nextDefaultText, nextNextText } from './settings';
 
@@ -28,15 +27,17 @@ export default class Game {
         this.root = root;
         this.container = <HTMLElement>document.createElement('div');
         this.progress = <HTMLElement>document.createElement('div');
+        this.progress.classList.add('game__progress');
         this.audio = new Audio();
         this.selected = [];
-        this.count = 1;
+        this.count = 0;
         this.group = group ?? 0;
         this.container.className = 'game';
         this.next = <HTMLButtonElement>document.createElement('button');
         this.next.classList.add('game__next_word');
         this.next.innerText = nextDefaultText;
         this.next.onclick = async () => this.onNext();
+        document.addEventListener('keydown', this.onKeyPress);
     }
 
     start = async (): Promise<void> => {
@@ -51,6 +52,7 @@ export default class Game {
 
     onLevelSelect = async (level: number): Promise<void> => {
         await clear(this.container);
+        this.progress.append(...progress());
         this.group = level;
         try {
             const words = await getWords(0, this.group);
@@ -69,19 +71,32 @@ export default class Game {
         }
     };
 
+    onKeyPress = async (e: KeyboardEvent): Promise<void> => {
+        switch (e.code) {
+            case 'Space':
+                if (this.count !== this.words.length - 1) this.onNext();
+                else {
+                    document.removeEventListener('keydown', this.onKeyPress);
+                    this.onEndGame();
+                }
+                break;
+            default:
+                return;
+        }
+    };
+
     onNext = async (): Promise<void> => {
-        this.count += 1;
-        this.current = await this.getRandomWord();
-        const variants = await this.getRandomWords(this.current);
-        this.selected.push(this.current.id);
+        if (this.count !== this.words.length - 1) {
+            this.count += 1;
+            this.current = await this.getRandomWord();
+            const variants = await this.getRandomWords(this.current);
+            this.selected.push(this.current.id);
 
-        await clear(this.container);
-        await nextWord(this.container, this.current, variants);
-        this.container.append(this.next);
-        this.render();
-
-        if (this.count === this.words.length) {
-            this.next.disabled = true;
+            await clear(this.container);
+            await nextWord(this.container, this.current, variants);
+            this.container.append(this.next);
+            this.render();
+        } else {
             await this.onEndGame();
         }
     };
@@ -98,6 +113,7 @@ export default class Game {
         const target = e.target as HTMLElement;
         this.wordCardUpdate();
         this.container.append(this.audio);
+        this.progress.querySelector(`[data-count="${this.count}"]`)?.classList.add('marked');
 
         if (target.closest('.answers__item') && target.innerText === this.current?.wordTranslate) {
             const label = target.parentElement;
