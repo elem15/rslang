@@ -34,7 +34,15 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
         `<div class="modal-header">
         <h5 class="modal-title">Result</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>`
+        </div>
+        <div>
+        <ul class="game__statistic">
+        <li class="game__statistic_inrow"><div><span></span><span>In row</span><span>${0}</span></div></li>
+        <li class="game__statistic_right"><div><span></span><span>Right answers</span><span>${correct.length}</span></div></li>
+        <li class="game__statistic_mistakes"><div><span></span><span>Mistakes</span><span>${correct.length}</span></div></li>
+        </ul>
+        </div>
+        `
     );
 
     body.innerHTML += `<p class="h6 text-muted">Correct&nbsp;<span class="badge bg-success text-light">${correct.length}</span></p>`;
