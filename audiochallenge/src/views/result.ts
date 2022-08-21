@@ -1,5 +1,14 @@
-import { soundIcon } from '../core/settings';
+import { host, soundIcon } from '../core/settings';
 import { Word } from '../types';
+
+const playAudio = async (e: MouseEvent): Promise<void> => {
+    let target = e.target as HTMLElement;
+    target = target.closest('.audio') as HTMLElement;
+    const path = target.dataset.audio;
+    const audio = new Audio(`${host}${path}`);
+    console.log(target);
+    await audio.play();
+};
 
 const closeResult = (modal: HTMLElement) => {
     modal.classList.remove('show');
@@ -32,7 +41,7 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
         ${correct
             .map(
                 (word) =>
-                    `<li class="correct__answers_item"><span>${soundIcon}</span><span>${word.word}</span><span>${word.wordTranslate}</span></li>`
+                    `<li class="correct__answers_item"><span class="audio" data-audio="${word.audio}">${soundIcon}</span><span class="word">${word.word}</span><span class="translate">&nbsp;-&nbsp;${word.wordTranslate}</span></li>`
             )
             .join('')}
     </ul>`;
@@ -40,7 +49,7 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
         ${incorrect
             .map(
                 (word) =>
-                    `<li class="incorrect__answers_item"><span>${soundIcon}</span><span>${word.word}</span><span>${word.wordTranslate}</span></li>`
+                    `<li class="incorrect__answers_item"><span class="audio" data-audio="${word.audio}">${soundIcon}</span><span class="word">${word.word}</span><span class="translate">&nbsp;-&nbsp;${word.wordTranslate}</span></li>`
             )
             .join('')}
      </ul>`;
@@ -48,6 +57,10 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
     content.append(body);
     dialog.append(content);
     modal.append(dialog);
+
+    body.querySelectorAll('.audio').forEach((el) => {
+        (el as HTMLElement).addEventListener('click', playAudio);
+    });
 
     const close = content.querySelector('.btn-close') as HTMLButtonElement;
     setTimeout(() => modal.classList.add('show'), 200);
