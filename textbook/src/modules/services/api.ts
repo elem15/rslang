@@ -19,10 +19,10 @@ export const getWordById = async (wordId: string) => {
     }
 };
 
-export const getAllHardWords = async (userId: string, token: string, difficulty: string) => {
+export const getAllHardWords = async (userId: string, token: string, difficulty: string, wordsPerPage = 3600) => {
     try {
         const response = await fetch(
-            `${base}/users/${userId}/aggregatedWords?filter=%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22${difficulty}%22%7D%5D%7D`,
+            `${base}/users/${userId}/aggregatedWords?wordsPerPage=${wordsPerPage}&filter=%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22${difficulty}%22%7D%5D%7D`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -38,7 +38,12 @@ export const getAllHardWords = async (userId: string, token: string, difficulty:
     }
 };
 
-export const addWordToHard = async (userId: string, token: string, wordId: string, body: { difficulty: string }) =>
+export const addWordToHardLearned = async (
+    userId: string,
+    token: string,
+    wordId: string,
+    body: { difficulty: string }
+) =>
     (
         await fetch(`${base}/users/${userId}/words/${wordId}`, {
             method: 'POST',
@@ -60,3 +65,18 @@ export const deleteHardWord = async (userId: string, token: string, wordId: stri
             Accept: '*/*',
         },
     });
+
+export const getAllUserWords = async (userId: string, token: string) => {
+    try {
+        const response = await fetch(`${base}/users/${userId}/words`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        });
+        const words = await response.json();
+        return words;
+    } catch {
+        console.log('Word not exist');
+    }
+};

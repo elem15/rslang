@@ -1,8 +1,9 @@
-import { Dictionary, DictionaryHardWord } from '../../types';
+import { Dictionary, DictionaryHardWord, UserWords } from '../../types';
 import { audioPlayerListener } from '../services/audio';
-import { addWordToHard, deleteHardWord, getAllHardWords, getWords } from '../services/getWords';
+import { getAllHardWords, getAllUserWords, getWords } from '../services/api';
 import * as a from 'axios';
 import { pagination } from './pagination';
+import { addLearnedWords, addWordsForHardWordsPage, deleteWordsFromHardWordsPage } from './workWithHardLearnedWords';
 
 const base = 'http://localhost:3500';
 const chapterTextbookColor = [
@@ -56,22 +57,6 @@ export const logIn = async (user: User) => {
 
 logIn({ email: 'apx2@mail.ru', password: '11111111' });
 
-// const getUserWords = async (userId: string, token: string) => {
-//     try {
-//         const response = await axios.get(`${base}/users/${userId}/words`, {
-//             headers: {
-//                 Authorization: `Bearer ${token}`,
-//                 Accept: 'application/json',
-//                 'Access-Control-Allow-Origin': '*',
-//             },
-//         });
-//         console.log(response.data);
-//         return response.data;
-//     } catch {
-//         console.log('error');
-//     }
-// };
-
 // END PLUG
 
 const quantityChapters = 5;
@@ -81,6 +66,7 @@ const chapterTextbook = document.querySelector('.form-select.chapter') as HTMLSe
 const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
 
 export const draw = async (page = 0, group = 0): Promise<void> => {
+    let countHardAndLearnedWords = 0;
     // PLUG
     const { ids, token }: { ids: string; token: string } = (await logIn({
         email: 'apx2@mail.ru',
@@ -88,13 +74,17 @@ export const draw = async (page = 0, group = 0): Promise<void> => {
     })) as { ids: string; token: string };
     console.log(ids, token);
     //
-    const wordsUsersForPageResponse = await getAllHardWords(ids, token, 'hard');
-    console.log(wordsUsersForPageResponse[0].paginatedResults);
-    const wordsHardForPage = wordsUsersForPageResponse[0].paginatedResults;
+    const wordsUsersForPageResponse = await getAllUserWords(ids, token);
+    const wordsHardForPage = wordsUsersForPageResponse.filter((el: UserWords) => {
+        return el.difficulty === 'hard';
+    });
+    console.log(wordsHardForPage);
 
-    const wordsLearnedResponse = await getAllHardWords(ids, token, 'learned');
-    console.log(wordsLearnedResponse[0].paginatedResults);
-    const wordsLearned = wordsLearnedResponse[0].paginatedResults;
+    const wordsLearnedResponse = await getAllUserWords(ids, token);
+    const wordsLearned = wordsLearnedResponse.filter((el: UserWords) => {
+        return el.difficulty === 'learned';
+    });
+    console.log(wordsLearned);
 
     const wordsForPage = await getWords(page, group);
     console.log(wordsForPage);
@@ -126,11 +116,13 @@ export const draw = async (page = 0, group = 0): Promise<void> => {
         if (isAuthorization) {
             (goodsClone.querySelector('.item__buttons') as HTMLDivElement).style.display = 'block';
         }
-        if (isAuthorization && wordsHardForPage.some((el: DictionaryHardWord) => el._id === item.id)) {
+        if (isAuthorization && wordsHardForPage.some((el: UserWords) => el.wordId === item.id)) {
             (goodsClone.querySelector('.item__button-hard') as HTMLDivElement).textContent = 'Сложное';
+            countHardAndLearnedWords++;
         }
-        if (isAuthorization && wordsLearned.some((el: DictionaryHardWord) => el._id === item.id)) {
+        if (isAuthorization && wordsLearned.some((el: UserWords) => el.wordId === item.id)) {
             (goodsClone.querySelector('.item__button-learned') as HTMLDivElement).textContent = 'Изучено';
+            countHardAndLearnedWords++;
         }
 
         fragment.append(goodsClone);
@@ -140,10 +132,31 @@ export const draw = async (page = 0, group = 0): Promise<void> => {
     containerData.appendChild(fragment);
 
     audioPlayerListener();
+    addAllLearnedMessage(countHardAndLearnedWords);
+    if (countHardAndLearnedWords < 20) changePageIconDefault(page);
+    if (countHardAndLearnedWords === 20) changePageIconLearned(page);
 
     if (isAuthorization) {
         addWordsForHardWordsPage();
         addLearnedWords();
+    }
+};
+
+export const changePageIconLearned = (page: number) => {
+    const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
+    pageElement[page].innerHTML = `&#9989; &nbsp; Страница ${page + 1}`;
+};
+
+export const changePageIconDefault = (page: number) => {
+    const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
+    pageElement[page].innerHTML = `&#x1F56E &nbsp; Страница ${page + 1}`;
+};
+
+export const addAllLearnedMessage = (countHardAndLearnedWords: number) => {
+    if (countHardAndLearnedWords === 20) {
+        (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'darkcyan';
+    } else {
+        (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'inherit';
     }
 };
 
@@ -155,9 +168,12 @@ export const drawPageDifficultWords = async (): Promise<void> => {
     })) as { ids: string; token: string };
     console.log(ids, token);
     //
+
     const wordsUsersForPageResponse = await getAllHardWords(ids, token, 'hard');
-    console.log(wordsUsersForPageResponse[0].paginatedResults);
+    console.log(wordsUsersForPageResponse);
     const wordsUsersForPage = wordsUsersForPageResponse[0].paginatedResults;
+    console.log(wordsUsersForPage);
+
     const fragment = document.createDocumentFragment() as DocumentFragment;
     const itemsTemp = document.querySelector('#items') as HTMLTemplateElement;
     const containerData = document.querySelector('.items-container') as HTMLDivElement;
@@ -193,7 +209,11 @@ export const drawPageDifficultWords = async (): Promise<void> => {
 
     containerData.innerHTML = '';
     containerData.appendChild(fragment);
-
+    if (containerData.innerHTML === '') {
+        (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'darkcyan';
+    } else {
+        (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'inherit';
+    }
     audioPlayerListener();
 
     if (isAuthorization) {
@@ -215,10 +235,10 @@ export const drawTextbook = (pageTextbookFromLocaleStorage = 0, chapterTextbookF
         chapterTextbook.appendChild(chapterElement);
     }
     for (let i = 0; i <= quantityPages; i++) {
-        const chapterElement = document.createElement('option');
-        chapterElement.innerHTML = `&#x1F56E &nbsp; Страница ${i + 1}`;
-        chapterElement.value = String(i);
-        pageTextbook.appendChild(chapterElement);
+        const pageElement = document.createElement('option');
+        pageElement.innerHTML = `&#x1F56E &nbsp; Страница ${i + 1}`;
+        pageElement.value = String(i);
+        pageTextbook.appendChild(pageElement);
     }
     chapterTextbook.options[chapterTextbookFromLocaleStorage].selected = true;
     pageTextbook.options[pageTextbookFromLocaleStorage].selected = true;
@@ -226,169 +246,3 @@ export const drawTextbook = (pageTextbookFromLocaleStorage = 0, chapterTextbookF
 
     pagination();
 };
-
-const addWordsForHardWordsPage = () => {
-    const btnHardWord = document.querySelectorAll('.item__button-hard');
-    console.log(btnHardWord);
-
-    const addToHardWordsPage = async (e: Event) => {
-        const wordId = (
-            (((e.currentTarget as HTMLButtonElement).parentNode as HTMLDivElement).parentNode as HTMLDivElement)
-                .parentNode as HTMLDivElement
-        ).dataset.id as string;
-        (e.currentTarget as HTMLButtonElement).innerText = 'Сложное';
-        ((e.currentTarget as HTMLButtonElement).nextElementSibling as HTMLButtonElement).textContent =
-            'Изученное слово';
-        // PLUG
-        const { ids, token }: { ids: string; token: string } = (await logIn({
-            email: 'apx2@mail.ru',
-            password: '11111111',
-        })) as { ids: string; token: string };
-        //
-
-        await deleteHardWord(ids, token, wordId);
-        addWordToHard(ids, token, wordId, { difficulty: 'hard' });
-    };
-
-    btnHardWord.forEach((el) => {
-        el.addEventListener('click', addToHardWordsPage);
-    });
-};
-
-const deleteWordsFromHardWordsPage = () => {
-    const btnHardWord = document.querySelectorAll('.item__button-hard, .item__button-learned');
-    console.log(btnHardWord);
-
-    const deleteHardWordsFromPage = async (e: Event) => {
-        console.log(e.currentTarget);
-        const wordId = (
-            (((e.currentTarget as HTMLButtonElement).parentNode as HTMLDivElement).parentNode as HTMLDivElement)
-                .parentNode as HTMLDivElement
-        ).dataset.id as string;
-        // PLUG
-        const { ids, token }: { ids: string; token: string } = (await logIn({
-            email: 'apx2@mail.ru',
-            password: '11111111',
-        })) as { ids: string; token: string };
-        //
-        if ((e.target as HTMLButtonElement).classList.contains('item__button-hard')) {
-            // (e.currentTarget as HTMLButtonElement).innerText = 'Сложное';
-            deleteHardWord(ids, token, wordId);
-            drawPageDifficultWords();
-        } else {
-            // (e.currentTarget as HTMLButtonElement).innerText = 'Изучено';
-            await deleteHardWord(ids, token, wordId);
-            await addWordToHard(ids, token, wordId, { difficulty: 'learned' });
-            drawPageDifficultWords();
-        }
-        // if ((e.currentTarget as HTMLButtonElement).classList.contains('item__button-learned')) {
-
-        // }
-    };
-
-    btnHardWord.forEach((el) => {
-        el.addEventListener('click', deleteHardWordsFromPage);
-    });
-};
-
-const addLearnedWords = () => {
-    const btnLearnedWord = document.querySelectorAll('.item__button-learned');
-    console.log(btnLearnedWord);
-
-    const addLearnedWordsToAPI = async (e: Event) => {
-        const wordId = (
-            (((e.currentTarget as HTMLButtonElement).parentNode as HTMLDivElement).parentNode as HTMLDivElement)
-                .parentNode as HTMLDivElement
-        ).dataset.id as string;
-        (e.currentTarget as HTMLButtonElement).innerText = 'Изучено';
-        ((e.currentTarget as HTMLButtonElement).previousElementSibling as HTMLButtonElement).textContent =
-            'Сложное слово';
-        // PLUG
-        const { ids, token }: { ids: string; token: string } = (await logIn({
-            email: 'apx2@mail.ru',
-            password: '11111111',
-        })) as { ids: string; token: string };
-        //
-        deleteHardWord(ids, token, wordId);
-        addWordToHard(ids, token, wordId, { difficulty: 'learned' });
-    };
-
-    btnLearnedWord.forEach((el) => {
-        el.addEventListener('click', addLearnedWordsToAPI);
-    });
-};
-
-//PAGINATION
-
-// const btnLeft = document.querySelector('.page-item__previous') as HTMLLIElement;
-// const btnRight = document.querySelector('.page-item__next') as HTMLLIElement;
-// const pagination = document.querySelector('.pagination') as HTMLUListElement;
-
-// chapterTextbook.addEventListener('change', () => {
-//     if (Number(chapterTextbook.value) < 6) {
-//         draw(Number(pageTextbook.value), Number(chapterTextbook.value));
-//         pagination.style.display = 'flex';
-//     }
-//     if (Number(chapterTextbook.value) === 6) {
-//         drawPageDifficultWords();
-//         pagination.style.display = 'none';
-//     }
-// });
-
-// pageTextbook.addEventListener('change', () => {
-//     const currentPage = pageTextbook.selectedIndex;
-//     const currentChapter = chapterTextbook.selectedIndex;
-//     draw(Number(pageTextbook.value), currentChapter);
-//     if (currentPage === quantityPages) {
-//         btnRight.classList.add('disabled');
-//     }
-//     if (currentPage !== quantityPages) {
-//         btnRight.classList.remove('disabled');
-//     }
-//     if (currentPage === 0) {
-//         btnLeft.classList.add('disabled');
-//     }
-//     if (currentPage !== 0) {
-//         btnLeft.classList.remove('disabled');
-//     }
-// });
-
-// const moveLeft = () => {
-//     let currentPage = pageTextbook.selectedIndex;
-//     const currentChapter = chapterTextbook.selectedIndex;
-//     if (currentPage !== 0) {
-//         console.log(currentPage);
-//         currentPage--;
-//         pageTextbook.options[currentPage].selected = true;
-//         draw(currentPage, currentChapter);
-//     }
-//     if (currentPage === 0) {
-//         btnLeft.classList.add('disabled');
-//     }
-//     if (currentPage === quantityPages - 1) {
-//         btnRight.classList.remove('disabled');
-//     }
-//     const root = document.querySelectorAll('audio');
-//     root.forEach((el) => el.remove());
-// };
-
-// btnLeft.addEventListener('click', () => moveLeft());
-
-// const moveRight = () => {
-//     let currentPage = pageTextbook.selectedIndex;
-//     const currentChapter = chapterTextbook.selectedIndex;
-//     console.log(currentPage);
-//     currentPage++;
-//     pageTextbook.options[currentPage].selected = true;
-//     draw(currentPage, currentChapter);
-//     if (currentPage === quantityPages) {
-//         btnRight.classList.add('disabled');
-//     }
-//     if (currentPage === 1) {
-//         btnLeft.classList.remove('disabled');
-//     }
-//     const root = document.querySelectorAll('audio');
-//     root.forEach((el) => el.remove());
-// };
-
-// btnRight.addEventListener('click', () => moveRight());

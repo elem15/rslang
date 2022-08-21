@@ -2,7 +2,7 @@ const audio = new Audio();
 
 export const audioPlayerListener = () => {
     const audioElementsArray = document.querySelectorAll('.item__audio');
-    console.log(audioElementsArray);
+    // console.log(audioElementsArray);
     audioElementsArray.forEach((el) => {
         el.addEventListener('click', playPlaylist);
     });

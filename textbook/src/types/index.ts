@@ -32,3 +32,9 @@ export interface DictionaryHardWord {
     textExampleTranslate: string;
     userWord: { difficulty: string };
 }
+
+export interface UserWords {
+    id: string;
+    difficulty: string;
+    wordId: string;
+}
