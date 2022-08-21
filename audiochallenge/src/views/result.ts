@@ -37,6 +37,7 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
         </div>`
     );
 
+    body.innerHTML += `<p class="h6 text-muted">Correct&nbsp;<span class="badge bg-success text-light">${correct.length}</span></p>`;
     body.innerHTML += `<ul class='correct__answers'>
         ${correct
             .map(
@@ -45,6 +46,7 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
             )
             .join('')}
     </ul>`;
+    body.innerHTML += `<p class="h6 text-muted">Mistakes&nbsp;<span class="badge bg-danger text-light">${incorrect.length}</span></p>`;
     body.innerHTML += `<ul class="incorrect__answers">
         ${incorrect
             .map(
