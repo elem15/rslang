@@ -1,5 +1,5 @@
 {
-    "name": "RS-lang",
+    "name": "rslang",
     "version": "1.0.0",
     "description": "",
     "main": "./src/index",
@@ -7,7 +7,8 @@
         "test": "jest",
         "start": "webpack serve --open --config ./webpack.config.js --env mode=dev",
         "build": "webpack --config ./webpack.config.js --env mode=prod",
-        "lint": "eslint . --ext .ts"
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix"
     },
     "repository": {
         "type": "git",
