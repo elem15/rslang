@@ -1,5 +1,8 @@
 @import "~bootstrap/scss/bootstrap";
 
+ul {
+    list-style: none;
+}
 .user {
     border: solid 1px #198754;
     padding: 4px 10px;
@@ -11,4 +14,20 @@
 }
 .user.logged {
     background-color: #198754;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    background-color: var(--bs-card-cap-bg);
+    width: 100%;
+}
+.footer__list {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.logo_image {
+    background-color: #fff;
+    height: 20px;
 }
