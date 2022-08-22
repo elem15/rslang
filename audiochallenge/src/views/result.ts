@@ -36,20 +36,18 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
           <span aria-hidden="true">&times;</span>
         </button>
         </div>
-        <div>
-        <ul class="game__statistic">
-        <li class="game__statistic_inrow"><div><span></span><span>In row</span><span>${0}</span></div></li>
-        <li class="game__statistic_right"><div><span></span><span>Right answers</span><span>${
-            correct.length
-        }</span></div></li>
-        <li class="game__statistic_mistakes"><div><span></span><span>Mistakes</span><span>${
-            incorrect.length
-        }</span></div></li>
-        </ul>
-        </div>
         `
     );
 
+    body.innerHTML += `<ul class="game__statistic">
+    <li class="game__statistic_inrow"><div><span></span><span>In row</span><span>${0}</span></div></li>
+    <li class="game__statistic_right"><div><span></span><span>Right answers</span><span>${
+        correct.length
+    }</span></div></li>
+    <li class="game__statistic_mistakes"><div><span></span><span>Mistakes</span><span>${
+        incorrect.length
+    }</span></div></li>
+    </ul>`;
     body.innerHTML += `<p class="h6 text-muted">Correct&nbsp;<span class="badge bg-success text-light">${correct.length}</span></p>`;
     body.innerHTML += `<ul class='correct__answers'>
         ${correct

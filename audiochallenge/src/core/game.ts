@@ -22,6 +22,7 @@ export default class Game {
     selected: string[];
     correct?: string[] = [];
     incorrect?: string[] = [];
+    canMoveToNext = false;
 
     constructor(root: HTMLElement, group?: number) {
         this.root = root;
@@ -74,8 +75,15 @@ export default class Game {
         switch ((e as KeyboardEvent).key) {
             case ' ':
                 if (this.count !== this.words.length) {
-                    this.updateProgress();
-                    this.nextWord();
+                    if (!this.canMoveToNext) {
+                        this.playAudio(ResultType.MISTAKE);
+                        this.canMoveToNext = !this.canMoveToNext;
+                        this.next.innerText = nextNextText;
+                    } else {
+                        this.canMoveToNext = !this.canMoveToNext;
+                        this.updateProgress();
+                        this.nextWord();
+                    }
                 } else {
                     document.removeEventListener('keydown', this.onKeyPress);
                     this.endGame();
@@ -131,10 +139,12 @@ export default class Game {
         } else {
             target.classList.add('incorrect');
             path = ResultType.MISTAKE;
-            const answers = Array.from(this.container.querySelectorAll('.answers__item')) as HTMLElement[];
-            answers.forEach((item) => item.removeEventListener('click', this.selectVariant));
             if (this.current) this.incorrect?.push(this.current.id);
         }
+        this.canMoveToNext = true;
+        this.next.innerText = nextNextText;
+        const answers = Array.from(this.container.querySelectorAll('.answers__item')) as HTMLElement[];
+        answers.forEach((item) => item.removeEventListener('click', this.selectVariant));
 
         this.playAudio(path);
     };
