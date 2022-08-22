@@ -18,6 +18,7 @@ export default class Game {
     group: number;
     current: Word | undefined;
     count: number;
+    answers: HTMLElement[] = [];
 
     selected: string[];
     correct?: string[] = [];
@@ -144,7 +145,7 @@ export default class Game {
 
         this.canMoveToNext = true;
         this.next.innerText = nextNextText;
-        const answers = Array.from(this.container.querySelectorAll('.answers__item')) as HTMLElement[];
+        const answers = this.getElementsList('.answers__item');
         answers.forEach((item) => item.removeEventListener('click', this.selectVariant));
 
         this.playAudio(path);
@@ -154,7 +155,7 @@ export default class Game {
         clear(this.root);
         this.root.append(this.progress, this.container);
         this.next.innerText = nextDefaultText;
-        const answers = Array.from(this.container.querySelectorAll('.answers__item')) as HTMLElement[];
+        const answers = this.getElementsList('.answers__item');
         answers.forEach((item) => item.addEventListener('click', this.selectVariant));
     };
 
@@ -164,7 +165,6 @@ export default class Game {
 
     updateCard = () => {
         const image = this.container.querySelector('.word__image img') as HTMLImageElement;
-        this.next.innerText = nextNextText;
         image.style.display = 'block';
     };
 
@@ -180,5 +180,9 @@ export default class Game {
         const correct = this.words.filter((item) => this.correct?.includes(item.id));
         const incorrect = this.words.filter((item) => this.incorrect?.includes(item.id));
         showResult(correct, incorrect);
+    };
+
+    getElementsList = (selector: string): NodeListOf<HTMLElement> => {
+        return document.querySelectorAll(selector);
     };
 }
