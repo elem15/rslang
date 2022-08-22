@@ -21,3 +21,8 @@ export type Word = {
 };
 
 export type TSelectHandler = (level: number) => Promise<void>;
+
+export enum ResultType {
+    RIGHT = 'assets/sounds/success.wav',
+    MISTAKE = 'assets/sounds/error.mp3',
+}
