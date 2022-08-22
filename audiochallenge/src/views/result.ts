@@ -6,7 +6,6 @@ const playAudio = async (e: MouseEvent): Promise<void> => {
     target = target.closest('.audio') as HTMLElement;
     const path = target.dataset.audio;
     const audio = new Audio(`${host}${path}`);
-    console.log(target);
     await audio.play();
 };
 
@@ -33,13 +32,19 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
         'afterbegin',
         `<div class="modal-header">
         <h5 class="modal-title">Result</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
         </div>
         <div>
         <ul class="game__statistic">
         <li class="game__statistic_inrow"><div><span></span><span>In row</span><span>${0}</span></div></li>
-        <li class="game__statistic_right"><div><span></span><span>Right answers</span><span>${correct.length}</span></div></li>
-        <li class="game__statistic_mistakes"><div><span></span><span>Mistakes</span><span>${correct.length}</span></div></li>
+        <li class="game__statistic_right"><div><span></span><span>Right answers</span><span>${
+            correct.length
+        }</span></div></li>
+        <li class="game__statistic_mistakes"><div><span></span><span>Mistakes</span><span>${
+            incorrect.length
+        }</span></div></li>
         </ul>
         </div>
         `
@@ -72,7 +77,7 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
         (el as HTMLElement).addEventListener('click', playAudio);
     });
 
-    const close = content.querySelector('.btn-close') as HTMLButtonElement;
+    const close = content.querySelector('.close') as HTMLButtonElement;
     setTimeout(() => modal.classList.add('show'), 200);
 
     close.addEventListener('click', () => {

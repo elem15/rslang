@@ -1,5 +1,6 @@
 import { GameLevel, TSelectHandler } from '../types';
 import { levels } from '../core/settings';
+import { clear } from '../utils';
 
 const drawLevelItem = async (level: GameLevel, list: HTMLElement, handler: TSelectHandler): Promise<void> => {
     const { group, color } = level;
@@ -19,6 +20,7 @@ const drawLevelItem = async (level: GameLevel, list: HTMLElement, handler: TSele
 };
 
 export const drawlevels = async (container: HTMLElement, hadler: TSelectHandler): Promise<void> => {
+    await clear(container);
     const heading = document.createElement('h3') as HTMLElement;
     const list = document.createElement('div');
 

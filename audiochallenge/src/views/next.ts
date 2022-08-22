@@ -1,20 +1,18 @@
 import { host, soundIcon } from '../core/settings';
 import { Word } from '../types';
+import { clear } from '../utils';
 
 const drawAnswersItem = (card: HTMLElement, word: Word, index: number) => {
     const answerItem = document.createElement('label') as HTMLElement;
-    const translatation = document.createElement('span') as HTMLSpanElement;
-    const num = document.createElement('span') as HTMLSpanElement;
-
     answerItem.className = 'answers__item';
-    translatation.innerText = word.wordTranslate;
-    num.innerText = `${index + 1}.`;
-    answerItem.append(num, translatation);
-
+    answerItem.innerText = `${index + 1}. ${word.wordTranslate}`;
+    answerItem.dataset.key = `${index + 1}`;
+    answerItem.dataset.word = `${word.wordTranslate}`;
     card.append(answerItem);
 };
 
 export const nextWord = async (container: HTMLElement, word: Word, answers: Word[]): Promise<void> => {
+    await clear(container);
     const wordContainer = document.createElement('div') as HTMLElement;
     const image = document.createElement('img') as HTMLImageElement;
     const button = document.createElement('button') as HTMLButtonElement;
