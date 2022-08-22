@@ -34,7 +34,8 @@ export const addWordsForHardWordsPage = () => {
         console.log(countHardAndLearnedWords);
         if (countHardAndLearnedWords === 20) {
             const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-            changePageIconLearned(pageElement.selectedIndex);
+            const chapterTextbook = document.querySelector('.form-select.chapter') as HTMLSelectElement;
+            changePageIconLearned(pageElement.selectedIndex, chapterTextbook.selectedIndex, ids, token);
             addAllLearnedMessage(countHardAndLearnedWords);
         }
         await deleteHardWord(ids, token, wordId);
@@ -113,7 +114,8 @@ export const addLearnedWords = () => {
             console.log(countHardAndLearnedWords);
             if (countHardAndLearnedWords === 20) {
                 const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-                changePageIconLearned(pageElement.selectedIndex);
+                const chapterTextbook = document.querySelector('.form-select.chapter') as HTMLSelectElement;
+                changePageIconLearned(pageElement.selectedIndex, chapterTextbook.selectedIndex, ids, token);
                 addAllLearnedMessage(countHardAndLearnedWords);
             }
 
@@ -133,7 +135,8 @@ export const addLearnedWords = () => {
             console.log(countHardAndLearnedWords);
             if (countHardAndLearnedWords < 20) {
                 const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-                changePageIconDefault(pageElement.selectedIndex);
+                const chapterTextbook = document.querySelector('.form-select.chapter') as HTMLSelectElement;
+                changePageIconDefault(pageElement.selectedIndex, chapterTextbook.selectedIndex, ids, token);
                 addAllLearnedMessage(countHardAndLearnedWords);
             }
         }

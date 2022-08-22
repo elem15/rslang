@@ -1,4 +1,4 @@
-import { draw, drawPageDifficultWords } from './draw';
+import { draw, drawPageDifficultWords, drawPageNav, pageLearned } from './draw';
 const quantityPages = 29;
 
 export const pagination = () => {
@@ -11,6 +11,7 @@ export const pagination = () => {
     chapterTextbook.addEventListener('change', () => {
         if (Number(chapterTextbook.value) < 6) {
             draw(Number(pageTextbook.value), Number(chapterTextbook.value));
+            drawPageNav(Number(pageTextbook.value), Number(chapterTextbook.value), pageLearned);
             pagination.style.display = 'flex';
         }
         if (Number(chapterTextbook.value) === 6) {

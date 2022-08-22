@@ -1,4 +1,5 @@
 import { Dictionary } from '../../types';
+import { pageLearnedPagesChapter } from '../view/draw';
 
 const base = 'http://localhost:3500';
 const words = `${base}/words`;
@@ -69,6 +70,41 @@ export const deleteHardWord = async (userId: string, token: string, wordId: stri
 export const getAllUserWords = async (userId: string, token: string) => {
     try {
         const response = await fetch(`${base}/users/${userId}/words`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        });
+        const words = await response.json();
+        return words;
+    } catch {
+        console.log('Word not exist');
+    }
+};
+
+interface Body {
+    wordsPerDay: number;
+    optional: Optional;
+}
+
+interface Optional {
+    [index: number]: pageLearnedPagesChapter;
+}
+
+export const updateSettings = async (userId: string, token: string, body: Body) =>
+    await fetch(`${base}/users/${userId}/settings`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    });
+
+export const getSettings = async (userId: string, token: string) => {
+    try {
+        const response = await fetch(`${base}/users/${userId}/settings`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: 'application/json',

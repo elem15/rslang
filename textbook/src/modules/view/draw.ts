@@ -1,6 +1,6 @@
 import { Dictionary, DictionaryHardWord, UserWords } from '../../types';
 import { audioPlayerListener } from '../services/audio';
-import { getAllHardWords, getAllUserWords, getWords } from '../services/api';
+import { getAllHardWords, getAllUserWords, getSettings, getWords, updateSettings } from '../services/api';
 import * as a from 'axios';
 import { pagination } from './pagination';
 import { addLearnedWords, addWordsForHardWordsPage, deleteWordsFromHardWordsPage } from './workWithHardLearnedWords';
@@ -15,6 +15,18 @@ const chapterTextbookColor = [
     '&#x1f7e3;',
     '&#x1f7e4;',
 ];
+export interface pageLearnedPagesChapter {
+    page: number;
+    group: number;
+}
+
+export let pageLearned: pageLearnedPagesChapter[] = [];
+
+function setLocalStoragePageLearned() {
+    localStorage.setItem('pageLearned', JSON.stringify(pageLearned));
+}
+
+window.addEventListener('beforeunload', setLocalStoragePageLearned);
 
 //START PLUG
 const isAuthorization = true;
@@ -74,6 +86,12 @@ export const draw = async (page = 0, group = 0): Promise<void> => {
     })) as { ids: string; token: string };
     console.log(ids, token);
     //
+
+    const pageLearnedResponse = await getSettings(ids, token);
+    const pageLearnedObject = pageLearnedResponse.optional;
+    if (pageLearnedResponse.optional) pageLearned = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
+    console.log(pageLearned);
+
     const wordsUsersForPageResponse = await getAllUserWords(ids, token);
     const wordsHardForPage = wordsUsersForPageResponse.filter((el: UserWords) => {
         return el.difficulty === 'hard';
@@ -133,23 +151,15 @@ export const draw = async (page = 0, group = 0): Promise<void> => {
 
     audioPlayerListener();
     addAllLearnedMessage(countHardAndLearnedWords);
-    if (countHardAndLearnedWords < 20) changePageIconDefault(page);
-    if (countHardAndLearnedWords === 20) changePageIconLearned(page);
+    if (countHardAndLearnedWords < 20) changePageIconDefault(page, group, ids, token);
+    if (countHardAndLearnedWords === 20) {
+        changePageIconLearned(page, group, ids, token);
+    }
 
     if (isAuthorization) {
         addWordsForHardWordsPage();
         addLearnedWords();
     }
-};
-
-export const changePageIconLearned = (page: number) => {
-    const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-    pageElement[page].innerHTML = `&#9989; &nbsp; Страница ${page + 1}`;
-};
-
-export const changePageIconDefault = (page: number) => {
-    const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-    pageElement[page].innerHTML = `&#x1F56E &nbsp; Страница ${page + 1}`;
 };
 
 export const addAllLearnedMessage = (countHardAndLearnedWords: number) => {
@@ -221,7 +231,13 @@ export const drawPageDifficultWords = async (): Promise<void> => {
     }
 };
 
-export const drawTextbook = (pageTextbookFromLocaleStorage = 0, chapterTextbookFromLocaleStorage = 0) => {
+export const drawTextbook = (
+    pageTextbookFromLocaleStorage = 0,
+    chapterTextbookFromLocaleStorage = 0,
+    pageLearnedFromLocaleStorage: pageLearnedPagesChapter[] = []
+) => {
+    chapterTextbook.innerHTML = '';
+    pageTextbook.innerHTML = '';
     for (let i = 0; i <= quantityChapters; i++) {
         const chapterElement = document.createElement('option');
         chapterElement.innerHTML = `${chapterTextbookColor[i]} &nbsp; Раздел ${i + 1}`;
@@ -234,15 +250,59 @@ export const drawTextbook = (pageTextbookFromLocaleStorage = 0, chapterTextbookF
         chapterElement.value = `${quantityChapters + 1}`;
         chapterTextbook.appendChild(chapterElement);
     }
-    for (let i = 0; i <= quantityPages; i++) {
-        const pageElement = document.createElement('option');
-        pageElement.innerHTML = `&#x1F56E &nbsp; Страница ${i + 1}`;
-        pageElement.value = String(i);
-        pageTextbook.appendChild(pageElement);
-    }
+
     chapterTextbook.options[chapterTextbookFromLocaleStorage].selected = true;
-    pageTextbook.options[pageTextbookFromLocaleStorage].selected = true;
+    drawPageNav(pageTextbookFromLocaleStorage, chapterTextbookFromLocaleStorage, pageLearnedFromLocaleStorage);
     draw(pageTextbookFromLocaleStorage, chapterTextbookFromLocaleStorage);
 
     pagination();
+};
+
+export const drawPageNav = (page: number, group: number, pageLearnedDraw: pageLearnedPagesChapter[] = []) => {
+    console.log(pageLearnedDraw);
+    pageTextbook.innerHTML = '';
+    for (let i = 0; i <= quantityPages; i++) {
+        const pageElement = document.createElement('option');
+        const itemFind = pageLearnedDraw.find((el) => {
+            console.log(el);
+            return el.page === i && el.group === group;
+        });
+        if (itemFind) pageElement.innerHTML = `&#9989; &nbsp; Страница ${i + 1}`;
+        if (!itemFind) pageElement.innerHTML = `&#x1F56E &nbsp; Страница ${i + 1}`;
+        console.log(pageElement.innerHTML);
+        pageElement.value = String(i);
+        pageTextbook.appendChild(pageElement);
+    }
+    pageTextbook.options[page].selected = true;
+    pageLearned = pageLearnedDraw;
+};
+
+export const changePageIconLearned = async (page: number, group: number, ids: string, token: string) => {
+    console.log('11111111111111111111111');
+    const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
+    pageElement[page].innerHTML = `&#9989; &nbsp; Страница ${page + 1}`;
+    pageLearned = pageLearned.filter((el) => {
+        console.log(el);
+        return el.page !== page || el.group !== group;
+    });
+    console.log(pageElement[page].innerHTML);
+    pageLearned.push({ page: page, group: group });
+
+    await updateSettings(ids, token, {
+        wordsPerDay: 1,
+        optional: Object.assign({}, pageLearned),
+    });
+};
+
+export const changePageIconDefault = async (page: number, group: number, ids: string, token: string) => {
+    console.log('22222222222222222222222', page, group);
+    const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
+    pageElement[page].innerHTML = `&#x1F56E &nbsp; Страница ${page + 1}`;
+    pageLearned = pageLearned.filter((el) => {
+        return el.page !== page || el.group !== group;
+    });
+    await updateSettings(ids, token, {
+        wordsPerDay: 1,
+        optional: Object.assign({}, pageLearned),
+    });
 };
