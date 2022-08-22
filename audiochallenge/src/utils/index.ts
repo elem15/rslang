@@ -15,11 +15,13 @@ export const clear = async (container: HTMLElement): Promise<void> => {
     }
 };
 
+export const getRandomNumber = (max: number): number => Math.floor(Math.random() * max);
+
 export const getRandomWords = async (excludeWord: Word, words: Word[]): Promise<Word[]> => {
     const arr: Word[] = [];
     arr.push(excludeWord);
     while (arr.length < 4) {
-        const index = Math.floor(Math.random() * words.length);
+        const index = getRandomNumber(Math.random() * words.length);
         const next = words[index];
         if (!arr.includes(next)) arr.push(next);
     }
@@ -28,7 +30,7 @@ export const getRandomWords = async (excludeWord: Word, words: Word[]): Promise<
 
 export const getRandomWord = async (selected: string[], words: Word[]): Promise<Word> => {
     const filtered = words.filter((word) => !selected.includes(word.id));
-    const index = Math.floor(Math.random() * (words.length - selected.length));
+    const index = getRandomNumber(words.length - selected.length);
 
     return filtered[index];
 };
