@@ -1,3 +1,4 @@
+import { renderFooter } from '../../main/view/main-page';
 import { getUserWords } from '../controllers/get-user-words';
 import { getWordById } from '../controllers/get-word-by-id';
 
@@ -12,6 +13,7 @@ const renderListItem = async (id: string, list: HTMLUListElement) => {
 export const renderWordsList = async (): Promise<void> => {
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
+    renderFooter();
     const words = document.createElement('section');
     words.className = 'dictionary';
     root.append(words);
