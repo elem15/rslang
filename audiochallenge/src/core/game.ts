@@ -1,6 +1,6 @@
 import { getWords } from '../services/words';
-import { Word } from '../types';
-import { clear, shuffle } from '../utils';
+import { ResultType, Word } from '../types';
+import { clear, getRandomWord, getRandomWords } from '../utils';
 import { drawlevels } from '../views/levels';
 import { nextWord } from '../views/next';
 import { progress } from '../views/progress';
@@ -31,22 +31,21 @@ export default class Game {
         this.audio = new Audio();
         this.selected = [];
         this.count = 0;
-        this.group = group ?? 0;
+        this.group = group || 0;
         this.container.className = 'game';
         this.next = <HTMLButtonElement>document.createElement('button');
         this.next.classList.add('game__next_word');
         this.next.innerText = nextDefaultText;
-        this.next.onclick = async () => this.onNext();
+        this.next.addEventListener('click', this.nextWord);
         document.addEventListener('keydown', this.onKeyPress);
     }
 
     start = async (): Promise<void> => {
-        if (!this.group) await this.showLevels();
+        this.group === 0 ? await this.showLevels() : await this.onLevelSelect(this.group);
         await this.render();
     };
 
     showLevels = async (): Promise<void> => {
-        await clear(this.container);
         await drawlevels(this.container, this.onLevelSelect);
     };
 
@@ -55,11 +54,11 @@ export default class Game {
         this.progress.append(...progress());
         this.group = level;
         try {
-            const words = await getWords(0, this.group);
+            const words = await getWords(Math.floor(Math.random() * 31), this.group);
             if (typeof words !== 'undefined') {
                 this.words = words;
-                this.current = await this.getRandomWord();
-                const variants = await this.getRandomWords(this.current);
+                this.current = await getRandomWord(this.selected, this.words);
+                const variants = await getRandomWords(this.current, this.words);
                 this.selected?.push(this.current.id);
 
                 await nextWord(this.container, this.current, variants);
@@ -71,34 +70,73 @@ export default class Game {
         }
     };
 
-    onKeyPress = async (e: KeyboardEvent): Promise<void> => {
-        switch (e.code) {
-            case 'Space':
-                if (this.count !== this.words.length - 1) this.onNext();
-                else {
+    onKeyPress = async (e: Event): Promise<void> => {
+        switch ((e as KeyboardEvent).key) {
+            case ' ':
+                if (this.count !== this.words.length) {
+                    this.updateProgress();
+                    this.nextWord();
+                } else {
                     document.removeEventListener('keydown', this.onKeyPress);
-                    this.onEndGame();
+                    this.endGame();
                 }
+                break;
+            case '1':
+                this.selectVariant(e);
+                break;
+            case '2':
+                this.selectVariant(e);
+                break;
+            case '3':
+                this.selectVariant(e);
+                break;
+            case '4':
+                this.selectVariant(e);
                 break;
             default:
                 return;
         }
     };
 
-    onNext = async (): Promise<void> => {
+    nextWord = async (): Promise<void> => {
         if (this.count !== this.words.length - 1) {
             this.count += 1;
-            this.current = await this.getRandomWord();
-            const variants = await this.getRandomWords(this.current);
+            this.current = await getRandomWord(this.selected, this.words);
+            const translationVariants = await getRandomWords(this.current, this.words);
             this.selected.push(this.current.id);
 
-            await clear(this.container);
-            await nextWord(this.container, this.current, variants);
+            await nextWord(this.container, this.current, translationVariants);
             this.container.append(this.next);
             this.render();
         } else {
-            await this.onEndGame();
+            await this.endGame();
         }
+    };
+
+    selectVariant = async (e: Event): Promise<void> => {
+        let path = ResultType.RIGHT;
+        const target =
+            e instanceof KeyboardEvent
+                ? (this.container.querySelector(`[data-key="${e.key}"]`) as HTMLElement)
+                : (e.target as HTMLElement);
+
+        this.updateCard();
+        this.updateProgress();
+        this.container.append(this.audio);
+        const { word } = target.dataset;
+
+        if (word === this.current?.wordTranslate) {
+            target.classList.add('correct');
+            if (this.current) this.correct?.push(this.current.id);
+        } else {
+            target.classList.add('incorrect');
+            path = ResultType.MISTAKE;
+            const answers = Array.from(this.container.querySelectorAll('.answers__item')) as HTMLElement[];
+            answers.forEach((item) => item.removeEventListener('click', this.selectVariant));
+            if (this.current) this.incorrect?.push(this.current.id);
+        }
+
+        this.playAudio(path);
     };
 
     render = async (): Promise<void> => {
@@ -106,64 +144,30 @@ export default class Game {
         this.root.append(this.progress, this.container);
         this.next.innerText = nextDefaultText;
         const answers = Array.from(this.container.querySelectorAll('.answers__item')) as HTMLElement[];
-        answers.forEach((item) => item.addEventListener('click', this.onClickVariant));
+        answers.forEach((item) => item.addEventListener('click', this.selectVariant));
     };
 
-    onClickVariant = async (e: MouseEvent): Promise<void> => {
-        const target = e.target as HTMLElement;
-        this.wordCardUpdate();
-        this.container.append(this.audio);
+    updateProgress = () => {
         this.progress.querySelector(`[data-count="${this.count}"]`)?.classList.add('marked');
-
-        if (target.closest('.answers__item') && target.innerText === this.current?.wordTranslate) {
-            const label = target.parentElement;
-            label?.classList.add('correct');
-            this.correct?.push(this.current.id);
-            this.audio.src = `assets/sounds/success.wav`;
-            this.audio.addEventListener('canplaythrough', async () => {
-                await this.audio.play();
-            });
-        } else {
-            const label = target.parentElement;
-            label?.classList.add('incorrect');
-            this.audio.src = `assets/sounds/error.mp3`;
-            this.audio.addEventListener('canplaythrough', async () => {
-                await this.audio.play();
-            });
-            const answers = Array.from(this.container.querySelectorAll('.answers__item')) as HTMLElement[];
-            answers.forEach((item) => item.removeEventListener('click', this.onClickVariant));
-            if (this.current) this.incorrect?.push(this.current.id);
-        }
     };
 
-    onEndGame = async (): Promise<void> => {
+    updateCard = () => {
+        const image = this.container.querySelector('.word__image img') as HTMLImageElement;
+        this.next.innerText = nextNextText;
+        image.style.display = 'block';
+    };
+
+    playAudio = (path: string) => {
+        this.audio.src = path;
+        this.audio.addEventListener('canplaythrough', async () => {
+            await this.audio.play();
+        });
+    };
+
+    endGame = async (): Promise<void> => {
         this.next.disabled = true;
         const correct = this.words.filter((item) => this.correct?.includes(item.id));
         const incorrect = this.words.filter((item) => this.incorrect?.includes(item.id));
         showResult(correct, incorrect);
-    };
-
-    getRandomWord = async (): Promise<Word> => {
-        const filtered = this.words.filter((word) => !this.selected.includes(word.id));
-        const index = Math.floor(Math.random() * (this.words.length - this.selected.length));
-
-        return filtered[index];
-    };
-
-    getRandomWords = async (current: Word): Promise<Word[]> => {
-        const arr: Word[] = [];
-        arr.push(current);
-        while (arr.length < 4) {
-            const index = Math.floor(Math.random() * this.words.length);
-            const next = this.words[index];
-            if (!arr.includes(next)) arr.push(next);
-        }
-        return shuffle(arr);
-    };
-
-    wordCardUpdate = () => {
-        const image = this.container.querySelector('.word__image img') as HTMLImageElement;
-        this.next.innerText = nextNextText;
-        image.style.display = 'block';
     };
 }
