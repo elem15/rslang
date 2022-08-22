@@ -34,11 +34,6 @@
               aria-controls="profile" aria-selected="false">Статистика</a>
           </li>
         </ul>
-        <div class="tab-content" id="myTabContent">
-          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <div id="root"></div>
-          </div>
-        </div>
       </div>
       <div class="col-4">
         <button class="sign-up btn btn-primary">sign up</button>
@@ -48,7 +43,10 @@
       </div>
     </div>
   </header>
-  <footer class="footer"></footer>
+  <div class="tab-content" id="myTabContent">
+    <div id="root" class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    </div>
+  </div>
+  <footer class="footer"></footer> 
 </body>
-
 </html>
