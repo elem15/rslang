@@ -61,7 +61,7 @@ export const renderMainPage = () => {
       </div>
       <br>
       <br>
-      <p class="about text-end">В приложени <strong>lexi</strong> вы можете изучачить 3600 часто употребляемых английских слов. <br>В этом вам поможет <strong>Учебник</strong> с ассициативными карточками. А так же 2 замечательные игры <strong>Аудиовызов</strong> и <strong>Спринт</strong></p>
+      <p class="about text-end">В приложени <strong>lexi</strong> вы можете изучачить 3600 часто употребляемых английских слов. <br>В этом вам поможет <strong>Учебник</strong> с ассоциативными карточками. А так же 2 замечательные игры <strong>Аудиовызов</strong> и <strong>Спринт</strong></p>
     </div>
     <div class="container avatars">
     <div class="row justify-content-between">  
