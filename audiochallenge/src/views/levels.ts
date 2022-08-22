@@ -19,7 +19,7 @@ const drawLevelItem = async (level: GameLevel, list: HTMLElement, handler: TSele
     list.append(button);
 };
 
-export const drawlevels = async (container: HTMLElement, hadler: TSelectHandler): Promise<void> => {
+export const drawLevels = async (container: HTMLElement, handler: TSelectHandler): Promise<void> => {
     await clear(container);
     const heading = document.createElement('h3') as HTMLElement;
     const list = document.createElement('div');
@@ -28,7 +28,7 @@ export const drawlevels = async (container: HTMLElement, hadler: TSelectHandler)
     heading.className = 'game__heading';
     list.className = 'game__levels';
     levels.forEach((level) => {
-        drawLevelItem(level, list, hadler);
+        drawLevelItem(level, list, handler);
     });
 
     container.append(heading, list);

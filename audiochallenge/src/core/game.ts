@@ -1,7 +1,7 @@
 import { getWords } from '../services/words';
 import { ResultType, Word } from '../types';
 import { clear, getRandomWord, getRandomWords } from '../utils';
-import { drawlevels } from '../views/levels';
+import { drawLevels } from '../views/levels';
 import { nextWord } from '../views/next';
 import { progress } from '../views/progress';
 import { showResult } from '../views/result';
@@ -47,7 +47,7 @@ export default class Game {
     };
 
     showLevels = async (): Promise<void> => {
-        await drawlevels(this.container, this.onLevelSelect);
+        await drawLevels(this.container, this.onLevelSelect);
     };
 
     onLevelSelect = async (level: number): Promise<void> => {
@@ -108,7 +108,7 @@ export default class Game {
 
     nextWord = async (): Promise<void> => {
         if (this.count !== this.words.length - 1) {
-            this.count += 1;
+            this.count++;
             this.current = await getRandomWord(this.selected, this.words);
             const translationVariants = await getRandomWords(this.current, this.words);
             this.selected.push(this.current.id);
@@ -141,6 +141,7 @@ export default class Game {
             path = ResultType.MISTAKE;
             if (this.current) this.incorrect?.push(this.current.id);
         }
+
         this.canMoveToNext = true;
         this.next.innerText = nextNextText;
         const answers = Array.from(this.container.querySelectorAll('.answers__item')) as HTMLElement[];

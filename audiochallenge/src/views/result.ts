@@ -40,11 +40,11 @@ export const showResult = (correct: Word[], incorrect: Word[]) => {
     );
 
     body.innerHTML += `<ul class="game__statistic">
-    <li class="game__statistic_inrow"><div><span></span><span>In row</span><span>${0}</span></div></li>
-    <li class="game__statistic_right"><div><span></span><span>Right answers</span><span>${
+    <li class="game__statistic_in-series"><div><span class="series__mark"></span><span>In row</span><span>${0}</span></div></li>
+    <li class="game__statistic_right"><div><span class="right__mark"></span><span>Right answers</span><span>${
         correct.length
     }</span></div></li>
-    <li class="game__statistic_mistakes"><div><span></span><span>Mistakes</span><span>${
+    <li class="game__statistic_mistakes"><div><span class="mistakes__mark"></span><span>Mistakes</span><span>${
         incorrect.length
     }</span></div></li>
     </ul>`;
