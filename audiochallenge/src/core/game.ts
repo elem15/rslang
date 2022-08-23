@@ -5,7 +5,7 @@ import { drawLevels } from '../views/levels';
 import { nextWord } from '../views/next';
 import { progress } from '../views/progress';
 import { showResult } from '../views/result';
-import { nextDefaultText, nextNextText } from './settings';
+import { checkIcon, nextDefaultText, nextNextText, wrongIcon } from './settings';
 
 export default class Game {
     root: HTMLElement;
@@ -133,9 +133,11 @@ export default class Game {
 
             if (correctAnswer) {
                 target.classList.add('correct');
+                target.innerHTML = `${checkIcon} ${target.innerText}`;
                 if (this.current) this.correct?.push(this.current.id);
             } else {
                 target.classList.add('incorrect');
+                target.innerHTML = `${wrongIcon} ${target.innerText}`;
                 path = ResultType.MISTAKE;
                 if (this.current) this.incorrect?.push(this.current.id);
             }
@@ -145,8 +147,13 @@ export default class Game {
 
         this.canMoveToNext = true;
         this.next.innerText = nextNextText;
-        getElementsList('.answers__item:not(.correct)').forEach((label) => label.classList.add('incorrect'));
-        getElementsList('.answers__item').forEach((item) => item.removeEventListener('click', this.onSelectVariant));
+        getElementsList('.answers__item').forEach((item) => {
+            item.removeEventListener('click', this.onSelectVariant);
+            if (!item.classList.contains('correct')) {
+                item.classList.add('incorrect');
+                item.innerHTML = `${wrongIcon} ${item.innerText}`;
+            }
+        });
 
         this.playAudio(path);
     };
@@ -163,8 +170,10 @@ export default class Game {
     };
 
     updateCard = () => {
-        const image = this.container.querySelector('.word__image img') as HTMLImageElement;
+        const image = this.container.querySelector('.word__image') as HTMLImageElement;
+        const translation = this.container.querySelector('.word__translation') as HTMLElement;
         image.style.display = 'block';
+        translation.innerHTML = `<strong>${this.current?.word}</strong>`;
     };
 
     playAudio = (path: string) => {
