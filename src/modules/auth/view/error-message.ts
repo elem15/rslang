@@ -1,7 +1,8 @@
 export const renderErrorMessage = (message: string) => {
+    const oldErrorMessage = document.querySelector('.text-danger');
     const errorMessage = document.createElement('div');
     errorMessage.className = 'text-danger';
     errorMessage.innerText = message;
-    const modal = document.querySelector('.sign-action');
-    if (modal) modal.before(errorMessage);
+    const button = document.querySelector('.sign-action');
+    if (button && !oldErrorMessage) button.before(errorMessage);
 };

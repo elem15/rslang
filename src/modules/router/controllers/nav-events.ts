@@ -7,14 +7,24 @@ export const setNavEvents = (): void => {
         localStorage.setItem('router', Router.MAIN);
         renderPage(Router.MAIN, mainLink);
     });
+    const wordsLink = document.querySelector(`.${Router.DICTIONARY}`) as HTMLButtonElement;
+    wordsLink.addEventListener('click', () => {
+        localStorage.setItem('router', Router.DICTIONARY);
+        renderPage(Router.DICTIONARY, wordsLink);
+    });
     const game1Link = document.querySelector(`.${Router.GAME_1}`) as HTMLButtonElement;
     game1Link.addEventListener('click', () => {
         localStorage.setItem('router', Router.GAME_1);
         renderPage(Router.GAME_1, game1Link);
     });
-    const wordsLink = document.querySelector(`.${Router.DICTIONARY}`) as HTMLButtonElement;
-    wordsLink.addEventListener('click', () => {
-        localStorage.setItem('router', Router.DICTIONARY);
-        renderPage(Router.DICTIONARY, wordsLink);
+    const sprintLink = document.querySelector(`.${Router.SPRINT}`) as HTMLButtonElement;
+    sprintLink.addEventListener('click', () => {
+        localStorage.setItem('router', Router.SPRINT);
+        renderPage(Router.SPRINT, sprintLink);
+    });
+    const statisticsLink = document.querySelector(`.${Router.STATISTICS}`) as HTMLButtonElement;
+    statisticsLink.addEventListener('click', () => {
+        localStorage.setItem('router', Router.STATISTICS);
+        renderPage(Router.STATISTICS, statisticsLink);
     });
 };

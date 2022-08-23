@@ -47,6 +47,10 @@ const baseConfig = {
                     },
                 ],
             },
+            {
+                test: /\.svg$/,
+                loader: 'svg-inline-loader',
+            },
         ],
     },
     resolve: {

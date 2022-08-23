@@ -2,6 +2,8 @@ import { Router } from '../../../types/router-types';
 import { addUserSymbol } from '../../auth/view/sign-modal';
 import { renderGame1Page } from '../../game1/view/game1-page';
 import { renderMainPage } from '../../main/view/main-page';
+import { renderSprintPage } from '../../sprint/view/sprint-page';
+import { renderStatisticsPage } from '../../statistics/view/statistics-page';
 import { renderWordsList } from '../../words/view/words-list';
 
 const removeClassActive = () => {
@@ -19,14 +21,20 @@ export const renderPage = (router: string, button: HTMLElement) => {
     removeClassActive();
     button.classList.add('active');
     switch (router) {
-        case Router.GAME_1:
-            renderGame1Page();
-            break;
         case Router.MAIN:
             renderMainPage();
             break;
         case Router.DICTIONARY:
             renderWordsList();
+            break;
+        case Router.GAME_1:
+            renderGame1Page();
+            break;
+        case Router.SPRINT:
+            renderSprintPage();
+            break;
+        case Router.STATISTICS:
+            renderStatisticsPage();
             break;
         default:
             renderMainPage();
