@@ -14,8 +14,10 @@ const drawAnswersItem = (card: HTMLElement, word: Word, index: number) => {
 export const nextWord = async (container: HTMLElement, word: Word, answers: Word[]): Promise<void> => {
     await clear(container);
     const wordContainer = document.createElement('div') as HTMLElement;
+    const wrapper = document.createElement('div') as HTMLElement;
     const image = document.createElement('img') as HTMLImageElement;
     const button = document.createElement('button') as HTMLButtonElement;
+    const translation = document.createElement('p') as HTMLElement;
     const audio = document.createElement('audio') as HTMLAudioElement;
     const card = document.createElement('div') as HTMLDivElement;
     const imageContainer = document.createElement('div') as HTMLElement;
@@ -27,11 +29,14 @@ export const nextWord = async (container: HTMLElement, word: Word, answers: Word
     button.className = 'word__sound';
     button.innerHTML = soundIcon;
     button.addEventListener('click', async () => await audio.play());
+    translation.className = 'word__translation';
 
     wordContainer.className = 'word';
+    wrapper.className = 'word__wrapper';
     imageContainer.className = 'word__image';
     imageContainer.append(image);
-    wordContainer.append(imageContainer, button, audio);
+    wrapper.append(imageContainer, button);
+    wordContainer.append(wrapper, translation, audio);
     card.className = 'answers';
 
     [...answers].sort().forEach((word, index) => {
