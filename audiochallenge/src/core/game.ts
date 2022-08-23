@@ -1,6 +1,6 @@
 import { getWords } from '../services/words';
 import { ResultType, Word } from '../types';
-import { clear, getRandomWord, getRandomWords } from '../utils';
+import { clear, getElementsList, getRandomWord, getRandomWords } from '../utils';
 import { drawLevels } from '../views/levels';
 import { nextWord } from '../views/next';
 import { progress } from '../views/progress';
@@ -29,16 +29,16 @@ export default class Game {
         this.root = root;
         this.container = <HTMLElement>document.createElement('div');
         this.progress = <HTMLElement>document.createElement('div');
+        this.next = <HTMLButtonElement>document.createElement('button');
         this.progress.classList.add('game__progress');
         this.audio = new Audio();
         this.selected = [];
         this.count = 0;
         this.group = group || 0;
         this.container.className = 'game';
-        this.next = <HTMLButtonElement>document.createElement('button');
         this.next.classList.add('game__next_word');
         this.next.innerText = nextDefaultText;
-        this.next.addEventListener('click', this.nextWord);
+        this.next.addEventListener('click', this.onClickNext);
         document.addEventListener('keydown', this.onKeyPress);
     }
 
@@ -72,44 +72,36 @@ export default class Game {
         }
     };
 
+    onClickNext = (e: Event) => {
+        this.canMoveToNext ? this.onNextWord() : this.onSelectVariant(e);
+    };
+
     onKeyPress = async (e: Event): Promise<void> => {
         switch ((e as KeyboardEvent).key) {
             case ' ':
-                if (this.count !== this.words.length) {
-                    if (!this.canMoveToNext) {
-                        this.playAudio(ResultType.MISTAKE);
-                        this.canMoveToNext = !this.canMoveToNext;
-                        this.next.innerText = nextNextText;
-                    } else {
-                        this.canMoveToNext = !this.canMoveToNext;
-                        this.updateProgress();
-                        this.nextWord();
-                    }
-                } else {
-                    document.removeEventListener('keydown', this.onKeyPress);
-                    this.endGame();
-                }
+                this.canMoveToNext ? this.onNextWord() : this.onSelectVariant(e);
                 break;
             case '1':
-                this.selectVariant(e);
+                this.onSelectVariant(e);
                 break;
             case '2':
-                this.selectVariant(e);
+                this.onSelectVariant(e);
                 break;
             case '3':
-                this.selectVariant(e);
+                this.onSelectVariant(e);
                 break;
             case '4':
-                this.selectVariant(e);
+                this.onSelectVariant(e);
                 break;
             default:
                 return;
         }
     };
 
-    nextWord = async (): Promise<void> => {
-        if (this.count !== this.words.length - 1) {
-            this.count++;
+    onNextWord = async (): Promise<void> => {
+        this.canMoveToNext = false;
+        ++this.count;
+        if (this.count !== this.words.length) {
             this.current = await getRandomWord(this.selected, this.words);
             const translationVariants = await getRandomWords(this.current, this.words);
             this.selected.push(this.current.id);
@@ -122,8 +114,10 @@ export default class Game {
         }
     };
 
-    selectVariant = async (e: Event): Promise<void> => {
+    onSelectVariant = async (e: Event): Promise<void> => {
         let path = ResultType.RIGHT;
+        let correctAnswer: boolean;
+
         const target =
             e instanceof KeyboardEvent
                 ? (this.container.querySelector(`[data-key="${e.key}"]`) as HTMLElement)
@@ -132,21 +126,27 @@ export default class Game {
         this.updateCard();
         this.updateProgress();
         this.container.append(this.audio);
-        const { word } = target.dataset;
 
-        if (word === this.current?.wordTranslate) {
-            target.classList.add('correct');
-            if (this.current) this.correct?.push(this.current.id);
+        if (target && target.dataset) {
+            const { word } = target.dataset;
+            correctAnswer = word === this.current?.wordTranslate;
+
+            if (correctAnswer) {
+                target.classList.add('correct');
+                if (this.current) this.correct?.push(this.current.id);
+            } else {
+                target.classList.add('incorrect');
+                path = ResultType.MISTAKE;
+                if (this.current) this.incorrect?.push(this.current.id);
+            }
         } else {
-            target.classList.add('incorrect');
             path = ResultType.MISTAKE;
-            if (this.current) this.incorrect?.push(this.current.id);
         }
 
         this.canMoveToNext = true;
         this.next.innerText = nextNextText;
-        const answers = this.getElementsList('.answers__item');
-        answers.forEach((item) => item.removeEventListener('click', this.selectVariant));
+        getElementsList('.answers__item:not(.correct)').forEach((label) => label.classList.add('incorrect'));
+        getElementsList('.answers__item').forEach((item) => item.removeEventListener('click', this.onSelectVariant));
 
         this.playAudio(path);
     };
@@ -155,8 +155,7 @@ export default class Game {
         clear(this.root);
         this.root.append(this.progress, this.container);
         this.next.innerText = nextDefaultText;
-        const answers = this.getElementsList('.answers__item');
-        answers.forEach((item) => item.addEventListener('click', this.selectVariant));
+        getElementsList('.answers__item').forEach((item) => item.addEventListener('click', this.onSelectVariant));
     };
 
     updateProgress = () => {
@@ -169,6 +168,7 @@ export default class Game {
     };
 
     playAudio = (path: string) => {
+        this.audio.pause();
         this.audio.src = path;
         this.audio.addEventListener('canplaythrough', async () => {
             await this.audio.play();
@@ -179,10 +179,7 @@ export default class Game {
         this.next.disabled = true;
         const correct = this.words.filter((item) => this.correct?.includes(item.id));
         const incorrect = this.words.filter((item) => this.incorrect?.includes(item.id));
+        clear(this.container);
         showResult(correct, incorrect);
-    };
-
-    getElementsList = (selector: string): NodeListOf<HTMLElement> => {
-        return document.querySelectorAll(selector);
     };
 }
