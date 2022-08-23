@@ -189,6 +189,10 @@ export default class Game {
         const correct = this.words.filter((item) => this.correct?.includes(item.id));
         const incorrect = this.words.filter((item) => this.incorrect?.includes(item.id));
         clear(this.container);
-        showResult(correct, incorrect);
+        showResult(correct, incorrect, this.onRestart);
+    };
+
+    onRestart = () => {
+        this.start();
     };
 }
