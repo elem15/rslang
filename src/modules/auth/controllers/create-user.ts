@@ -10,7 +10,7 @@ export interface User {
     password: string;
 }
 
-export const createUser = async (user: User) => {
+export const createUser = async (user: User): Promise<a.AxiosResponse> => {
     try {
         const response = await axios.post(`${host}/users`, user);
         return response;
