@@ -34,3 +34,7 @@ export const getRandomWord = async (selected: string[], words: Word[]): Promise<
 
     return filtered[index];
 };
+
+export const getElementsList = (selector: string): NodeListOf<HTMLElement> => {
+    return document.querySelectorAll(selector);
+};
