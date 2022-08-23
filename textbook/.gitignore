@@ -20,11 +20,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# .eslintrc.json
-# .prettierrc
-# jest-setup.ts
-# jest.config.js
-# package-lock.json
-# package.json
-# tsconfig.json
-# webpack.config.js
+.eslintrc.json
+.prettierrc
+jest-setup.ts
+jest.config.js
+package-lock.json
+package.json
+tsconfig.json
+webpack.config.js

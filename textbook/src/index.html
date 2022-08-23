@@ -1,63 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSLang textbook</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RS-lang</title>
 </head>
-<body>
-    <div class="wrapper">
 
-        <nav aria-label="...">
-            <ul class="pagination">
-              <li class="page-item page-item__previous">
-                <a class="page-link">Previous</a>
-              </li>
-              <li>
-              <select class="form-select page">
-              </select>
-              <li>
-              <li class="page-item">
-                <a class="page-link page-item__next">Next</a>
-              </li>
-            </ul>
-          </nav>
-        <select class="form-select chapter">
-        </select>
-        <div class="items-container"></div>
+<body class="card">
+  <header class="container card-header">
+    <div class="row justify-content-between">
+      <div class="col-6">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active main" id="home-tab" data-toggle="tab" href="#main" role="tab" aria-controls="home"
+              aria-selected="true">Главная</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link dictionary" id="contact-tab" data-toggle="tab" href="#words" role="tab"
+              aria-controls="contact" aria-selected="false">Учебник</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link game-1" id="profile-tab" data-toggle="tab" href="#game-1" role="tab"
+              aria-controls="profile" aria-selected="false">Аудиовызов</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link sprint" id="profile-tab" data-toggle="tab" href="#sprint" role="tab"
+              aria-controls="profile" aria-selected="false">Спринт</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link statistics" id="profile-tab" data-toggle="tab" href="#statistics" role="tab"
+              aria-controls="profile" aria-selected="false">Статистика</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-4">
+        <button class="sign-up btn btn-primary">sign up</button>
+        <button class="sign-in btn btn-success">sign in</button>
+        <button class="sign-out btn btn-danger">sign out</button>
+        <span class="user">_</span>
+      </div>
     </div>
-
-    <template id="items">
-        <div class="item">
-            <div class="item__container">
-                <h4 class="item__title"></h4>
-                <div class="item__audio">
-                    <button class="item__play-audio"></button>
-                    <audio>
-                        <source class="item__audio-word" type="audio/mp3">
-                    </audio>
-                    <audio>
-                        <source class="item__audio-meaning" type="audio/mp3">
-                    </audio>
-                    <audio>
-                        <source class="item__audio-example" type="audio/mp3">
-                    </audio>
-                </div>
-                <div class="item__word-translate"></div>
-                <div class="item__transcription"></div>
-                <div class="item__text-meaning"></div>
-                <div class="item__text-example"></div>
-                <div class="item__text-meaning-translate"></div>
-                <div class="item__text-example-translate"></div>
-                <div class="item__buttons">
-                    <button class="batton item__button-hard">Сложное слово</button>
-                    <button class="batton item__button-learned">Изученное слово</button>
-                </div>
-            </div>
-            <img class="item__img">
-        </div>
-    </template>
-
+  </header>
+  <div class="tab-content" id="myTabContent">
+    <div id="root" class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    </div>
+  </div>
+  <footer class="footer"></footer> 
 </body>
 </html>
