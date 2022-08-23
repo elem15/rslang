@@ -9,6 +9,7 @@
     &.correct,
     &.incorrect{
       border-radius: 4px;
+      margin: 0 .25rem;
     }
     
     &.correct{
@@ -16,20 +17,8 @@
         color: darkgreen;
     }
     &.incorrect{
-      background-color: lightcoral;
-      color: darkred;
-    }
-    &:hover{
-      background-color: rgba($color: #ffffff, $alpha: 0.25);
-      border-radius: 4px;
-      &.correct{
-        background-color: rgba($color: lightgreen, $alpha: .5);
-        color: darkgreen;
-      }
-      &.incorrect{
-        background-color: lightcoral;
-        color: darkred;
-      }
+      background-color: rgba($color: #ff3535ad , $alpha: .68);
+      color: #ffaeae;
     }
     span{
       padding: 0 .25rem 0 0;
