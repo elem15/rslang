@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getWords } from '../services/words';
 import { ResultType, Word } from '../types';
 import { clear, getElementsList, getRandomWord, getRandomWords } from '../utils';
@@ -24,6 +25,7 @@ export default class Game {
     correct?: string[] = [];
     incorrect?: string[] = [];
     canMoveToNext = false;
+    isRestartGame = false;
 
     constructor(root: HTMLElement, group?: number) {
         this.root = root;
@@ -43,7 +45,7 @@ export default class Game {
     }
 
     start = async (): Promise<void> => {
-        this.group === 0 ? await this.showLevels() : await this.onLevelSelect(this.group);
+        this.group === 0 && !this.isRestartGame ? await this.showLevels() : await this.onLevelSelect(this.group);
         await this.render();
     };
 
@@ -199,7 +201,20 @@ export default class Game {
         showResult(correct, incorrect, this.onRestart);
     };
 
+    resetGame = (): void => {
+        this.progress.querySelectorAll('.game__progress_item').forEach((item) => item.classList.remove('marked'));
+        this.next.disabled = false;
+        this.count = 0;
+        this.selected.length = 0;
+        this.words.length = 0;
+        this.correct!.length = 0;
+        this.incorrect!.length = 0;
+        this.current = undefined;
+        this.isRestartGame = true;
+    };
+
     onRestart = () => {
+        this.resetGame();
         this.start();
     };
 }
