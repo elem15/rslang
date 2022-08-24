@@ -1,7 +1,8 @@
-import 'normalize.css';
-import './assets/styles/main.scss';
-import Game from './core/game';
+import './scss/styles.scss';
+import { signUser } from './modules/auth/services/sign-user';
+import { renderPage } from './modules/router/services/router';
+import { setNavEvents } from './modules/router/controllers/nav-events';
 
-const root = <HTMLElement>document.querySelector('.app');
-const game = new Game(root);
-game.start();
+signUser();
+setNavEvents();
+renderPage(null, null);
