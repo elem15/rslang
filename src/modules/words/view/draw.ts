@@ -1,4 +1,4 @@
-import { Dictionary, DictionaryHardWord, pageLearnedPagesGroup, UserWords } from '../../../types/textbook-types';
+import { BodyRequest, Dictionary, DictionaryHardWord, OptionalFromResponse, pageLearnedPagesGroup, UserWords } from '../../../types/textbook-types';
 import { audioPlayerListener } from '../services/audio';
 import { getAllHardWords, getAllUserWords, getSettings, getWords, updateSettings } from '../services/api';
 import { pagination } from './pagination';
@@ -23,19 +23,27 @@ window.addEventListener('beforeunload', setLocalStoragePageLearned);
 
 export const draw = async (page = 0, group = 0): Promise<void> => {
     let countHardAndLearnedWords = 0;
-    const pageLearnedResponse = await getSettings();
-    const pageLearnedObject = pageLearnedResponse.optional;
-    if (pageLearnedResponse.optional) pageLearned = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
+    let wordsHardForPage: UserWords[];
+    let wordsLearned: UserWords[];
 
-    const wordsUsersForPageResponse = await getAllUserWords();
-    const wordsHardForPage = wordsUsersForPageResponse.filter((el: UserWords) => {
-        return el.difficulty === 'hard';
-    });
-
-    const wordsLearnedResponse = await getAllUserWords();
-    const wordsLearned = wordsLearnedResponse.filter((el: UserWords) => {
-        return el.difficulty === 'learned';
-    });
+    if (isAuthorization) {
+        const pageLearnedResponse = await getSettings();
+        let pageLearnedObject: OptionalFromResponse;
+        if (pageLearnedResponse.optional) {
+            pageLearnedObject = pageLearnedResponse.optional;
+            pageLearned = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
+        }
+    
+        const wordsUsersForPageResponse = await getAllUserWords();
+        wordsHardForPage = wordsUsersForPageResponse.filter((el: UserWords) => {
+            return el.difficulty === 'hard';
+        });
+    
+        const wordsLearnedResponse = await getAllUserWords();
+        wordsLearned = wordsLearnedResponse.filter((el: UserWords) => {
+            return el.difficulty === 'learned';
+        });
+    }
 
     const wordsForPage = await getWords(page, group);
 
@@ -176,18 +184,18 @@ export const drawTextbook = (
 };
 
 export const drawPageNav = (page: number, group: number, pageLearnedDraw: pageLearnedPagesGroup[] = []) => {
+    if (!isAuthorization) {
+        pageLearnedDraw = [];   
+    }
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
-    console.log(pageLearnedDraw);
     pageTextbook.innerHTML = '';
     for (let i = 0; i <= quantityPages; i++) {
         const pageElement = document.createElement('option');
         const itemFind = pageLearnedDraw.find((el) => {
-            console.log(el);
             return el.page === i && el.group === group;
         });
         if (itemFind) pageElement.innerHTML = `&#9989; &nbsp; Страница ${i + 1}`;
         if (!itemFind) pageElement.innerHTML = `&#x1F56E &nbsp; Страница ${i + 1}`;
-        console.log(pageElement.innerHTML);
         pageElement.value = String(i);
         pageTextbook.appendChild(pageElement);
     }
@@ -199,10 +207,8 @@ export const changePageIconLearned = async (page: number, group: number) => {
     const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
     pageElement[page].innerHTML = `&#9989; &nbsp; Страница ${page + 1}`;
     pageLearned = pageLearned.filter((el) => {
-        console.log(el);
         return el.page !== page || el.group !== group;
     });
-    console.log(pageElement[page].innerHTML);
     pageLearned.push({ page: page, group: group });
 
     await updateSettings({

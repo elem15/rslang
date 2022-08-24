@@ -46,9 +46,13 @@ export interface pageLearnedPagesGroup {
 
 export interface BodyRequest {
     wordsPerDay: number;
-    optional: Optional;
+    optional?: Optional;
 }
 
 export interface Optional {
     [index: number]: pageLearnedPagesGroup;
+}
+
+export interface OptionalFromResponse {
+    [index: string]: pageLearnedPagesGroup;
 }
