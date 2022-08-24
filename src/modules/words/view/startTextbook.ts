@@ -3,7 +3,7 @@ import '../style/global.scss';
 import { drawTextbook } from './draw';
 import { pageLearnedPagesGroup } from '../../../types/textbook-types';
 
-export const startTextbook = () => {
+export const startTextbook = (isAuthorization: boolean) => {
     let pageTextbookFromLocaleStorage = 0;
     let groupTextbookFromLocaleStorage = 0;
     let pageLearnedFromLocaleStorage: pageLearnedPagesGroup[] = [];
@@ -31,10 +31,10 @@ export const startTextbook = () => {
             pageLearnedFromLocaleStorage = JSON.parse(pageLearnedJSON as string);
             console.log(pageLearnedFromLocaleStorage);
         }
-        drawTextbook(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, pageLearnedFromLocaleStorage);
+        drawTextbook(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, pageLearnedFromLocaleStorage, isAuthorization);
     }
 
     window.addEventListener('load', getLocalStorage);
 
-    drawTextbook(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, pageLearnedFromLocaleStorage);
+    drawTextbook(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, pageLearnedFromLocaleStorage, isAuthorization);
 };

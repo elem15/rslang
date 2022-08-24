@@ -1,7 +1,7 @@
 import { draw, drawPageDifficultWords, drawPageNav, pageLearned } from './draw';
 const quantityPages = 29;
 
-export const pagination = () => {
+export const pagination = (isAuthorization: boolean) => {
     const btnLeft = document.querySelector('.page-item__previous') as HTMLLIElement;
     const btnRight = document.querySelector('.page-item__next') as HTMLLIElement;
     const pagination = document.querySelector('.pagination') as HTMLUListElement;
@@ -10,12 +10,12 @@ export const pagination = () => {
 
     groupTextbook.addEventListener('change', () => {
         if (Number(groupTextbook.value) < 6) {
-            draw(Number(pageTextbook.value), Number(groupTextbook.value));
-            drawPageNav(Number(pageTextbook.value), Number(groupTextbook.value), pageLearned);
+            draw(Number(pageTextbook.value), Number(groupTextbook.value), isAuthorization);
+            drawPageNav(Number(pageTextbook.value), Number(groupTextbook.value), pageLearned, isAuthorization);
             pagination.style.display = 'flex';
         }
         if (Number(groupTextbook.value) === 6) {
-            drawPageDifficultWords();
+            drawPageDifficultWords(isAuthorization);
             pagination.style.display = 'none';
         }
     });
@@ -23,7 +23,7 @@ export const pagination = () => {
     pageTextbook.addEventListener('change', () => {
         const currentPage = pageTextbook.selectedIndex;
         const currentGroup = groupTextbook.selectedIndex;
-        draw(Number(pageTextbook.value), currentGroup);
+        draw(Number(pageTextbook.value), currentGroup, isAuthorization);
         if (currentPage === quantityPages) {
             btnRight.classList.add('disabled');
         }
@@ -44,7 +44,7 @@ export const pagination = () => {
         if (currentPage !== 0) {
             currentPage--;
             pageTextbook.options[currentPage].selected = true;
-            draw(currentPage, currentGroup);
+            draw(currentPage, currentGroup, isAuthorization);
         }
         if (currentPage === 0) {
             btnLeft.classList.add('disabled');
@@ -63,7 +63,7 @@ export const pagination = () => {
         const currentGroup = groupTextbook.selectedIndex;
         currentPage++;
         pageTextbook.options[currentPage].selected = true;
-        draw(currentPage, currentGroup);
+        draw(currentPage, currentGroup, isAuthorization);
         if (currentPage === quantityPages) {
             btnRight.classList.add('disabled');
         }

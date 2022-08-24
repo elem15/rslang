@@ -1,4 +1,4 @@
-import { BodyRequest, Dictionary, DictionaryHardWord, OptionalFromResponse, pageLearnedPagesGroup, UserWords } from '../../../types/textbook-types';
+import { Dictionary, DictionaryHardWord, OptionalFromResponse, pageLearnedPagesGroup, UserWords } from '../../../types/textbook-types';
 import { audioPlayerListener } from '../services/audio';
 import { getAllHardWords, getAllUserWords, getSettings, getWords, updateSettings } from '../services/api';
 import { pagination } from './pagination';
@@ -10,7 +10,12 @@ const groupTextbookColor = ['&#x1f535;', '&#x1f534;', '&#x1f7e0;', '&#x1f7e1;', 
 const quantityGroups = 5;
 const quantityPages = 29;
 //START PLUG
-const isAuthorization = true;
+// let isAuthorization = false;
+// if (localStorage.getItem('email')) {
+//     isAuthorization = true;
+// } else {
+//     isAuthorization = false;
+// }
 // END PLUG
 
 export let pageLearned: pageLearnedPagesGroup[] = [];
@@ -21,7 +26,7 @@ function setLocalStoragePageLearned() {
 
 window.addEventListener('beforeunload', setLocalStoragePageLearned);
 
-export const draw = async (page = 0, group = 0): Promise<void> => {
+export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promise<void> => {
     let countHardAndLearnedWords = 0;
     let wordsHardForPage: UserWords[];
     let wordsLearned: UserWords[];
@@ -29,9 +34,11 @@ export const draw = async (page = 0, group = 0): Promise<void> => {
     if (isAuthorization) {
         const pageLearnedResponse = await getSettings();
         let pageLearnedObject: OptionalFromResponse;
-        if (pageLearnedResponse.optional) {
+        if (pageLearnedResponse) {
             pageLearnedObject = pageLearnedResponse.optional;
-            pageLearned = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
+            if (pageLearnedObject) {
+                pageLearned = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
+            }
         }
     
         const wordsUsersForPageResponse = await getAllUserWords();
@@ -103,7 +110,7 @@ export const draw = async (page = 0, group = 0): Promise<void> => {
     }
 };
 
-export const drawPageDifficultWords = async (): Promise<void> => {
+export const drawPageDifficultWords = async (isAuthorization: boolean): Promise<void> => {
     const wordsUsersForPageResponse = await getAllHardWords('hard');
     const wordsUsersForPage = wordsUsersForPageResponse[0].paginatedResults;
 
@@ -150,14 +157,15 @@ export const drawPageDifficultWords = async (): Promise<void> => {
     audioPlayerListener();
 
     if (isAuthorization) {
-        deleteWordsFromHardWordsPage();
+        deleteWordsFromHardWordsPage(isAuthorization);
     }
 };
 
 export const drawTextbook = (
     pageTextbookFromLocaleStorage = 0,
     groupTextbookFromLocaleStorage = 0,
-    pageLearnedFromLocaleStorage: pageLearnedPagesGroup[] = []
+    pageLearnedFromLocaleStorage: pageLearnedPagesGroup[] = [],
+    isAuthorization: boolean
 ) => {
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
@@ -177,13 +185,13 @@ export const drawTextbook = (
     }
 
     groupTextbook.options[groupTextbookFromLocaleStorage].selected = true;
-    drawPageNav(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, pageLearnedFromLocaleStorage);
-    draw(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage);
+    drawPageNav(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, pageLearnedFromLocaleStorage, isAuthorization);
+    draw(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, isAuthorization);
 
-    pagination();
+    pagination(isAuthorization);
 };
 
-export const drawPageNav = (page: number, group: number, pageLearnedDraw: pageLearnedPagesGroup[] = []) => {
+export const drawPageNav = (page: number, group: number, pageLearnedDraw: pageLearnedPagesGroup[] = [], isAuthorization: boolean) => {
     if (!isAuthorization) {
         pageLearnedDraw = [];   
     }

@@ -34,7 +34,7 @@ export const addWordsForHardWordsPage = () => {
     });
 };
 
-export const deleteWordsFromHardWordsPage = () => {
+export const deleteWordsFromHardWordsPage = (isAuthorization: boolean) => {
     const btnHardWord = document.querySelectorAll('.item__button-hard, .item__button-learned');
 
     const deleteHardWordsFromPage = async (e: Event) => {
@@ -44,13 +44,13 @@ export const deleteWordsFromHardWordsPage = () => {
         if ((e.target as HTMLButtonElement).classList.contains('item__button-hard')) {
             (e.target as HTMLButtonElement).innerText = 'Сложное';
             await deleteHardWord(wordId);
-            drawPageDifficultWords();
+            drawPageDifficultWords(isAuthorization);
         } else {
             (e.target as HTMLButtonElement).innerText = 'Изучено';
             ((e.target as HTMLButtonElement).previousElementSibling as HTMLButtonElement).textContent = 'Сложное слово';
             await deleteHardWord(wordId);
             await addWordToHardLearned(wordId, { difficulty: 'learned' });
-            drawPageDifficultWords();
+            drawPageDifficultWords(isAuthorization);
         }
     };
 

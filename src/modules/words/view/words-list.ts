@@ -61,15 +61,23 @@ export const renderWordsList = async (): Promise<void> => {
                 <div class="item__text-meaning-translate"></div>
                 <div class="item__text-example-translate"></div>
                 <div class="item__buttons">
-                    <button class="batton item__button-hard">Сложное слово</button>
-                    <button class="batton item__button-learned">Изученное слово</button>
+                    <button class="button item__button-hard">Сложное слово</button>
+                    <button class="button item__button-learned">Изученное слово</button>
                 </div>
             </div>
             <img class="item__img">
         </div>
         </template>`;
 
-    startTextbook();
+    let isAuthorization = false;
+    const userSymbol = document.querySelector('.user') as HTMLSpanElement;
+    if (localStorage.getItem('email') || userSymbol.classList.contains('logged')) {
+        isAuthorization = true;
+    } else {
+        isAuthorization = false;
+    }
+
+    startTextbook(isAuthorization);
     // const response = await getUserWords();
     // if (response) {
     //     const ids = response.data.map(({ wordId }: Element) => wordId);
