@@ -140,12 +140,15 @@ export default class Game {
                 target.innerHTML = `${checkIcon} ${target.innerText}`;
                 if (this.current) this.correct?.push(this.current.id);
             } else {
-                target.classList.add('incorrect');
+                target.classList.add('correct');
                 target.innerHTML = `${wrongIcon} ${target.innerText}`;
                 path = ResultType.MISTAKE;
                 if (this.current) this.incorrect?.push(this.current.id);
             }
         } else {
+            const target = this.container.querySelector(`[data-word="${this.current?.wordTranslate}"]`) as HTMLElement;
+            target.classList.add('correct');
+            target.innerHTML = `${wrongIcon} ${target.innerText}`;
             path = ResultType.MISTAKE;
         }
 
