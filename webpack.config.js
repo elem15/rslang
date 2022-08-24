@@ -51,6 +51,14 @@ const baseConfig = {
                 test: /\.svg$/,
                 loader: 'svg-inline-loader',
             },
+            {
+                test: /\.(mp3|wav)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                    },
+                ],
+            },
         ],
     },
     resolve: {
