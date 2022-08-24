@@ -82,16 +82,20 @@ export default class Game {
                 this.canMoveToNext ? this.onNextWord() : this.onSelectVariant(e);
                 break;
             case '1':
-                this.onSelectVariant(e);
+                if (this.canMoveToNext) return;
+                else this.onSelectVariant(e);
                 break;
             case '2':
-                this.onSelectVariant(e);
+                if (this.canMoveToNext) return;
+                else this.onSelectVariant(e);
                 break;
             case '3':
-                this.onSelectVariant(e);
+                if (this.canMoveToNext) return;
+                else this.onSelectVariant(e);
                 break;
             case '4':
-                this.onSelectVariant(e);
+                if (this.canMoveToNext) return;
+                else this.onSelectVariant(e);
                 break;
             default:
                 return;
