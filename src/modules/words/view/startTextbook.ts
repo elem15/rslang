@@ -21,20 +21,49 @@ export const startTextbook = (isAuthorization: boolean) => {
     function getLocalStorage() {
         if (localStorage.getItem('currentPageGroup')) {
             const currentPageGroupJSON = localStorage.getItem('currentPageGroup');
-            const currentPageGroup = JSON.parse(currentPageGroupJSON as string);
+            const currentPageGroup = JSON.parse(currentPageGroupJSON);
             pageTextbookFromLocaleStorage = currentPageGroup.page < 0 ? 0 : currentPageGroup.page;
             groupTextbookFromLocaleStorage = currentPageGroup.group < 0 ? 0 : currentPageGroup.group;
             console.log(currentPageGroup);
         }
         if (localStorage.getItem('pageLearned')) {
             const pageLearnedJSON = localStorage.getItem('pageLearned');
-            pageLearnedFromLocaleStorage = JSON.parse(pageLearnedJSON as string);
+            pageLearnedFromLocaleStorage = JSON.parse(pageLearnedJSON);
             console.log(pageLearnedFromLocaleStorage);
         }
-        drawTextbook(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, pageLearnedFromLocaleStorage, isAuthorization);
+        // return;
+        console.log('safasfasfsasfa', Number(groupTextbookFromLocaleStorage));
+        drawTextbook(
+            pageTextbookFromLocaleStorage,
+            groupTextbookFromLocaleStorage,
+            pageLearnedFromLocaleStorage,
+            isAuthorization
+        );
+        // btnTextbook.addEventListener('click', getLocalStorage);
     }
-
+    // console.log('1', isAuthorization, pageTextbookFromLocaleStorage);
     window.addEventListener('load', getLocalStorage);
 
-    drawTextbook(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, pageLearnedFromLocaleStorage, isAuthorization);
+    // const btnTextbook = document.querySelector('.nav-link.dictionary') as HTMLLIElement;
+    console.log('safasfasfsasfa', Number(groupTextbookFromLocaleStorage));
+    // btnTextbook.removeEventListener('click', getLocalStorage);
+    drawTextbook(
+        pageTextbookFromLocaleStorage,
+        groupTextbookFromLocaleStorage,
+        pageLearnedFromLocaleStorage,
+        isAuthorization
+    );
+
+    // return;
+    console.log('2');
+
+    // const btnTextbook = document.querySelector('.nav-link.dictionary') as HTMLLIElement;
+
+    // if (!JSON.parse(sessionStorage.getItem('is_reloaded')))
+    //     drawTextbook(
+    //         pageTextbookFromLocaleStorage,
+    //         groupTextbookFromLocaleStorage,
+    //         pageLearnedFromLocaleStorage,
+    //         isAuthorization
+    //     );
 };

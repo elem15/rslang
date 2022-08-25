@@ -1,5 +1,6 @@
 import { draw, drawPageDifficultWords, drawPageNav, pageLearned } from './draw';
 const quantityPages = 29;
+const groupHardWordsNumber = 6;
 
 export const pagination = (isAuthorization: boolean) => {
     const btnLeft = document.querySelector('.page-item__previous') as HTMLLIElement;
@@ -9,34 +10,36 @@ export const pagination = (isAuthorization: boolean) => {
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
 
     groupTextbook.addEventListener('change', () => {
-        if (Number(groupTextbook.value) < 6) {
+        if (Number(groupTextbook.value) < groupHardWordsNumber) {
             draw(Number(pageTextbook.value), Number(groupTextbook.value), isAuthorization);
             drawPageNav(Number(pageTextbook.value), Number(groupTextbook.value), pageLearned, isAuthorization);
             pagination.style.display = 'flex';
         }
-        if (Number(groupTextbook.value) === 6) {
+        if (Number(groupTextbook.value) === groupHardWordsNumber) {
             drawPageDifficultWords(isAuthorization);
             pagination.style.display = 'none';
         }
     });
 
-    pageTextbook.addEventListener('change', () => {
-        const currentPage = pageTextbook.selectedIndex;
-        const currentGroup = groupTextbook.selectedIndex;
-        draw(Number(pageTextbook.value), currentGroup, isAuthorization);
-        if (currentPage === quantityPages) {
-            btnRight.classList.add('disabled');
-        }
-        if (currentPage !== quantityPages) {
-            btnRight.classList.remove('disabled');
-        }
-        if (currentPage === 0) {
-            btnLeft.classList.add('disabled');
-        }
-        if (currentPage !== 0) {
-            btnLeft.classList.remove('disabled');
-        }
-    });
+    if (Number(groupTextbook.value) !== groupHardWordsNumber) {
+        pageTextbook.addEventListener('change', () => {
+            const currentPage = pageTextbook.selectedIndex;
+            const currentGroup = groupTextbook.selectedIndex;
+            draw(Number(pageTextbook.value), currentGroup, isAuthorization);
+            if (currentPage === quantityPages) {
+                btnRight.classList.add('disabled');
+            }
+            if (currentPage !== quantityPages) {
+                btnRight.classList.remove('disabled');
+            }
+            if (currentPage === 0) {
+                btnLeft.classList.add('disabled');
+            }
+            if (currentPage !== 0) {
+                btnLeft.classList.remove('disabled');
+            }
+        });
+    }
 
     const moveLeft = () => {
         let currentPage = pageTextbook.selectedIndex;
@@ -56,7 +59,7 @@ export const pagination = (isAuthorization: boolean) => {
         root.forEach((el) => el.remove());
     };
 
-    btnLeft.addEventListener('click', () => moveLeft());
+    if (Number(groupTextbook.value) !== groupHardWordsNumber) btnLeft.addEventListener('click', () => moveLeft());
 
     const moveRight = () => {
         let currentPage = pageTextbook.selectedIndex;
@@ -74,5 +77,5 @@ export const pagination = (isAuthorization: boolean) => {
         root.forEach((el) => el.remove());
     };
 
-    btnRight.addEventListener('click', () => moveRight());
+    if (Number(groupTextbook.value) !== groupHardWordsNumber) btnRight.addEventListener('click', () => moveRight());
 };

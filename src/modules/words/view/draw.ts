@@ -1,4 +1,10 @@
-import { Dictionary, DictionaryHardWord, OptionalFromResponse, pageLearnedPagesGroup, UserWords } from '../../../types/textbook-types';
+import {
+    Dictionary,
+    DictionaryHardWord,
+    OptionalFromResponse,
+    pageLearnedPagesGroup,
+    UserWords,
+} from '../../../types/textbook-types';
 import { audioPlayerListener } from '../services/audio';
 import { getAllHardWords, getAllUserWords, getSettings, getWords, updateSettings } from '../services/api';
 import { pagination } from './pagination';
@@ -9,6 +15,7 @@ import { addAllLearnedMessage } from './messageAllLearned';
 const groupTextbookColor = ['&#x1f535;', '&#x1f534;', '&#x1f7e0;', '&#x1f7e1;', '&#x1f7e2;', '&#x1f7e3;', '&#x1f7e4;'];
 const quantityGroups = 5;
 const quantityPages = 29;
+const groupHardWordsNumber = 6;
 //START PLUG
 // let isAuthorization = false;
 // if (localStorage.getItem('email')) {
@@ -40,14 +47,13 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
                 pageLearned = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
             }
         }
-    
+
         const wordsUsersForPageResponse = await getAllUserWords();
         wordsHardForPage = wordsUsersForPageResponse.filter((el: UserWords) => {
             return el.difficulty === 'hard';
         });
-    
-        const wordsLearnedResponse = await getAllUserWords();
-        wordsLearned = wordsLearnedResponse.filter((el: UserWords) => {
+
+        wordsLearned = wordsUsersForPageResponse.filter((el: UserWords) => {
             return el.difficulty === 'learned';
         });
     }
@@ -185,30 +191,50 @@ export const drawTextbook = (
     }
 
     groupTextbook.options[groupTextbookFromLocaleStorage].selected = true;
-    drawPageNav(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, pageLearnedFromLocaleStorage, isAuthorization);
-    draw(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, isAuthorization);
+    drawPageNav(
+        pageTextbookFromLocaleStorage,
+        groupTextbookFromLocaleStorage,
+        pageLearnedFromLocaleStorage,
+        isAuthorization
+    );
+    console.log('safasfasfsasfa', Number(groupTextbookFromLocaleStorage));
+    if (Number(groupTextbook.value) !== groupHardWordsNumber)
+        draw(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, isAuthorization);
+    if (Number(groupTextbook.value) === groupHardWordsNumber) drawPageDifficultWords(isAuthorization);
 
     pagination(isAuthorization);
 };
 
-export const drawPageNav = (page: number, group: number, pageLearnedDraw: pageLearnedPagesGroup[] = [], isAuthorization: boolean) => {
+export const drawPageNav = (
+    page: number,
+    group: number,
+    pageLearnedDraw: pageLearnedPagesGroup[] = [],
+    isAuthorization: boolean
+) => {
     if (!isAuthorization) {
-        pageLearnedDraw = [];   
+        pageLearnedDraw = [];
     }
+    const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
+    console.log('safasfasfsasfa', Number(groupTextbook.value));
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
-    pageTextbook.innerHTML = '';
-    for (let i = 0; i <= quantityPages; i++) {
-        const pageElement = document.createElement('option');
-        const itemFind = pageLearnedDraw.find((el) => {
-            return el.page === i && el.group === group;
-        });
-        if (itemFind) pageElement.innerHTML = `&#9989; &nbsp; Страница ${i + 1}`;
-        if (!itemFind) pageElement.innerHTML = `&#x1F56E &nbsp; Страница ${i + 1}`;
-        pageElement.value = String(i);
-        pageTextbook.appendChild(pageElement);
+    const pagination = document.querySelector('.pagination') as HTMLSelectElement;
+    if (Number(groupTextbook.value) === groupHardWordsNumber) pagination.style.display = 'none';
+    if (Number(groupTextbook.value) !== groupHardWordsNumber) {
+        pageTextbook.innerHTML = '';
+        console.log('safasfasfsasfa', Number(groupTextbook.value));
+        for (let i = 0; i <= quantityPages; i++) {
+            const pageElement = document.createElement('option');
+            const itemFind = pageLearnedDraw.find((el) => {
+                return el.page === i && el.group === group;
+            });
+            if (itemFind) pageElement.innerHTML = `&#9989; &nbsp; Страница ${i + 1}`;
+            if (!itemFind) pageElement.innerHTML = `&#x1F56E &nbsp; Страница ${i + 1}`;
+            pageElement.value = String(i);
+            pageTextbook.appendChild(pageElement);
+        }
+        pageTextbook.options[page].selected = true;
+        pageLearned = pageLearnedDraw;
     }
-    pageTextbook.options[page].selected = true;
-    pageLearned = pageLearnedDraw;
 };
 
 export const changePageIconLearned = async (page: number, group: number) => {
@@ -226,13 +252,16 @@ export const changePageIconLearned = async (page: number, group: number) => {
 };
 
 export const changePageIconDefault = async (page: number, group: number) => {
-    const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-    pageElement[page].innerHTML = `&#x1F56E &nbsp; Страница ${page + 1}`;
-    pageLearned = pageLearned.filter((el) => {
-        return el.page !== page || el.group !== group;
-    });
-    await updateSettings({
-        wordsPerDay: 1,
-        optional: Object.assign({}, pageLearned),
-    });
+    const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
+    if (Number(groupTextbook.value) !== groupHardWordsNumber) {
+        const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
+        pageElement[page].innerHTML = `&#x1F56E &nbsp; Страница ${page + 1}`;
+        pageLearned = pageLearned.filter((el) => {
+            return el.page !== page || el.group !== group;
+        });
+        await updateSettings({
+            wordsPerDay: 1,
+            optional: Object.assign({}, pageLearned),
+        });
+    }
 };

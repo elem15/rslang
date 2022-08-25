@@ -1,4 +1,6 @@
+import { pageLearnedPagesGroup } from '../../../types/textbook-types';
 import { renderFooter } from '../../main/view/main-page';
+import { drawTextbook } from './draw';
 import { startTextbook } from './startTextbook';
 // import { getUserWords } from '../controllers/get-user-words';
 // import { getWordById } from '../controllers/get-word-by-id';
@@ -12,6 +14,8 @@ import { startTextbook } from './startTextbook';
 //     list.append(li);
 // };
 export const renderWordsList = async (): Promise<void> => {
+    const audio = document.querySelectorAll('audio');
+    audio.forEach((el) => el.remove());
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     renderFooter();
@@ -71,13 +75,14 @@ export const renderWordsList = async (): Promise<void> => {
 
     let isAuthorization = false;
     const userSymbol = document.querySelector('.user') as HTMLSpanElement;
-    if (localStorage.getItem('email') || userSymbol.classList.contains('logged')) {
+    if (localStorage.getItem('email') && userSymbol.classList.contains('logged')) {
         isAuthorization = true;
     } else {
         isAuthorization = false;
     }
 
     startTextbook(isAuthorization);
+
     // const response = await getUserWords();
     // if (response) {
     //     const ids = response.data.map(({ wordId }: Element) => wordId);
