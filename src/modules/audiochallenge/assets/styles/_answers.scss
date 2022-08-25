@@ -6,19 +6,26 @@
     padding: .5rem 1rem;
     cursor: pointer;
     color: whitesmoke;
-    &.correct,
-    &.incorrect{
+    &.selected-correct,
+    &.unselected-correct,
+    &.unselected{
       border-radius: 4px;
       margin: 0 .25rem;
     }
-    
-    &.correct{
+    &.selected-correct{
       background-color: rgba($color: lightgreen, $alpha: .5);
-        color: darkgreen;
+        color: $white;
     }
-    &.incorrect{
-      background-color: rgba($color: #ff3535ad , $alpha: .68);
-      color: #ffaeae;
+    &.unselected-correct{
+      background-color: rgba($color: lightgreen, $alpha: .5);
+      color: $white;
+    }
+    &.unselected{
+      color: #aeaeae;
+    }
+    &.selected-mistake{
+      text-decoration: line-through;
+      color: #aeaeae;
     }
     span{
       padding: 0 .25rem 0 0;

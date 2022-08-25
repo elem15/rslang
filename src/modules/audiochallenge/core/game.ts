@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getWords } from '../services/words';
-import { ResultType, Word } from '../types';
+import { Word } from '../../../types';
 import { clear, getElementsList, getRandomWord, getRandomWords } from '../utils';
-import { drawLevels } from '../views/levels';
-import { nextWord } from '../views/next';
-import { progress } from '../views/progress';
-import { showResult } from '../views/result';
+import { drawLevels } from '../view/levels';
+import { nextWord } from '../view/next';
+import { progress } from '../view/progress';
+import { showResult } from '../view/result';
 import { checkIcon, nextDefaultText, nextNextText, wrongIcon } from './settings';
+import success from '../assets/sounds/success.wav';
+import mistake from '../assets/sounds/error.mp3';
+import { host } from '../../auth/controllers/hosts';
 
 export default class Game {
     root: HTMLElement;
@@ -81,7 +84,8 @@ export default class Game {
     onKeyPress = async (e: Event): Promise<void> => {
         switch ((e as KeyboardEvent).key) {
             case ' ':
-                this.canMoveToNext ? this.onNextWord() : this.onSelectVariant(e);
+                if (this.canMoveToNext) this.onNextWord();
+                else this.playAudio(`${host}/${this.current.audio}`);
                 break;
             case '1':
                 if (this.canMoveToNext) return;
@@ -121,8 +125,12 @@ export default class Game {
     };
 
     onSelectVariant = async (e: Event): Promise<void> => {
-        let path = ResultType.RIGHT;
+        let path = success;
         let correctAnswer: boolean;
+
+        const elementCorrect = this.container.querySelector(
+            `[data-word="${this.current?.wordTranslate}"]`
+        ) as HTMLElement;
 
         const target =
             e instanceof KeyboardEvent
@@ -138,29 +146,26 @@ export default class Game {
             correctAnswer = word === this.current?.wordTranslate;
 
             if (correctAnswer) {
-                target.classList.add('correct');
+                target.classList.add('selected-correct');
                 target.innerHTML = `${checkIcon} ${target.innerText}`;
                 if (this.current) this.correct?.push(this.current.id);
             } else {
-                target.classList.add('correct');
-                target.innerHTML = `${wrongIcon} ${target.innerText}`;
-                path = ResultType.MISTAKE;
+                target.classList.add('selected-mistake');
+                elementCorrect.classList.add('unselected-correct');
+                path = mistake;
                 if (this.current) this.incorrect?.push(this.current.id);
             }
         } else {
-            const target = this.container.querySelector(`[data-word="${this.current?.wordTranslate}"]`) as HTMLElement;
-            target.classList.add('correct');
-            target.innerHTML = `${wrongIcon} ${target.innerText}`;
-            path = ResultType.MISTAKE;
+            elementCorrect.classList.add('unselected-correct');
+            path = mistake;
         }
 
         this.canMoveToNext = true;
         this.next.innerText = nextNextText;
         getElementsList('.answers__item').forEach((item) => {
             item.removeEventListener('click', this.onSelectVariant);
-            if (!item.classList.contains('correct')) {
-                item.classList.add('incorrect');
-                item.innerHTML = `${wrongIcon} ${item.innerText}`;
+            if (!item.classList.contains('selected-correct') && !item.classList.contains('unselected-correct')) {
+                item.classList.add('unselected');
             }
         });
 

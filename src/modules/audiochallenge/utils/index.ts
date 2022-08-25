@@ -1,4 +1,4 @@
-import { Word } from '../types';
+import { Word } from '../../../types';
 
 export const shuffle = <T>(collection: T[]): T[] => {
     const arr = collection.slice();

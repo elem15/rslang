@@ -1,4 +1,4 @@
-import { GameLevel, TSelectHandler } from '../types';
+import { GameLevel, TSelectHandler } from '../../../types';
 import { levels } from '../core/settings';
 import { clear } from '../utils';
 

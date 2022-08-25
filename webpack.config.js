@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -40,7 +41,7 @@ const baseConfig = {
                 exclude: /node_modules/,
             },
             {
-                test: /\.(png|jpe?g|gif)$/i,
+                test: /\.(png|jpe?g|gif|mp3|wav)$/i,
                 use: [
                     {
                         loader: 'file-loader',
@@ -50,14 +51,6 @@ const baseConfig = {
             {
                 test: /\.svg$/,
                 loader: 'svg-inline-loader',
-            },
-            {
-                test: /\.(mp3|wav)$/i,
-                use: [
-                    {
-                        loader: 'file-loader',
-                    },
-                ],
             },
         ],
     },

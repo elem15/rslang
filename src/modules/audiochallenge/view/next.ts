@@ -1,5 +1,5 @@
 import { host, soundIcon } from '../core/settings';
-import { Word } from '../types';
+import { Word } from '../../../types';
 import { clear } from '../utils';
 
 const drawAnswersItem = (card: HTMLElement, word: Word, index: number) => {

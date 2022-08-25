@@ -1,5 +1,5 @@
 import { host, soundIcon, statisticCircleGraph } from '../core/settings';
-import { Word } from '../types';
+import { Word } from '../../../types';
 
 const playAudio = async (e: MouseEvent): Promise<void> => {
     let target = e.target as HTMLElement;
