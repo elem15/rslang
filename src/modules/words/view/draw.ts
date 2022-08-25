@@ -1,6 +1,7 @@
 import {
     Dictionary,
     DictionaryHardWord,
+    Difficulty,
     OptionalFromResponse,
     pageLearnedPagesGroup,
     UserWords,
@@ -11,20 +12,12 @@ import { pagination } from './pagination';
 import { addLearnedWords, addWordsForHardWordsPage, deleteWordsFromHardWordsPage } from './workWithHardLearnedWords';
 import { host } from '../../auth/controllers/hosts';
 import { addAllLearnedMessage } from './messageAllLearned';
-import audioImage from '../../../images/volume.svg';
+import audioImage from '../assets/images/volume.svg';
 
 const groupTextbookColor = ['&#x1f534;', '&#x1f7e0;', '&#x1f7e1;', '&#x1f7e2;', '&#x1f535;', '&#x1f7e3;', '&#x1f7e4;'];
 const quantityGroups = 5;
 const quantityPages = 29;
 const groupHardWordsNumber = 6;
-//START PLUG
-// let isAuthorization = false;
-// if (localStorage.getItem('email')) {
-//     isAuthorization = true;
-// } else {
-//     isAuthorization = false;
-// }
-// END PLUG
 
 export let pageLearned: pageLearnedPagesGroup[] = [];
 
@@ -51,11 +44,11 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
 
         const wordsUsersForPageResponse = await getAllUserWords();
         wordsHardForPage = wordsUsersForPageResponse.filter((el: UserWords) => {
-            return el.difficulty === 'hard';
+            return el.difficulty === Difficulty.hard;
         });
 
         wordsLearned = wordsUsersForPageResponse.filter((el: UserWords) => {
-            return el.difficulty === 'learned';
+            return el.difficulty === Difficulty.learned;
         });
     }
 
@@ -71,7 +64,6 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
         (goodsClone.querySelector('.item') as HTMLHeadingElement).dataset.id = item.id;
         (goodsClone.querySelector('.item__title') as HTMLHeadingElement).textContent = item.word;
         (goodsClone.querySelector('.item__audio-svg') as HTMLSpanElement).insertAdjacentHTML('afterbegin', audioImage);
-        // (goodsClone.querySelector('.item__img') as HTMLImageElement).alt = item.word;
         (goodsClone.querySelector('.item') as HTMLDivElement).style.backgroundImage = `url(${host}/${item.image})`;
         (goodsClone.querySelector('.item__audio-word') as HTMLSourceElement).src = `${host}/${item.audio}`;
         (goodsClone.querySelector('.item__audio-meaning') as HTMLSourceElement).src = `${host}/${item.audioMeaning}`;
@@ -136,7 +128,6 @@ export const drawPageDifficultWords = async (isAuthorization: boolean): Promise<
         (goodsClone.querySelector('.item') as HTMLHeadingElement).dataset.id = item._id;
         (goodsClone.querySelector('.item__title') as HTMLHeadingElement).textContent = item.word;
         (goodsClone.querySelector('.item__audio-svg') as HTMLSpanElement).insertAdjacentHTML('afterbegin', audioImage);
-        // (goodsClone.querySelector('.item__img') as HTMLImageElement).alt = item.word;
         (goodsClone.querySelector('.item') as HTMLDivElement).style.backgroundImage = `url(${host}/${item.image})`;
         (goodsClone.querySelector('.item__audio-word') as HTMLSourceElement).src = `${host}/${item.audio}`;
         (goodsClone.querySelector('.item__audio-meaning') as HTMLSourceElement).src = `${host}/${item.audioMeaning}`;
@@ -164,11 +155,7 @@ export const drawPageDifficultWords = async (isAuthorization: boolean): Promise<
 
     containerData.innerHTML = '';
     containerData.appendChild(fragment);
-    // if (containerData.innerHTML === '') {
-    //     (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'darkcyan';
-    // } else {
-    //     (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'inherit';
-    // }
+
     audioPlayerListener();
     addAllLearnedMessage(0, groupHardWordsNumber);
 
@@ -207,7 +194,6 @@ export const drawTextbook = (
         pageLearnedFromLocaleStorage,
         isAuthorization
     );
-    console.log('safasfasfsasfa', Number(groupTextbookFromLocaleStorage));
     if (Number(groupTextbook.value) !== groupHardWordsNumber)
         draw(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, isAuthorization);
     if (Number(groupTextbook.value) === groupHardWordsNumber) drawPageDifficultWords(isAuthorization);
@@ -225,13 +211,11 @@ export const drawPageNav = (
         pageLearnedDraw = [];
     }
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
-    console.log('safasfasfsasfa', Number(groupTextbook.value));
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
     const pagination = document.querySelector('.pagination') as HTMLSelectElement;
     if (Number(groupTextbook.value) === groupHardWordsNumber) pagination.style.display = 'none';
     if (Number(groupTextbook.value) !== groupHardWordsNumber) {
         pageTextbook.innerHTML = '';
-        console.log('safasfasfsasfa', Number(groupTextbook.value));
         for (let i = 0; i <= quantityPages; i++) {
             const pageElement = document.createElement('option');
             const itemFind = pageLearnedDraw.find((el) => {

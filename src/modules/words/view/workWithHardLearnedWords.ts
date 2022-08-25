@@ -19,7 +19,6 @@ export const addWordsForHardWordsPage = () => {
         const allButton = document.querySelectorAll('.item__button-hard, .item__button-learned');
         let countHardAndLearnedWords = 0;
         allButton.forEach((el) => {
-            // TO DO: поменять el.textContent на классы CSS, когда появятся.
             if (
                 el.textContent === 'Добавлено в "Изученные слова"' ||
                 el.textContent === 'Добавлено в "Сложные слова"'
@@ -95,7 +94,6 @@ export const addLearnedWords = () => {
             const allButton = document.querySelectorAll('.item__button-hard, .item__button-learned');
             let countHardAndLearnedWords = 0;
             allButton.forEach((el) => {
-                // TO DO: поменять el.textContent на классы CSS, когда появятся.
                 if (
                     el.textContent === 'Добавлено в "Изученные слова"' ||
                     el.textContent === 'Добавлено в "Сложные слова"'
@@ -122,7 +120,6 @@ export const addLearnedWords = () => {
             const allButton = document.querySelectorAll('.item__button-hard, .item__button-learned');
             let countHardAndLearnedWords = 0;
             allButton.forEach((el) => {
-                // TO DO: поменять el.textContent на классы CSS, когда появятся.
                 if (
                     el.textContent === 'Добавлено в "Изученные слова"' ||
                     el.textContent === 'Добавлено в "Сложные слова"'

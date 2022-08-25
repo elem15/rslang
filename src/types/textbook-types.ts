@@ -56,3 +56,8 @@ export interface Optional {
 export interface OptionalFromResponse {
     [index: string]: pageLearnedPagesGroup;
 }
+
+export enum Difficulty {
+    hard = 'hard',
+    learned = 'learned',
+}

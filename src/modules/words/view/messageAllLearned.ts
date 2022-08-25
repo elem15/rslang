@@ -2,6 +2,7 @@ import { messageModal } from '../../auth/view/message-modal';
 
 export const addAllLearnedMessage = (countHardAndLearnedWords = 0, group: number) => {
     const containerData = document.querySelector('.items-container') as HTMLDivElement;
+    const wrapper = document.querySelector('.wrapper') as HTMLDivElement;
     const groupTextbookColorBackground = [
         'rgba(232, 18, 36, 0.6)',
         'rgba(247, 99, 12, 0.6)',
@@ -13,15 +14,13 @@ export const addAllLearnedMessage = (countHardAndLearnedWords = 0, group: number
     ];
 
     if (countHardAndLearnedWords === 20) {
-        (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'darkcyan';
+        wrapper.style.backgroundColor = 'darkcyan';
         messageModal('Все слова на данной странице относятся к группам "Сложные слова" или "Изученные слова".');
     } else if (containerData.innerHTML === '') {
-        (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'darkcyan';
-        (document.querySelector('.wrapper') as HTMLDivElement).style.height = '100vh';
+        wrapper.style.backgroundColor = 'darkcyan';
+        wrapper.style.height = '100vh';
         messageModal('Отсутствуют слова из группы "Сложные слова".');
     } else {
-        (document.querySelector(
-            '.wrapper'
-        ) as HTMLDivElement).style.backgroundColor = `${groupTextbookColorBackground[group]}`;
+        wrapper.style.backgroundColor = `${groupTextbookColorBackground[group]}`;
     }
 };
