@@ -1,1 +1,1 @@
-export const host = 'https://react-learnwords-example.herokuapp.com';
+export const host = 'https://lexi-rs-school.herokuapp.com';
