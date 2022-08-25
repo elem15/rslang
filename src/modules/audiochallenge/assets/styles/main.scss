@@ -1,0 +1,11 @@
+$base-font-family:Arial,sans-serif;
+
+:root{
+  font-family: $base-font-family;
+}
+
+@import '~bootstrap/scss/bootstrap';
+@import 'start';
+@import 'buttons';
+@import 'answers';
+@import 'statistic';

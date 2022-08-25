@@ -1,6 +1,6 @@
 import { Router } from '../../../types/router-types';
 import { addUserSymbol } from '../../auth/view/sign-modal';
-import { renderGame1Page } from '../../game1/view/game1-page';
+import { renderGame1Page } from '../../audiochallenge/view/challenge';
 import { renderMainPage } from '../../main/view/main-page';
 import { renderSprintPage } from '../../sprint/view/sprint-page';
 import { renderStatisticsPage } from '../../statistics/view/statistics-page';
