@@ -10,6 +10,7 @@ import { checkIcon, nextDefaultText, nextNextText } from './settings';
 import success from '../assets/sounds/success.wav';
 import mistake from '../assets/sounds/error.mp3';
 import { host } from '../../auth/controllers/hosts';
+import { displaySwitcher } from '../view/switcher';
 
 export default class Game {
     root: HTMLElement;
@@ -38,6 +39,7 @@ export default class Game {
         this.next = <HTMLButtonElement>document.createElement('button');
         this.progress.classList.add('game__progress');
         this.audio = new Audio();
+        this.isMute = false;
         this.selected = [];
         this.count = 0;
         this.group = group || 0;
@@ -72,6 +74,7 @@ export default class Game {
                 await nextWord(this.container, this.current, variants);
                 this.container.append(this.next);
                 this.render();
+                displaySwitcher(this.isMute);
             }
         } catch (Exception) {
             console.log(Exception);
@@ -192,11 +195,13 @@ export default class Game {
     };
 
     playAudio = (path: string) => {
-        this.audio.pause();
-        this.audio.src = path;
-        this.audio.addEventListener('canplaythrough', async () => {
-            await this.audio.play();
-        });
+        if (!this.isMute) {
+            this.audio.pause();
+            this.audio.src = path;
+            this.audio.addEventListener('canplaythrough', async () => {
+                await this.audio.play();
+            });
+        }
     };
 
     endGame = async (): Promise<void> => {
