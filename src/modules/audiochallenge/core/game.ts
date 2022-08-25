@@ -6,7 +6,7 @@ import { drawLevels } from '../view/levels';
 import { nextWord } from '../view/next';
 import { progress } from '../view/progress';
 import { showResult } from '../view/result';
-import { checkIcon, nextDefaultText, nextNextText, wrongIcon } from './settings';
+import { checkIcon, nextDefaultText, nextNextText } from './settings';
 import success from '../assets/sounds/success.wav';
 import mistake from '../assets/sounds/error.mp3';
 import { host } from '../../auth/controllers/hosts';
@@ -29,6 +29,7 @@ export default class Game {
     incorrect?: string[] = [];
     canMoveToNext = false;
     isRestartGame = false;
+    isMute: boolean;
 
     constructor(root: HTMLElement, group?: number) {
         this.root = root;
