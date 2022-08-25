@@ -7,7 +7,7 @@ export const startTextbook = (isAuthorization: boolean) => {
     let pageTextbookFromLocaleStorage = 0;
     let groupTextbookFromLocaleStorage = 0;
     let pageLearnedFromLocaleStorage: pageLearnedPagesGroup[] = [];
-
+    console.log('1');
     if ((window.performance.getEntries()[0] as PerformanceNavigationTiming).type === 'reload') {
         const setLocalStorage = function setLocalStorage() {
             const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
@@ -16,7 +16,7 @@ export const startTextbook = (isAuthorization: boolean) => {
             const currentGroup = groupTextbook.selectedIndex;
             localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
         };
-
+        console.log('2');
         window.addEventListener('beforeunload', setLocalStorage);
 
         const getLocalStorage = function () {
@@ -32,39 +32,21 @@ export const startTextbook = (isAuthorization: boolean) => {
                 pageLearnedFromLocaleStorage = JSON.parse(pageLearnedJSON);
                 console.log(pageLearnedFromLocaleStorage);
             }
-            // return;
-            console.log('safasfasfsasfa', Number(groupTextbookFromLocaleStorage));
             drawTextbook(
                 pageTextbookFromLocaleStorage,
                 groupTextbookFromLocaleStorage,
                 pageLearnedFromLocaleStorage,
                 isAuthorization
             );
-            // btnTextbook.addEventListener('click', getLocalStorage);
         };
-        // console.log('1', isAuthorization, pageTextbookFromLocaleStorage);
         window.addEventListener('load', getLocalStorage);
     } else {
-        // const btnTextbook = document.querySelector('.nav-link.dictionary') as HTMLLIElement;
-        console.log('safasfasfsasfa', Number(groupTextbookFromLocaleStorage));
-        // btnTextbook.removeEventListener('click', getLocalStorage);
+        console.log('3');
         drawTextbook(
             pageTextbookFromLocaleStorage,
             groupTextbookFromLocaleStorage,
             pageLearnedFromLocaleStorage,
             isAuthorization
         );
-
-        // return;
-        console.log('2');
     }
-    // const btnTextbook = document.querySelector('.nav-link.dictionary') as HTMLLIElement;
-
-    // if (!JSON.parse(sessionStorage.getItem('is_reloaded')))
-    //     drawTextbook(
-    //         pageTextbookFromLocaleStorage,
-    //         groupTextbookFromLocaleStorage,
-    //         pageLearnedFromLocaleStorage,
-    //         isAuthorization
-    //     );
 };

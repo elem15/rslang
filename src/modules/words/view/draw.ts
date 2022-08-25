@@ -11,8 +11,9 @@ import { pagination } from './pagination';
 import { addLearnedWords, addWordsForHardWordsPage, deleteWordsFromHardWordsPage } from './workWithHardLearnedWords';
 import { host } from '../../auth/controllers/hosts';
 import { addAllLearnedMessage } from './messageAllLearned';
+import audioImage from '../../../images/volume.svg';
 
-const groupTextbookColor = ['&#x1f535;', '&#x1f534;', '&#x1f7e0;', '&#x1f7e1;', '&#x1f7e2;', '&#x1f7e3;', '&#x1f7e4;'];
+const groupTextbookColor = ['&#x1f534;', '&#x1f7e0;', '&#x1f7e1;', '&#x1f7e2;', '&#x1f535;', '&#x1f7e3;', '&#x1f7e4;'];
 const quantityGroups = 5;
 const quantityPages = 29;
 const groupHardWordsNumber = 6;
@@ -69,15 +70,16 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
 
         (goodsClone.querySelector('.item') as HTMLHeadingElement).dataset.id = item.id;
         (goodsClone.querySelector('.item__title') as HTMLHeadingElement).textContent = item.word;
-        (goodsClone.querySelector('.item__img') as HTMLImageElement).alt = item.word;
-        (goodsClone.querySelector('.item__img') as HTMLImageElement).src = `${host}/${item.image}`;
+        (goodsClone.querySelector('.item__audio-svg') as HTMLSpanElement).insertAdjacentHTML('afterbegin', audioImage);
+        // (goodsClone.querySelector('.item__img') as HTMLImageElement).alt = item.word;
+        (goodsClone.querySelector('.item') as HTMLDivElement).style.backgroundImage = `url(${host}/${item.image})`;
         (goodsClone.querySelector('.item__audio-word') as HTMLSourceElement).src = `${host}/${item.audio}`;
         (goodsClone.querySelector('.item__audio-meaning') as HTMLSourceElement).src = `${host}/${item.audioMeaning}`;
         (goodsClone.querySelector('.item__audio-example') as HTMLSourceElement).src = `${host}/${item.audioExample}`;
         (goodsClone.querySelector('.item__transcription') as HTMLDivElement).innerHTML = `${item.transcription}`;
         (goodsClone.querySelector('.item__word-translate') as HTMLDivElement).innerHTML = `${item.wordTranslate}`;
-        (goodsClone.querySelector('.item__text-meaning') as HTMLDivElement).textContent = `${item.textMeaning}`;
-        (goodsClone.querySelector('.item__text-example') as HTMLDivElement).textContent = `${item.textExample}`;
+        (goodsClone.querySelector('.item__text-meaning') as HTMLDivElement).innerHTML = `${item.textMeaning}`;
+        (goodsClone.querySelector('.item__text-example') as HTMLDivElement).innerHTML = `${item.textExample}`;
         (goodsClone.querySelector(
             '.item__text-meaning-translate'
         ) as HTMLDivElement).textContent = `${item.textMeaningTranslate}`;
@@ -86,14 +88,18 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
         ) as HTMLDivElement).textContent = `${item.textExampleTranslate}`;
 
         if (isAuthorization) {
-            (goodsClone.querySelector('.item__buttons') as HTMLDivElement).style.display = 'block';
+            (goodsClone.querySelector('.item__buttons') as HTMLDivElement).style.display = 'flex';
         }
         if (isAuthorization && wordsHardForPage.some((el: UserWords) => el.wordId === item.id)) {
-            (goodsClone.querySelector('.item__button-hard') as HTMLDivElement).textContent = 'Сложное';
+            (goodsClone.querySelector('.item__button-hard') as HTMLDivElement).textContent =
+                'Добавлено в "Сложные слова"';
+            (goodsClone.querySelector('.item__container') as HTMLDivElement).classList.add('red');
             countHardAndLearnedWords++;
         }
         if (isAuthorization && wordsLearned.some((el: UserWords) => el.wordId === item.id)) {
-            (goodsClone.querySelector('.item__button-learned') as HTMLDivElement).textContent = 'Изучено';
+            (goodsClone.querySelector('.item__button-learned') as HTMLDivElement).textContent =
+                'Добавлено в "Изученные слова"';
+            (goodsClone.querySelector('.item__container') as HTMLDivElement).classList.add('green');
             countHardAndLearnedWords++;
         }
 
@@ -104,9 +110,9 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
     containerData.appendChild(fragment);
 
     audioPlayerListener();
+    addAllLearnedMessage(countHardAndLearnedWords, group);
 
     if (isAuthorization) {
-        addAllLearnedMessage(countHardAndLearnedWords);
         if (countHardAndLearnedWords < 20) changePageIconDefault(page, group);
         if (countHardAndLearnedWords === 20) {
             changePageIconLearned(page, group);
@@ -129,15 +135,16 @@ export const drawPageDifficultWords = async (isAuthorization: boolean): Promise<
 
         (goodsClone.querySelector('.item') as HTMLHeadingElement).dataset.id = item._id;
         (goodsClone.querySelector('.item__title') as HTMLHeadingElement).textContent = item.word;
-        (goodsClone.querySelector('.item__img') as HTMLImageElement).alt = item.word;
-        (goodsClone.querySelector('.item__img') as HTMLImageElement).src = `${host}/${item.image}`;
+        (goodsClone.querySelector('.item__audio-svg') as HTMLSpanElement).insertAdjacentHTML('afterbegin', audioImage);
+        // (goodsClone.querySelector('.item__img') as HTMLImageElement).alt = item.word;
+        (goodsClone.querySelector('.item') as HTMLDivElement).style.backgroundImage = `url(${host}/${item.image})`;
         (goodsClone.querySelector('.item__audio-word') as HTMLSourceElement).src = `${host}/${item.audio}`;
         (goodsClone.querySelector('.item__audio-meaning') as HTMLSourceElement).src = `${host}/${item.audioMeaning}`;
         (goodsClone.querySelector('.item__audio-example') as HTMLSourceElement).src = `${host}/${item.audioExample}`;
         (goodsClone.querySelector('.item__transcription') as HTMLDivElement).innerHTML = `${item.transcription}`;
         (goodsClone.querySelector('.item__word-translate') as HTMLDivElement).innerHTML = `${item.wordTranslate}`;
-        (goodsClone.querySelector('.item__text-meaning') as HTMLDivElement).textContent = `${item.textMeaning}`;
-        (goodsClone.querySelector('.item__text-example') as HTMLDivElement).textContent = `${item.textExample}`;
+        (goodsClone.querySelector('.item__text-meaning') as HTMLDivElement).innerHTML = `${item.textMeaning}`;
+        (goodsClone.querySelector('.item__text-example') as HTMLDivElement).innerHTML = `${item.textExample}`;
         (goodsClone.querySelector(
             '.item__text-meaning-translate'
         ) as HTMLDivElement).textContent = `${item.textMeaningTranslate}`;
@@ -146,8 +153,10 @@ export const drawPageDifficultWords = async (isAuthorization: boolean): Promise<
         ) as HTMLDivElement).textContent = `${item.textExampleTranslate}`;
 
         if (isAuthorization) {
-            (goodsClone.querySelector('.item__buttons') as HTMLDivElement).style.display = 'block';
-            (goodsClone.querySelector('.item__button-hard') as HTMLDivElement).textContent = 'Удалить';
+            (goodsClone.querySelector('.item__buttons') as HTMLDivElement).style.display = 'flex';
+            (goodsClone.querySelector('.item__button-hard') as HTMLDivElement).textContent =
+                'Удалить из "Сложные слова"';
+            (goodsClone.querySelector('.item__container') as HTMLDivElement).classList.add('red');
         }
 
         fragment.append(goodsClone);
@@ -155,12 +164,13 @@ export const drawPageDifficultWords = async (isAuthorization: boolean): Promise<
 
     containerData.innerHTML = '';
     containerData.appendChild(fragment);
-    if (containerData.innerHTML === '') {
-        (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'darkcyan';
-    } else {
-        (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'inherit';
-    }
+    // if (containerData.innerHTML === '') {
+    //     (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'darkcyan';
+    // } else {
+    //     (document.querySelector('.wrapper') as HTMLDivElement).style.backgroundColor = 'inherit';
+    // }
     audioPlayerListener();
+    addAllLearnedMessage(0, groupHardWordsNumber);
 
     if (isAuthorization) {
         deleteWordsFromHardWordsPage(isAuthorization);

@@ -6,16 +6,24 @@ export const addWordsForHardWordsPage = () => {
     const btnHardWord = document.querySelectorAll('.item__button-hard');
 
     const addToHardWordsPage = async (e: Event) => {
-        const wordId = ((((e.target as HTMLButtonElement).parentNode as HTMLDivElement).parentNode as HTMLDivElement)
-            .parentNode as HTMLDivElement).dataset.id as string;
-        (e.target as HTMLButtonElement).innerText = 'Сложное';
-        ((e.target as HTMLButtonElement).nextElementSibling as HTMLButtonElement).textContent = 'Изученное слово';
+        const itemContainer = ((e.target as HTMLButtonElement).parentNode as HTMLDivElement)
+            .parentNode as HTMLDivElement;
+        const item = itemContainer.parentNode as HTMLDivElement;
+        const wordId = item.dataset.id as string;
+        (e.target as HTMLButtonElement).innerText = 'Добавлено в "Сложные слова"';
+        ((e.target as HTMLButtonElement).nextElementSibling as HTMLButtonElement).textContent =
+            'Добавить в "Изученные слова"';
+        itemContainer.classList.add('red');
+        itemContainer.classList.remove('green');
 
         const allButton = document.querySelectorAll('.item__button-hard, .item__button-learned');
         let countHardAndLearnedWords = 0;
         allButton.forEach((el) => {
             // TO DO: поменять el.textContent на классы CSS, когда появятся.
-            if (el.textContent === 'Изучено' || el.textContent === 'Сложное') {
+            if (
+                el.textContent === 'Добавлено в "Изученные слова"' ||
+                el.textContent === 'Добавлено в "Сложные слова"'
+            ) {
                 countHardAndLearnedWords++;
             }
         });
@@ -23,7 +31,7 @@ export const addWordsForHardWordsPage = () => {
             const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
             const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
             changePageIconLearned(pageElement.selectedIndex, groupTextbook.selectedIndex);
-            addAllLearnedMessage(countHardAndLearnedWords);
+            addAllLearnedMessage(countHardAndLearnedWords, groupTextbook.selectedIndex);
         }
         await deleteHardWord(wordId);
         addWordToHardLearned(wordId, { difficulty: 'hard' });
@@ -38,16 +46,22 @@ export const deleteWordsFromHardWordsPage = (isAuthorization: boolean) => {
     const btnHardWord = document.querySelectorAll('.item__button-hard, .item__button-learned');
 
     const deleteHardWordsFromPage = async (e: Event) => {
-        const wordId = ((((e.target as HTMLButtonElement).parentNode as HTMLDivElement).parentNode as HTMLDivElement)
-            .parentNode as HTMLDivElement).dataset.id as string;
+        const itemContainer = ((e.target as HTMLButtonElement).parentNode as HTMLDivElement)
+            .parentNode as HTMLDivElement;
+        const item = itemContainer.parentNode as HTMLDivElement;
+        const wordId = item.dataset.id as string;
 
         if ((e.target as HTMLButtonElement).classList.contains('item__button-hard')) {
-            (e.target as HTMLButtonElement).innerText = 'Сложное';
+            (e.target as HTMLButtonElement).innerText = 'Добавить в "Сложные слова"';
             await deleteHardWord(wordId);
             drawPageDifficultWords(isAuthorization);
+            itemContainer.classList.remove('red');
         } else {
-            (e.target as HTMLButtonElement).innerText = 'Изучено';
-            ((e.target as HTMLButtonElement).previousElementSibling as HTMLButtonElement).textContent = 'Сложное слово';
+            (e.target as HTMLButtonElement).innerText = 'Добавлено в "Изученные слова"';
+            ((e.target as HTMLButtonElement).previousElementSibling as HTMLButtonElement).textContent =
+                'Добавить в "Сложные слова"';
+            itemContainer.classList.remove('red');
+            itemContainer.classList.add('green');
             await deleteHardWord(wordId);
             await addWordToHardLearned(wordId, { difficulty: 'learned' });
             drawPageDifficultWords(isAuthorization);
@@ -63,21 +77,29 @@ export const addLearnedWords = () => {
     const btnLearnedWord = document.querySelectorAll('.item__button-learned');
 
     const addLearnedWordsToAPI = async (e: Event) => {
-        const wordId = ((((e.target as HTMLButtonElement).parentNode as HTMLDivElement).parentNode as HTMLDivElement)
-            .parentNode as HTMLDivElement).dataset.id as string;
+        const itemContainer = ((e.target as HTMLButtonElement).parentNode as HTMLDivElement)
+            .parentNode as HTMLDivElement;
+        const item = itemContainer.parentNode as HTMLDivElement;
+        const wordId = item.dataset.id as string;
 
-        ((e.target as HTMLButtonElement).previousElementSibling as HTMLButtonElement).textContent = 'Сложное слово';
+        ((e.target as HTMLButtonElement).previousElementSibling as HTMLButtonElement).textContent =
+            'Добавить в "Сложные слова"';
 
-        if ((e.target as HTMLButtonElement).textContent === 'Изученное слово') {
+        if ((e.target as HTMLButtonElement).textContent === 'Добавить в "Изученные слова"') {
             await deleteHardWord(wordId);
             addWordToHardLearned(wordId, { difficulty: 'learned' });
-            (e.target as HTMLButtonElement).textContent = 'Изучено';
+            (e.target as HTMLButtonElement).textContent = 'Добавлено в "Изученные слова"';
+            itemContainer.classList.remove('red');
+            itemContainer.classList.add('green');
 
             const allButton = document.querySelectorAll('.item__button-hard, .item__button-learned');
             let countHardAndLearnedWords = 0;
             allButton.forEach((el) => {
                 // TO DO: поменять el.textContent на классы CSS, когда появятся.
-                if (el.textContent === 'Изучено' || el.textContent === 'Сложное') {
+                if (
+                    el.textContent === 'Добавлено в "Изученные слова"' ||
+                    el.textContent === 'Добавлено в "Сложные слова"'
+                ) {
                     countHardAndLearnedWords++;
                 }
             });
@@ -86,20 +108,25 @@ export const addLearnedWords = () => {
                 const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
                 const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
                 changePageIconLearned(pageElement.selectedIndex, groupTextbook.selectedIndex);
-                addAllLearnedMessage(countHardAndLearnedWords);
+                addAllLearnedMessage(countHardAndLearnedWords, groupTextbook.selectedIndex);
             }
 
             return;
         }
-        if ((e.target as HTMLButtonElement).textContent === 'Изучено') {
+        if ((e.target as HTMLButtonElement).textContent === 'Добавлено в "Изученные слова"') {
             await deleteHardWord(wordId);
-            (e.target as HTMLButtonElement).textContent = 'Изученное слово';
+            (e.target as HTMLButtonElement).textContent = 'Добавить в "Изученные слова"';
+            itemContainer.classList.remove('red');
+            itemContainer.classList.remove('green');
 
             const allButton = document.querySelectorAll('.item__button-hard, .item__button-learned');
             let countHardAndLearnedWords = 0;
             allButton.forEach((el) => {
                 // TO DO: поменять el.textContent на классы CSS, когда появятся.
-                if (el.textContent === 'Изучено' || el.textContent === 'Сложное') {
+                if (
+                    el.textContent === 'Добавлено в "Изученные слова"' ||
+                    el.textContent === 'Добавлено в "Сложные слова"'
+                ) {
                     countHardAndLearnedWords++;
                 }
             });
@@ -108,7 +135,7 @@ export const addLearnedWords = () => {
                 const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
                 const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
                 changePageIconDefault(pageElement.selectedIndex, groupTextbook.selectedIndex);
-                addAllLearnedMessage(countHardAndLearnedWords);
+                addAllLearnedMessage(countHardAndLearnedWords, groupTextbook.selectedIndex);
             }
         }
     };

@@ -1,6 +1,4 @@
-import { pageLearnedPagesGroup } from '../../../types/textbook-types';
 import { renderFooter } from '../../main/view/main-page';
-import { drawTextbook } from './draw';
 import { startTextbook } from './startTextbook';
 // import { getUserWords } from '../controllers/get-user-words';
 // import { getWordById } from '../controllers/get-word-by-id';
@@ -24,21 +22,23 @@ export const renderWordsList = async (): Promise<void> => {
     root.append(words);
     root.innerHTML = `
         <div class="wrapper">
-            <nav aria-label="...">
-                <ul class="pagination">
-                    <li class="page-item page-item__previous">
-                        <a class="page-link">Previous</a>
-                    </li>
-                    <li>
-                    <select class="form-select page">
-                    </select>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link page-item__next">Next</a>
-                    </li>
-                </ul>
-            </nav>
-            <select class="form-select group"></select>
+            <div class="textbook-navigation">
+                <select class="form-select group"></select>
+                <nav class="navigation" aria-label="navigation">
+                    <ul class="pagination">
+                        <li class="page-item page-item__previous">
+                            <a class="page-link">Previous</a>
+                        </li>
+                        <li>
+                        <select class="form-select page">
+                        </select>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link page-item__next">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
             <div class="items-container"></div>
         </div>
         
@@ -47,7 +47,7 @@ export const renderWordsList = async (): Promise<void> => {
             <div class="item__container">
                 <h4 class="item__title"></h4>
                 <div class="item__audio">
-                    <button class="item__play-audio"></button>
+                    <button class="button item__play-audio"><span class="item__audio-svg"></span></button>
                     <audio>
                         <source class="item__audio-word" type="audio/mp3">
                     </audio>
@@ -61,15 +61,15 @@ export const renderWordsList = async (): Promise<void> => {
                 <div class="item__word-translate"></div>
                 <div class="item__transcription"></div>
                 <div class="item__text-meaning"></div>
-                <div class="item__text-example"></div>
                 <div class="item__text-meaning-translate"></div>
+                <div class="item__text-example"></div>
                 <div class="item__text-example-translate"></div>
                 <div class="item__buttons">
-                    <button class="button item__button-hard">Сложное слово</button>
-                    <button class="button item__button-learned">Изученное слово</button>
+                    <button class="button item__button-hard">Добавить в "Сложные слова"</button>
+                    <button class="button item__button-learned">Добавить в "Изученные слова"</button>
                 </div>
+                <img class="item__img">
             </div>
-            <img class="item__img">
         </div>
         </template>`;
 
@@ -80,7 +80,7 @@ export const renderWordsList = async (): Promise<void> => {
     } else {
         isAuthorization = false;
     }
-
+    console.log(isAuthorization);
     startTextbook(isAuthorization);
 
     // const response = await getUserWords();
