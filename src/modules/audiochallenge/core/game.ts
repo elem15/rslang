@@ -11,6 +11,7 @@ import success from '../assets/sounds/success.wav';
 import mistake from '../assets/sounds/error.mp3';
 import { host } from '../../auth/controllers/hosts';
 import { mute } from '../view/switcher';
+import { showManual } from '../view/manual';
 
 export default class Game {
     root: HTMLElement;
@@ -55,10 +56,7 @@ export default class Game {
     start = async (): Promise<void> => {
         await this.beforeGame();
         await this.render();
-    };
-
-    showLevels = async (): Promise<void> => {
-        await drawLevels(this.container, this.onLevelSelect);
+        showManual();
     };
 
     onLevelSelect = async (level: number): Promise<void> => {
@@ -231,6 +229,10 @@ export default class Game {
 
     beforeGame = async (): Promise<void> => {
         this.group === 0 && !this.isRestartGame ? await this.showLevels() : await this.onLevelSelect(this.group);
+    };
+
+    showLevels = async (): Promise<void> => {
+        await drawLevels(this.container, this.onLevelSelect);
     };
 
     onRestart = () => {
