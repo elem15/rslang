@@ -1,30 +1,75 @@
 import { renderFooter } from '../../main/view/main-page';
-import { getUserWords } from '../controllers/get-user-words';
-import { getWordById } from '../controllers/get-word-by-id';
+import { startTextbook } from './startTextbook';
 
-interface Element {
-    wordId: string;
-}
-const renderListItem = async (id: string, list: HTMLUListElement) => {
-    const li = document.createElement('li');
-    li.innerText = await getWordById(id);
-    list.append(li);
-};
 export const renderWordsList = async (): Promise<void> => {
+    const audio = document.querySelectorAll('audio');
+    audio.forEach((el) => el.remove());
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     renderFooter();
     const words = document.createElement('section');
     words.className = 'dictionary';
     root.append(words);
-    const response = await getUserWords();
-    if (response) {
-        const ids = response.data.map(({ wordId }: Element) => wordId);
-        const list = document.createElement('ul');
-        words.append(list);
-        const wordsPromises = ids.map(async (id: string) => {
-            new Promise((resolve) => resolve(renderListItem(id, list)));
-        });
-        Promise.allSettled(wordsPromises);
+    root.innerHTML = `
+        <div class="wrapper">
+            <div class="textbook-navigation">
+                <select class="form-select group"></select>
+                <nav class="navigation" aria-label="navigation">
+                    <ul class="pagination">
+                        <li class="page-item page-item__previous">
+                            <a class="page-link">Previous</a>
+                        </li>
+                        <li>
+                        <select class="form-select page">
+                        </select>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link page-item__next">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="items-container"></div>
+        </div>
+        
+        <template id="items">
+        <div class="item">
+            <div class="item__container">
+                <h4 class="item__title"></h4>
+                <div class="item__audio">
+                    <button class="button item__play-audio"><span class="item__audio-svg"></span></button>
+                    <audio>
+                        <source class="item__audio-word" type="audio/mp3">
+                    </audio>
+                    <audio>
+                        <source class="item__audio-meaning" type="audio/mp3">
+                    </audio>
+                    <audio>
+                        <source class="item__audio-example" type="audio/mp3">
+                    </audio>
+                </div>
+                <div class="item__word-translate"></div>
+                <div class="item__transcription"></div>
+                <div class="item__text-meaning"></div>
+                <div class="item__text-meaning-translate"></div>
+                <div class="item__text-example"></div>
+                <div class="item__text-example-translate"></div>
+                <div class="item__buttons">
+                    <button class="button item__button-hard">Добавить в "Сложные слова"</button>
+                    <button class="button item__button-learned">Добавить в "Изученные слова"</button>
+                </div>
+                <img class="item__img">
+            </div>
+        </div>
+        </template>`;
+
+    let isAuthorization = false;
+    const userSymbol = document.querySelector('.user') as HTMLSpanElement;
+    if (localStorage.getItem('email') && userSymbol.classList.contains('logged')) {
+        isAuthorization = true;
+    } else {
+        isAuthorization = false;
     }
+
+    startTextbook(isAuthorization);
 };

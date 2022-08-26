@@ -1,0 +1,18 @@
+button{
+  padding: .5rem 2rem;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.words__level{
+  background-color: transparent;
+  outline: 2px solid transparent;
+  margin: .125rem .5rem;
+  font: 700 1rem/1.5em Arial;
+  color: whitesmoke;
+  &:hover{
+    color: white;
+    box-shadow: 0 0 0 1px #aeaeae;
+  }
+}
