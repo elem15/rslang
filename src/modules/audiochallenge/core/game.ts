@@ -3,17 +3,18 @@ import { getWords } from '../services/words';
 import { Word } from '../../../types';
 import { clear, getElementsList, getRandomWord, getRandomWords } from '../utils';
 import { drawLevels } from '../view/levels';
-import { nextWord } from '../view/next';
+import { nextWord as card } from '../view/next';
 import { progress } from '../view/progress';
 import { showResult } from '../view/result';
 import { checkIcon, nextDefaultText, nextNextText } from './settings';
 import success from '../assets/sounds/success.wav';
 import mistake from '../assets/sounds/error.mp3';
 import { host } from '../../auth/controllers/hosts';
-import { displaySwitcher } from '../view/switcher';
+import { mute } from '../view/switcher';
 
 export default class Game {
     root: HTMLElement;
+    mute: HTMLElement;
     progress: HTMLElement;
     container: HTMLElement;
     next: HTMLButtonElement;
@@ -34,6 +35,7 @@ export default class Game {
 
     constructor(root: HTMLElement, group?: number) {
         this.root = root;
+        this.mute = mute();
         this.container = <HTMLElement>document.createElement('div');
         this.progress = <HTMLElement>document.createElement('div');
         this.next = <HTMLButtonElement>document.createElement('button');
@@ -51,7 +53,7 @@ export default class Game {
     }
 
     start = async (): Promise<void> => {
-        this.group === 0 && !this.isRestartGame ? await this.showLevels() : await this.onLevelSelect(this.group);
+        await this.beforeGame();
         await this.render();
     };
 
@@ -60,6 +62,7 @@ export default class Game {
     };
 
     onLevelSelect = async (level: number): Promise<void> => {
+        this.root.prepend(this.mute);
         await clear(this.container);
         this.progress.append(...progress());
         this.group = level;
@@ -71,10 +74,9 @@ export default class Game {
                 const variants = await getRandomWords(this.current, this.words);
                 this.selected?.push(this.current.id);
 
-                await nextWord(this.container, this.current, variants);
+                await card(this.container, this.current, variants);
                 this.container.append(this.next);
                 this.render();
-                displaySwitcher(this.isMute);
             }
         } catch (Exception) {
             console.log(Exception);
@@ -87,9 +89,11 @@ export default class Game {
 
     onKeyPress = async (e: Event): Promise<void> => {
         switch ((e as KeyboardEvent).key) {
-            case ' ':
+            case 'Enter':
                 if (this.canMoveToNext) this.onNextWord();
-                else this.playAudio(`${host}/${this.current.audio}`);
+                break;
+            case ' ':
+                this.playAudio(`${host}/${this.current.audio}`);
                 break;
             case '1':
                 if (this.canMoveToNext) return;
@@ -120,7 +124,7 @@ export default class Game {
             const translationVariants = await getRandomWords(this.current, this.words);
             this.selected.push(this.current.id);
 
-            await nextWord(this.container, this.current, translationVariants);
+            await card(this.container, this.current, translationVariants);
             this.container.append(this.next);
             this.render();
         } else {
@@ -173,11 +177,10 @@ export default class Game {
             }
         });
 
-        this.playAudio(path);
+        if (!this.isMuteOn()) this.playAudio(path);
     };
 
     render = async (): Promise<void> => {
-        clear(this.root);
         this.root.append(this.progress, this.container);
         this.next.innerText = nextDefaultText;
         getElementsList('.answers__item').forEach((item) => item.addEventListener('click', this.onSelectVariant));
@@ -195,13 +198,11 @@ export default class Game {
     };
 
     playAudio = (path: string) => {
-        if (!this.isMute) {
-            this.audio.pause();
-            this.audio.src = path;
-            this.audio.addEventListener('canplaythrough', async () => {
-                await this.audio.play();
-            });
-        }
+        this.audio.pause();
+        this.audio.src = path;
+        this.audio.addEventListener('canplaythrough', async () => {
+            await this.audio.play();
+        });
     };
 
     endGame = async (): Promise<void> => {
@@ -222,6 +223,14 @@ export default class Game {
         this.incorrect!.length = 0;
         this.current = undefined;
         this.isRestartGame = true;
+    };
+
+    isMuteOn = (): boolean => {
+        return JSON.parse(localStorage.getItem('mute')) === true;
+    };
+
+    beforeGame = async (): Promise<void> => {
+        this.group === 0 && !this.isRestartGame ? await this.showLevels() : await this.onLevelSelect(this.group);
     };
 
     onRestart = () => {
