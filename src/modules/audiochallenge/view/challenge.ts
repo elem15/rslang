@@ -8,7 +8,6 @@ export const renderGame1Page = () => {
     removeFooter();
     const game1 = document.createElement('section');
     game1.classList.add('game-1', 'audio__challenge');
-    game1.innerHTML = 'Аудиовызов';
     root?.append(game1);
     const audioChallenge = new Game(game1);
     audioChallenge.start();
