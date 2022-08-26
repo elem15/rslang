@@ -24,7 +24,7 @@ export const drawLevels = async (container: HTMLElement, handler: TSelectHandler
     const heading = document.createElement('h3') as HTMLElement;
     const list = document.createElement('div');
 
-    heading.innerText = 'Select the level';
+    heading.innerText = 'Выберите уровень';
     heading.className = 'game__heading';
     list.className = 'game__levels';
     levels.forEach((level) => {
