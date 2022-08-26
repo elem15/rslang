@@ -63,7 +63,7 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
 
         (goodsClone.querySelector('.item') as HTMLHeadingElement).dataset.id = item.id;
         (goodsClone.querySelector('.item__title') as HTMLHeadingElement).textContent = item.word;
-        (goodsClone.querySelector('.item__audio-svg') as HTMLSpanElement).insertAdjacentHTML('afterbegin', audioImage);
+        (goodsClone.querySelector('.item__audio-svg') as HTMLSpanElement).innerHTML = audioImage;
         (goodsClone.querySelector('.item') as HTMLDivElement).style.backgroundImage = `url(${host}/${item.image})`;
         (goodsClone.querySelector('.item__audio-word') as HTMLSourceElement).src = `${host}/${item.audio}`;
         (goodsClone.querySelector('.item__audio-meaning') as HTMLSourceElement).src = `${host}/${item.audioMeaning}`;

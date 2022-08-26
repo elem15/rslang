@@ -59,7 +59,7 @@
     padding: 10px;
     background: rgba(256, 256, 256, 0.6);
     width: 320px;
-    min-height: 550px;
+    min-height: 570px;
     border-radius: 10px;
     box-shadow: 0 15px 30px rgba(0,0,0,0.25), 0 15px 15px rgba(0,0,0,0.20);
     transition: 0.5s;
@@ -87,9 +87,16 @@
     width: 50px;
 }
 
+.item__audio-svg{
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+}
+
 .item__play-audio {
     width: 50px;
     height: 50px;
+    padding: 0;
     transition: 0.5s;
     &:hover {
         transform: scale(1.05);
@@ -125,5 +132,7 @@
 
 .item__button-hard,
 .item__button-learned {
-    width: 260px;
+    width: 280px;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
