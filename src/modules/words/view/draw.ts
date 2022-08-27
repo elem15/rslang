@@ -223,7 +223,6 @@ export const drawPageNav = async (
             }
         }
     }
-    console.log(pageLearnedDraw, page, group);
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
     const pagination = document.querySelector('.navigation') as HTMLSelectElement;
