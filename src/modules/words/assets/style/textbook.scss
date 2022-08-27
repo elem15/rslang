@@ -1,0 +1,138 @@
+@import "~bootstrap/scss/bootstrap";
+
+.button {
+    border-radius: 5px;
+}
+
+.wrapper {
+    max-width: 1280px;
+    padding: 0 10px;
+    margin: 0 auto;
+    padding-bottom: 60px;
+}
+
+.navigation {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.textbook-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 20px;
+    @media (max-width: 767px) {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.items-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 70px;
+  padding-top: 20px;
+}
+
+.item {
+    background-position: top center, bottom center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+    border-radius: 10px;
+    transition: 0.5s;
+    &:hover {
+        transform: scale(1.01);
+    }
+}
+
+.item__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    gap: 5px;
+    color: black;
+    box-sizing: border-box;
+    padding: 10px;
+    background: rgba(256, 256, 256, 0.6);
+    width: 320px;
+    min-height: 570px;
+    border-radius: 10px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.25), 0 15px 15px rgba(0,0,0,0.20);
+    transition: 0.5s;
+    &:hover {
+        transform: scale(1.0);
+        box-shadow: 0 15px 15px rgba(256,256,256,0.25), 0 15px 15px rgba(256,256,256,0.20);
+    }
+}
+
+.red {
+    border: 3px solid red;
+    &:hover {
+        box-shadow: 0 15px 15px rgba(255,0,0,0.25), 0 15px 15px rgba(255,0,0,0.20);
+    }
+}
+
+.green {
+    border: 3px solid green;
+    &:hover {
+        box-shadow: 0 15px 15px rgba(0,128,0,0.25), 0 15px 15px rgba(0,128,0,0.20);
+    }
+}
+
+.item__audio {
+    width: 50px;
+}
+
+.item__audio-svg{
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+}
+
+.item__play-audio {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    transition: 0.5s;
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.item__img {
+    position: absolute;
+    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+    opacity: 0.3;
+}
+
+.form-select {
+    width: 200px;
+}
+
+.pagination {
+    height: 22px;
+}
+
+.form-select_color-one {
+    color: red;
+}
+
+.item__buttons {
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+}
+
+.item__button-hard,
+.item__button-learned {
+    width: 280px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
