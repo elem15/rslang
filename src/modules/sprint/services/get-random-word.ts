@@ -1,12 +1,12 @@
-import { Dictionary } from '../../../types/textbook-types';
-import { getWords } from '../controllers/get-words'
+import { getWords } from '../controllers/get-words';
 
 interface sprintWords {
     word: string;
     wordTranslate: string;
     translateEqual: boolean;
 }
-const getRandom = () => Math.ceil(Math.random() * 20)
+const getRandom = () => Math.ceil(Math.random() * 20);
+
 export const getRandomWord = async (): Promise<sprintWords> => {
     const data = await getWords();
     const randomNum = getRandom();

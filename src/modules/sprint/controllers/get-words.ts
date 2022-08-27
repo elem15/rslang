@@ -8,7 +8,6 @@ export const getWords = async (): Promise<Dictionary[]> => {
     try {
         const response = await axios.get(`${host}/words`);
         const { data } = response;
-        localStorage.setItem('data', JSON.stringify(data));
         return data;
     } catch (error) {
         const message = error instanceof a.AxiosError ? error.message : 'unknown errors';

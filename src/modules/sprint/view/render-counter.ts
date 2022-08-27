@@ -6,14 +6,14 @@ const startGameCounter = async (counterWrapper: HTMLElement) => {
     for (let i = 0; i < arr.length; i++) {
         setTimeout(() => {
             counterWrapper.innerHTML = '' + arr[i];
-        }, 1000 * i);
+        }, 100 * i);
     }
 };
 const startGame = async (counterWrapper: HTMLElement) => {
     setTimeout(async () => {
         const { word, wordTranslate, translateEqual } = await getRandomWord()
         counterWrapper.innerHTML = `${word} - ${wordTranslate} - ${translateEqual}`;
-    }, 1000 * 5);
+    }, 100 * 5);
 };
 
 export const renderCounter = async (): Promise<HTMLElement> => {
