@@ -13,6 +13,7 @@ import { addLearnedWords, addWordsForHardWordsPage, deleteWordsFromHardWordsPage
 import { host } from '../../auth/controllers/hosts';
 import { addAllLearnedMessage } from './messageAllLearned';
 import audioImage from '../assets/images/volume.svg';
+import { addListenerGameButton } from './drawGamesButton';
 
 const groupTextbookColor = ['&#x1f534;', '&#x1f7e0;', '&#x1f7e1;', '&#x1f7e2;', '&#x1f535;', '&#x1f7e3;', '&#x1f7e4;'];
 const quantityGroups = 5;
@@ -197,7 +198,8 @@ export const drawTextbook = (
     if (Number(groupTextbook.value) !== groupHardWordsNumber)
         draw(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, isAuthorization);
     if (Number(groupTextbook.value) === groupHardWordsNumber) drawPageDifficultWords(isAuthorization);
-
+    
+    addListenerGameButton();
     pagination(isAuthorization);
 };
 
@@ -212,7 +214,7 @@ export const drawPageNav = (
     }
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
-    const pagination = document.querySelector('.pagination') as HTMLSelectElement;
+    const pagination = document.querySelector('.navigation') as HTMLSelectElement;
     if (Number(groupTextbook.value) === groupHardWordsNumber) pagination.style.display = 'none';
     if (Number(groupTextbook.value) !== groupHardWordsNumber) {
         pageTextbook.innerHTML = '';
