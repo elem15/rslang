@@ -45,6 +45,7 @@ export const pagination = (isAuthorization: boolean) => {
         if (currentPage !== 0) {
             btnLeft.classList.remove('disabled');
         }
+        localStorage.setItem('currentPageGroup', JSON.stringify({ page: pageTextbook.value, group: groupTextbook.value }));
     });
 
     pageTextbook.addEventListener('change', () => {
@@ -63,6 +64,7 @@ export const pagination = (isAuthorization: boolean) => {
         if (currentPage !== 0) {
             btnLeft.classList.remove('disabled');
         }
+        localStorage.setItem('currentPageGroup', JSON.stringify({ page: pageTextbook.value, group: groupTextbook.value }));
     });
 
     const moveLeft = () => {
@@ -81,6 +83,7 @@ export const pagination = (isAuthorization: boolean) => {
         }
         const root = document.querySelectorAll('audio');
         root.forEach((el) => el.remove());
+        localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };
 
     btnLeft.addEventListener('click', moveLeft);
@@ -99,6 +102,7 @@ export const pagination = (isAuthorization: boolean) => {
         }
         const root = document.querySelectorAll('audio');
         root.forEach((el) => el.remove());
+        localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };
 
     btnRight.addEventListener('click', moveRight);
