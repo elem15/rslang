@@ -118,14 +118,15 @@
     max-width: 150px;
     width: 100%;
     padding: 1rem;
-    background-color: rgb(147, 40, 255);
+    background-color: $indigo-500;
+    border-radius: $border-radius-sm;
     color: #ffffff;
     &:disabled{
       cursor: not-allowed;
       background-color: rgba(147, 40, 255, .2);
     }
     &:hover{
-      box-shadow:  0 0 6px -1px #8f54c5;
+      box-shadow:  0 0 6px -1px $indigo-600;
     }
   }
 

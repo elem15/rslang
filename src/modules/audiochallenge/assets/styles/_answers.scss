@@ -14,11 +14,11 @@
       margin: 0 .25rem;
     }
     &.selected-correct{
-      background-color: rgba($color: lightgreen, $alpha: .5);
+      background-color: $teal-500;
         color: $white;
     }
     &.unselected-correct{
-      background-color: rgba($color: lightgreen, $alpha: .5);
+      background-color: $teal-500;
       color: $white;
     }
     &.unselected{
