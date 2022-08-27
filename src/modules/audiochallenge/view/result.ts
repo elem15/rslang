@@ -62,7 +62,8 @@ const getBody = (correct: Word[], incorrect: Word[], inRow: number): HTMLElement
 
     statisticSection.innerHTML = result;
     (statisticSection.querySelector('.percentage') as SVGTextElement).textContent = `${percentage}%`;
-    statisticSection.querySelector('path')?.setAttribute('stroke-dasharray', `${percentage} ,100`);
+    statisticSection.querySelector('.circle-bg')?.setAttribute('stroke-dasharray', `${percentage} ,100`);
+    statisticSection.querySelector('.circle')?.setAttribute('stroke-dasharray', `${percentage} ,100`);
     statisticSection.appendChild(statistic);
 
     body.append(statisticSection, rightParagraph, right, wrongParagraph, wrong);
