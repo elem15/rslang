@@ -42,6 +42,7 @@ const baseConfig = {
             },
             {
                 test: /\.(png|jpe?g|gif|mp3|wav|ico)$/i,
+
                 use: [
                     {
                         loader: 'file-loader',

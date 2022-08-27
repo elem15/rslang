@@ -3,10 +3,19 @@ import '../assets/style/textbook.scss';
 import { drawTextbook } from './draw';
 import { pageLearnedPagesGroup } from '../../../types/textbook-types';
 
-export const startTextbook = (isAuthorization: boolean) => {
+export const startTextbook = (isAuthorization: boolean, isReload: boolean) => {
     let pageTextbookFromLocaleStorage = 0;
     let groupTextbookFromLocaleStorage = 0;
     let pageLearnedFromLocaleStorage: pageLearnedPagesGroup[] = [];
+    if (!isReload) {
+        drawTextbook(
+            pageTextbookFromLocaleStorage,
+            groupTextbookFromLocaleStorage,
+            pageLearnedFromLocaleStorage,
+            isAuthorization
+        );
+    }
+
     if ((window.performance.getEntries()[0] as PerformanceNavigationTiming).type === 'reload') {
         const setLocalStorage = function setLocalStorage() {
             const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
@@ -15,7 +24,8 @@ export const startTextbook = (isAuthorization: boolean) => {
             const currentGroup = groupTextbook.selectedIndex;
             localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
         };
-        window.addEventListener('beforeunload', setLocalStorage);
+
+        window.addEventListener('beforeunload', () => setLocalStorage());
 
         const getLocalStorage = function () {
             if (localStorage.getItem('currentPageGroup')) {
@@ -36,7 +46,7 @@ export const startTextbook = (isAuthorization: boolean) => {
             );
         };
         window.addEventListener('load', getLocalStorage);
-    } else {
+    } else if (isReload) {
         drawTextbook(
             pageTextbookFromLocaleStorage,
             groupTextbookFromLocaleStorage,

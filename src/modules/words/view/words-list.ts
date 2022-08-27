@@ -4,13 +4,19 @@ import { startTextbook } from './startTextbook';
 export const renderWordsList = async (): Promise<void> => {
     const audio = document.querySelectorAll('audio');
     audio.forEach((el) => el.remove());
+
+
+    let isReload = false;
+    document.querySelector('section') === null ? (isReload = true) : (isReload = false);
+
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     renderFooter();
     const words = document.createElement('section');
     words.className = 'dictionary';
     root.append(words);
-    root.innerHTML = `
+
+    words.innerHTML = `
         <div class="wrapper">
             <div class="textbook-navigation">
                 <select class="form-select group"></select>
@@ -71,5 +77,5 @@ export const renderWordsList = async (): Promise<void> => {
         isAuthorization = false;
     }
 
-    startTextbook(isAuthorization);
+    startTextbook(isAuthorization, isReload);
 };
