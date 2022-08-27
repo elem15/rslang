@@ -203,7 +203,7 @@ export const drawTextbook = (
     pagination(isAuthorization);
 };
 
-export const drawPageNav = (
+export const drawPageNav = async (
     page: number,
     group: number,
     pageLearnedDraw: pageLearnedPagesGroup[] = [],
@@ -212,6 +212,18 @@ export const drawPageNav = (
     if (!isAuthorization) {
         pageLearnedDraw = [];
     }
+
+    if (isAuthorization) {
+        const pageLearnedResponse = await getSettings();
+        let pageLearnedObject: OptionalFromResponse;
+        if (pageLearnedResponse) {
+            pageLearnedObject = pageLearnedResponse.optional;
+            if (pageLearnedObject) {
+                pageLearnedDraw = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
+            }
+        }
+    }
+    console.log(pageLearnedDraw, page, group);
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
     const pagination = document.querySelector('.navigation') as HTMLSelectElement;
@@ -221,7 +233,7 @@ export const drawPageNav = (
         for (let i = 0; i <= quantityPages; i++) {
             const pageElement = document.createElement('option');
             const itemFind = pageLearnedDraw.find((el) => {
-                return el.page === i && el.group === group;
+                return el.page === i && el.group === Number(group);
             });
             if (itemFind) pageElement.innerHTML = `&#9989; &nbsp; Страница ${i + 1}`;
             if (!itemFind) pageElement.innerHTML = `&#x1F56E &nbsp; Страница ${i + 1}`;
@@ -235,7 +247,7 @@ export const drawPageNav = (
 
 export const changePageIconLearned = async (page: number, group: number) => {
     const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-    pageElement[page].innerHTML = `&#9989; &nbsp; Страница ${page + 1}`;
+    pageElement[page].innerHTML = `&#9989; &nbsp; Страница ${Number(page) + 1}`;
     pageLearned = pageLearned.filter((el) => {
         return el.page !== page || el.group !== group;
     });
@@ -251,7 +263,7 @@ export const changePageIconDefault = async (page: number, group: number) => {
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     if (Number(groupTextbook.value) !== groupHardWordsNumber) {
         const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-        pageElement[page].innerHTML = `&#x1F56E &nbsp; Страница ${page + 1}`;
+        pageElement[page].innerHTML = `&#x1F56E &nbsp; Страница ${Number(page) + 1}`;
         pageLearned = pageLearned.filter((el) => {
             return el.page !== page || el.group !== group;
         });
