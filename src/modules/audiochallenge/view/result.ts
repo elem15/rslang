@@ -99,8 +99,7 @@ export const showResult = (correct: Word[], incorrect: Word[], inRow: number, ha
         'afterbegin',
         `<div class="modal-header">
         <h5 class="modal-title">Result</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
         </button>
         </div>`
     );
@@ -114,7 +113,7 @@ export const showResult = (correct: Word[], incorrect: Word[], inRow: number, ha
         (el as HTMLElement).addEventListener('click', playAudio);
     });
 
-    const close = content.querySelector('.close') as HTMLButtonElement;
+    const close = content.querySelector('.btn-close') as HTMLButtonElement;
     setTimeout(() => {
         modal.classList.add('show');
     }, 200);
