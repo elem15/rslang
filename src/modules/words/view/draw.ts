@@ -254,7 +254,6 @@ export const changePageIconLearned = async (page: number, group: number) => {
     pageLearned.push({ page: page, group: group });
 
     await updateSettings({
-        wordsPerDay: 1,
         optional: Object.assign({}, pageLearned),
     });
 };
@@ -268,7 +267,6 @@ export const changePageIconDefault = async (page: number, group: number) => {
             return el.page !== page || el.group !== group;
         });
         await updateSettings({
-            wordsPerDay: 1,
             optional: Object.assign({}, pageLearned),
         });
     }
