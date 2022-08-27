@@ -33,6 +33,8 @@ export default class Game {
     canMoveToNext = false;
     isRestartGame = false;
     isMute: boolean;
+    inRow = 0;
+    maxInRow = 0;
 
     constructor(root: HTMLElement, group?: number) {
         this.root = root;
@@ -40,23 +42,17 @@ export default class Game {
         this.container = <HTMLElement>document.createElement('div');
         this.progress = <HTMLElement>document.createElement('div');
         this.next = <HTMLButtonElement>document.createElement('button');
-        this.progress.classList.add('game__progress');
         this.audio = new Audio();
         this.isMute = false;
         this.selected = [];
         this.count = 0;
         this.group = group || 0;
-        this.container.className = 'game';
-        this.next.classList.add('game__next_word');
-        this.next.innerText = nextDefaultText;
-        this.next.addEventListener('click', this.onClickNext);
-        document.addEventListener('keydown', this.onKeyPress);
     }
 
     start = async (): Promise<void> => {
         await this.beforeGame();
         await this.render();
-        showManual();
+        if (!this.isRestartGame) showManual();
     };
 
     onLevelSelect = async (level: number): Promise<void> => {
@@ -152,10 +148,13 @@ export default class Game {
             correctAnswer = word === this.current?.wordTranslate;
 
             if (correctAnswer) {
+                this.inRow++;
                 target.classList.add('selected-correct');
                 target.innerHTML = `${checkIcon} ${target.innerText}`;
                 if (this.current) this.correct?.push(this.current.id);
             } else {
+                this.updateMaxInRow();
+                this.inRow = 0;
                 target.classList.add('selected-mistake');
                 elementCorrect.classList.add('unselected-correct');
                 path = mistake;
@@ -188,6 +187,10 @@ export default class Game {
         this.progress.querySelector(`[data-count="${this.count}"]`)?.classList.add('marked');
     };
 
+    updateMaxInRow = (): void => {
+        this.maxInRow = this.inRow > this.maxInRow ? this.inRow : this.maxInRow;
+    };
+
     updateCard = () => {
         const image = this.container.querySelector('.word__image') as HTMLImageElement;
         const translation = this.container.querySelector('.word__translation') as HTMLElement;
@@ -208,7 +211,8 @@ export default class Game {
         const correct = this.words.filter((item) => this.correct?.includes(item.id));
         const incorrect = this.words.filter((item) => this.incorrect?.includes(item.id));
         clear(this.container);
-        showResult(correct, incorrect, this.onRestart);
+        this.updateMaxInRow();
+        showResult(correct, incorrect, this.maxInRow, this.onRestart);
     };
 
     resetGame = (): void => {
@@ -221,6 +225,7 @@ export default class Game {
         this.incorrect!.length = 0;
         this.current = undefined;
         this.isRestartGame = true;
+        this.maxInRow = this.inRow = 0;
     };
 
     isMuteOn = (): boolean => {
@@ -229,6 +234,12 @@ export default class Game {
 
     beforeGame = async (): Promise<void> => {
         this.group === 0 && !this.isRestartGame ? await this.showLevels() : await this.onLevelSelect(this.group);
+        this.progress.classList.add('game__progress');
+        this.container.className = 'game';
+        this.next.classList.add('game__next_word');
+        this.next.innerText = nextDefaultText;
+        this.next.addEventListener('click', this.onClickNext);
+        document.addEventListener('keydown', this.onKeyPress);
     };
 
     showLevels = async (): Promise<void> => {
