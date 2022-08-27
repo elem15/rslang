@@ -1,4 +1,4 @@
-import { soundIcon, statisticCircleGraph } from '../core/settings';
+import { soundIcon } from '../core/settings';
 import { Word } from '../../../types';
 import { host } from '../../auth/controllers/hosts';
 import result from '../assets/images/result.svg';
