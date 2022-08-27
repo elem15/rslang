@@ -41,7 +41,7 @@ const baseConfig = {
                 exclude: /node_modules/,
             },
             {
-                test: /\.(png|jpe?g|gif|mp3|wav)$/i,
+                test: /\.(png|jpe?g|gif|mp3|wav|ico)$/i,
                 use: [
                     {
                         loader: 'file-loader',
@@ -52,6 +52,11 @@ const baseConfig = {
                 test: /\.svg$/,
                 loader: 'svg-inline-loader',
             },
+            // {
+            //     test: /\.ico$/,
+            //     loader: 'url-loader',
+            //     query: { mimetype: 'image/x-icon' },
+            // },
         ],
     },
     resolve: {
@@ -64,6 +69,7 @@ const baseConfig = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html'),
+            favicon: './src/favicon-32x32.png',
             filename: 'index.html',
         }),
         new CleanWebpackPlugin(),
