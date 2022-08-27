@@ -3,10 +3,20 @@ import '../assets/style/textbook.scss';
 import { drawTextbook } from './draw';
 import { pageLearnedPagesGroup } from '../../../types/textbook-types';
 
-export const startTextbook = (isAuthorization: boolean) => {
+export const startTextbook = (isAuthorization: boolean, isReload: boolean) => {
     let pageTextbookFromLocaleStorage = 0;
     let groupTextbookFromLocaleStorage = 0;
     let pageLearnedFromLocaleStorage: pageLearnedPagesGroup[] = [];
+    if (!isReload) {
+        drawTextbook(
+            pageTextbookFromLocaleStorage,
+            groupTextbookFromLocaleStorage,
+            pageLearnedFromLocaleStorage,
+            isAuthorization
+        );
+        console.log('4');
+    }
+
     if ((window.performance.getEntries()[0] as PerformanceNavigationTiming).type === 'reload') {
         const setLocalStorage = function setLocalStorage() {
             const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
@@ -15,9 +25,10 @@ export const startTextbook = (isAuthorization: boolean) => {
             const currentGroup = groupTextbook.selectedIndex;
             localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
         };
-        window.addEventListener('beforeunload', setLocalStorage);
+        window.addEventListener('beforeunload', () => setLocalStorage());
 
         const getLocalStorage = function () {
+            console.log('2');
             if (localStorage.getItem('currentPageGroup')) {
                 const currentPageGroupJSON = localStorage.getItem('currentPageGroup');
                 const currentPageGroup = JSON.parse(currentPageGroupJSON);
@@ -36,7 +47,9 @@ export const startTextbook = (isAuthorization: boolean) => {
             );
         };
         window.addEventListener('load', getLocalStorage);
-    } else {
+        console.log('1');
+    } else if (isReload) {
+        console.log('3');
         drawTextbook(
             pageTextbookFromLocaleStorage,
             groupTextbookFromLocaleStorage,
