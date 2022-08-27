@@ -1,18 +1,34 @@
 import { UserData } from '../../../types/user-types';
 import { host } from '../../auth/controllers/hosts';
 
-export const upsert = async (): Promise<void> => {
-    const user: UserData = JSON.parse(localStorage.getItem('data'));
-    const { token, userId } = user;
-    const response = await fetch(`${host}/users/${userId}/statistics`, {
-        method: 'PUT',
-        headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
-        },
-    });
+export type StatisticsType = {
+    date: string;
+    learnedWords: string;
+    totalLearningWords: number;
+    seriesMax: number;
+};
 
-    const content = await response.json();
+export const updateStatistics = async (user: UserData | null, statistics: StatisticsType): Promise<void> => {
+    const data = {
+        learnedWords: statistics.learnedWords.split(',').length,
+        optional: statistics,
+    };
 
-    console.log(content);
+    if (user) {
+        const { token, userId } = user;
+        const response = await fetch(`${host}/users/${userId}/statistics`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const content = await response.json();
+        console.log(content);
+    } else {
+        localStorage.setItem('statistic', JSON.stringify(statistics));
+    }
 };
