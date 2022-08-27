@@ -200,7 +200,7 @@ export const drawTextbook = (
     if (Number(groupTextbook.value) === groupHardWordsNumber) drawPageDifficultWords(isAuthorization);
     
     addListenerGameButton();
-    pagination(isAuthorization);
+    pagination(isAuthorization, pageTextbookFromLocaleStorage);
 };
 
 export const drawPageNav = async (

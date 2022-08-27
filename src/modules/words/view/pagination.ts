@@ -2,13 +2,13 @@ import { draw, drawPageDifficultWords, drawPageNav, pageLearned } from './draw';
 const quantityPages = 29;
 const groupHardWordsNumber = 6;
 
-export const pagination = (isAuthorization: boolean) => {
+export const pagination = (isAuthorization: boolean, page: number) => {
     const btnLeft = document.querySelector('.page-item__previous') as HTMLLIElement;
     const btnRight = document.querySelector('.page-item__next') as HTMLLIElement;
     const pagination = document.querySelector('.navigation') as HTMLUListElement;
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
-    const currentPage = pageTextbook.selectedIndex;
+    const currentPage = Number(page);
     if (currentPage === quantityPages) {
         btnRight.classList.add('disabled');
     }
