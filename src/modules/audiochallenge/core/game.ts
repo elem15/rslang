@@ -12,6 +12,8 @@ import mistake from '../assets/sounds/error.mp3';
 import { host } from '../../auth/controllers/hosts';
 import { mute } from '../view/switcher';
 import { showManual } from '../view/manual';
+import { StatisticsType, updateStatistics } from '../services/statistics';
+import { getUser } from '../services/auth';
 
 export default class Game {
     root: HTMLElement;
@@ -28,7 +30,7 @@ export default class Game {
     answers: HTMLElement[] = [];
 
     selected: string[];
-    correct?: string[] = [];
+    correct: string[] = [];
     incorrect?: string[] = [];
     canMoveToNext = false;
     isRestartGame = false;
@@ -56,9 +58,11 @@ export default class Game {
     };
 
     onLevelSelect = async (level: number): Promise<void> => {
+        this.toggleListeners();
         this.root.prepend(this.mute);
         await clear(this.container);
         this.progress.append(...progress());
+
         this.group = level;
         try {
             const words = await getWords(Math.floor(Math.random() * 31), this.group);
@@ -127,9 +131,6 @@ export default class Game {
     };
 
     onSelectVariant = async (e: Event): Promise<void> => {
-        let path = success;
-        let correctAnswer: boolean;
-
         const elementCorrect = this.container.querySelector(
             `[data-word="${this.current?.wordTranslate}"]`
         ) as HTMLElement;
@@ -138,6 +139,9 @@ export default class Game {
             e instanceof KeyboardEvent
                 ? (this.container.querySelector(`[data-key="${e.key}"]`) as HTMLElement)
                 : (e.target as HTMLElement);
+
+        let path = success;
+        let correctAnswer: boolean;
 
         this.updateCard();
         this.updateProgress();
@@ -210,22 +214,22 @@ export default class Game {
         this.next.disabled = true;
         const correct = this.words.filter((item) => this.correct?.includes(item.id));
         const incorrect = this.words.filter((item) => this.incorrect?.includes(item.id));
-        clear(this.container);
         this.updateMaxInRow();
+        clear(this.container);
         showResult(correct, incorrect, this.maxInRow, this.onRestart);
+        this.toggleListeners(false);
     };
 
     resetGame = (): void => {
         this.progress.querySelectorAll('.game__progress_item').forEach((item) => item.classList.remove('marked'));
         this.next.disabled = false;
-        this.count = 0;
         this.selected.length = 0;
         this.words.length = 0;
         this.correct!.length = 0;
         this.incorrect!.length = 0;
         this.current = undefined;
         this.isRestartGame = true;
-        this.maxInRow = this.inRow = 0;
+        this.count = this.maxInRow = this.inRow = 0;
     };
 
     isMuteOn = (): boolean => {
@@ -238,8 +242,6 @@ export default class Game {
         this.container.className = 'game';
         this.next.classList.add('game__next_word');
         this.next.innerText = nextDefaultText;
-        this.next.addEventListener('click', this.onClickNext);
-        document.addEventListener('keydown', this.onKeyPress);
     };
 
     showLevels = async (): Promise<void> => {
@@ -247,7 +249,43 @@ export default class Game {
     };
 
     onRestart = () => {
+        updateStatistics(getUser(), this.prepareStatistics());
         this.resetGame();
         this.start();
+        this.toggleListeners(true);
+    };
+
+    toggleListeners = (needToAdd = true): void => {
+        if (needToAdd) {
+            this.next.addEventListener('click', this.onClickNext);
+            document.addEventListener('keydown', this.onKeyPress);
+        } else {
+            this.next.removeEventListener('click', this.onClickNext);
+            document.removeEventListener('keydown', this.onKeyPress);
+        }
+    };
+
+    formateDate = (date: Date): string => {
+        return date.toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric',
+        });
+    };
+
+    prepareStatistics = (): StatisticsType => {
+        const learnedWords = this.words
+            .map((w) => {
+                if (this.correct.includes(w.id)) return w.word;
+            })
+            .filter((w) => w)
+            .join(',');
+
+        return {
+            date: this.formateDate(new Date()),
+            learnedWords: learnedWords,
+            totalLearningWords: this.correct.length + this.incorrect.length,
+            seriesMax: this.maxInRow,
+        };
     };
 }
