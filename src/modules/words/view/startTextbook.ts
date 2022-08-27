@@ -14,7 +14,6 @@ export const startTextbook = (isAuthorization: boolean, isReload: boolean) => {
             pageLearnedFromLocaleStorage,
             isAuthorization
         );
-        console.log('4');
     }
 
     if ((window.performance.getEntries()[0] as PerformanceNavigationTiming).type === 'reload') {
@@ -28,7 +27,6 @@ export const startTextbook = (isAuthorization: boolean, isReload: boolean) => {
         window.addEventListener('beforeunload', () => setLocalStorage());
 
         const getLocalStorage = function () {
-            console.log('2');
             if (localStorage.getItem('currentPageGroup')) {
                 const currentPageGroupJSON = localStorage.getItem('currentPageGroup');
                 const currentPageGroup = JSON.parse(currentPageGroupJSON);
@@ -47,9 +45,7 @@ export const startTextbook = (isAuthorization: boolean, isReload: boolean) => {
             );
         };
         window.addEventListener('load', getLocalStorage);
-        console.log('1');
     } else if (isReload) {
-        console.log('3');
         drawTextbook(
             pageTextbookFromLocaleStorage,
             groupTextbookFromLocaleStorage,
