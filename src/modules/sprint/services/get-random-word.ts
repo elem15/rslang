@@ -14,15 +14,16 @@ export const getRandomWord = async (): Promise<sprintWords> => {
     const { data } = wordsState;
     let randomNum = getRandom();
     let { id, word, wordTranslate } = data[randomNum];
-    while (wordsState.usedWordsIds.includes(id)) {
+    let i = 0;
+    while (wordsState.usedWordsIds.includes(id) && i < 20) {
         console.log(randomNum, '!!!');
+        i++;
         randomNum = getRandom();
         id = data[randomNum].id;
         word = data[randomNum].word;
         wordTranslate = data[randomNum].wordTranslate;
     }
     wordsState.usedWordsIds.push(id);
-    console.log(wordsState.usedWordsIds);
     const random = Math.random();
     if (random > 0.5) return { id, word, wordTranslate, translateEqual: true };
     let newRandomNum = getRandom();
