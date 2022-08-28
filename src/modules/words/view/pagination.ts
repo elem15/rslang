@@ -84,8 +84,9 @@ export const pagination = (isAuthorization: boolean, page: number) => {
         }
         const root = document.querySelectorAll('audio');
         root.forEach((el) => {
-            el.remove(); 
+            el.src = '';
             el.srcObject = null;
+            el.remove(); 
         });
         localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };
@@ -106,8 +107,9 @@ export const pagination = (isAuthorization: boolean, page: number) => {
         }
         const root = document.querySelectorAll('audio');
         root.forEach((el) => {
-            el.remove(); 
+            el.src = '';
             el.srcObject = null;
+            el.remove(); 
         });
         localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };
