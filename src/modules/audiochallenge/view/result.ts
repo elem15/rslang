@@ -27,7 +27,7 @@ const makeListOfWords = (collection: Word[], type: string): HTMLElement[] => {
     });
 };
 
-const getBody = (correct: Word[], incorrect: Word[], inRow: number): HTMLElement => {
+const getBody = (correct: Word[], incorrect: Word[], inRow: number, total: number): HTMLElement => {
     const body = document.createElement('div') as HTMLElement;
     const statistic = document.createElement('ul') as HTMLUListElement;
     const right = document.createElement('ul') as HTMLUListElement;
@@ -58,7 +58,7 @@ const getBody = (correct: Word[], incorrect: Word[], inRow: number): HTMLElement
 
     right.append(...makeListOfWords(correct, 'correct'));
     wrong.append(...makeListOfWords(incorrect, 'incorrect'));
-    const percentage = Math.ceil((correct.length / 20) * 100);
+    const percentage = Math.ceil((correct.length / total) * 100);
 
     statisticSection.innerHTML = result;
     (statisticSection.querySelector('.percentage') as SVGTextElement).textContent = `${percentage}%`;
@@ -75,6 +75,7 @@ export const showResult = (
     correct: Word[],
     incorrect: Word[],
     inRow: number,
+    total: number,
     resetHandler: CallableFunction,
     closeHandler: CallableFunction
 ) => {
@@ -83,7 +84,7 @@ export const showResult = (
     const content = document.createElement('div') as HTMLElement;
     const footer = document.createElement('div') as HTMLElement;
     const playAgain = document.createElement('button') as HTMLButtonElement;
-    const body = getBody(correct, incorrect, inRow);
+    const body = getBody(correct, incorrect, inRow, total);
 
     playAgain.addEventListener('click', () => {
         closeResult(modal);

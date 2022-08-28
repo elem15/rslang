@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getWords } from '../services/words';
+import { getUserWordsByDifficulty, getWords } from '../services/words';
 import { Word } from '../../../types';
 import { clear, getElementsList, getRandomWord, getRandomWords } from '../utils';
 import { drawLevels } from '../view/levels';
@@ -71,17 +71,17 @@ export default class Game {
         this.toolbar.prepend(this.mute);
         this.root.prepend(this.toolbar);
         await clear(this.container);
-        this.progress.append(...progress());
 
         this.group = level;
         try {
-            const words = await getWords(this.page, this.group);
+            const words = this.group > 5 ? await getUserWordsByDifficulty() : await getWords(this.page, this.group);
+
             if (typeof words !== 'undefined') {
                 this.words = words;
                 this.current = await getRandomWord(this.selected, this.words);
                 const variants = await getRandomWords(this.current, this.words);
-                this.selected?.push(this.current.id);
-
+                this.selected.push(this.current.word);
+                this.progress.append(...progress(this.words.length));
                 await card(this.container, this.current, variants);
                 this.container.append(this.next);
                 this.render();
@@ -135,7 +135,7 @@ export default class Game {
         if (this.count !== this.words.length) {
             this.current = await getRandomWord(this.selected, this.words);
             const translationVariants = await getRandomWords(this.current, this.words);
-            this.selected.push(this.current.id);
+            this.selected.push(this.current.word);
 
             await card(this.container, this.current, translationVariants);
             this.container.append(this.next);
@@ -170,18 +170,18 @@ export default class Game {
                 this.inRow++;
                 target.classList.add('selected-correct');
                 target.innerHTML = `${checkIcon} ${target.innerText}`;
-                if (this.current) this.correct?.push(this.current.id);
+                if (this.current) this.correct?.push(this.current.word);
             } else {
                 this.updateMaxInRow();
                 this.inRow = 0;
                 target.classList.add('selected-mistake');
                 elementCorrect.classList.add('unselected-correct');
                 path = mistake;
-                if (this.current) this.incorrect?.push(this.current.id);
+                if (this.current) this.incorrect?.push(this.current.word);
             }
         } else {
             elementCorrect.classList.add('unselected-correct');
-            this.incorrect?.push(this.current.id);
+            this.incorrect?.push(this.current.word);
             path = mistake;
         }
 
@@ -228,11 +228,11 @@ export default class Game {
 
     endGame = async (): Promise<void> => {
         this.next.disabled = true;
-        const correct = this.words.filter((item) => this.correct?.includes(item.id));
-        const incorrect = this.words.filter((item) => this.incorrect?.includes(item.id));
+        const correct = this.words.filter((item) => this.correct?.includes(item.word));
+        const incorrect = this.words.filter((item) => this.incorrect?.includes(item.word));
         this.updateMaxInRow();
         clear(this.container);
-        showResult(correct, incorrect, this.maxInRow, this.onRestart, this.onClose);
+        showResult(correct, incorrect, this.maxInRow, this.words.length, this.onRestart, this.onClose);
         this.toggleListeners(false);
     };
 

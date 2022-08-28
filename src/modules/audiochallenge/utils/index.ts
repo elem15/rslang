@@ -29,7 +29,7 @@ export const getRandomWords = async (excludeWord: Word, words: Word[]): Promise<
 };
 
 export const getRandomWord = async (selected: string[], words: Word[]): Promise<Word> => {
-    const filtered = words.filter((word) => !selected.includes(word.id));
+    const filtered = words.filter((word) => !selected.includes(word.word));
     const index = getRandomNumber(words.length - selected.length);
 
     return filtered[index];
