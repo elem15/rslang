@@ -42,31 +42,52 @@ export const getAllHardWords = async (difficulty: string, wordsPerPage = 3600) =
 export const addWordToHardLearned = async (wordId: string, body: { difficulty: string }) => {
     const store: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = store;
-    (
-        await fetch(`${host}/users/${userId}/words/${wordId}`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'Access-Control-Allow-Origin': '*',
-            },
-        })
-    ).json();
+    const wordUserStatus = await getUserWordById(wordId);
+    if (wordUserStatus === undefined) {
+        (
+            await fetch(`${host}/users/${userId}/words/${wordId}`, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+            })
+        ).json();
+    } else {
+        (
+            await fetch(`${host}/users/${userId}/words/${wordId}`, {
+                method: 'PUT',
+                body: JSON.stringify(body),
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+            })
+        ).json();
+    }
 };
 
-export const deleteHardWord = async (wordId: string) => {
+export const getUserWordById = async (wordId: string) => {
     const store: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = store;
-    await fetch(`${host}/users/${userId}/words/${wordId}`, {
-        method: 'DELETE',
-        headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: '*/*',
-        },
-    });
-};
+    try {
+        const response = await fetch(`${host}/users/${userId}/words/${wordId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        });
+        const words = await response.json();
+        return words;
+    } catch {
+        console.log('Word not exist');
+    }
+}
 
 export const getAllUserWords = async () => {
     const store: UserData = JSON.parse(localStorage.getItem('data'));
