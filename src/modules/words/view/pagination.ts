@@ -27,10 +27,12 @@ export const pagination = (isAuthorization: boolean, page: number) => {
             draw(Number(pageTextbook.value), Number(groupTextbook.value), isAuthorization);
             drawPageNav(Number(pageTextbook.value), Number(groupTextbook.value), pageLearned, isAuthorization);
             pagination.style.display = 'flex';
+            localStorage.setItem('currentPageGroup', JSON.stringify({ page: Number(pageTextbook.value), group: groupTextbook.value }));
         }
         if (Number(groupTextbook.value) === groupHardWordsNumber) {
             drawPageDifficultWords(isAuthorization);
             pagination.style.display = 'none';
+            localStorage.setItem('currentPageGroup', JSON.stringify({ page: 0, group: groupTextbook.value }));
         }
         const currentPage = pageTextbook.selectedIndex;
         if (currentPage === quantityPages) {
@@ -45,7 +47,6 @@ export const pagination = (isAuthorization: boolean, page: number) => {
         if (currentPage !== 0) {
             btnLeft.classList.remove('disabled');
         }
-        localStorage.setItem('currentPageGroup', JSON.stringify({ page: pageTextbook.value, group: groupTextbook.value }));
     });
 
     pageTextbook.addEventListener('change', () => {
