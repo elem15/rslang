@@ -3,7 +3,10 @@ import { startTextbook } from './startTextbook';
 
 export const renderWordsList = async (): Promise<void> => {
     const audio = document.querySelectorAll('audio');
-    audio.forEach((el) => el.remove());
+    audio.forEach((el) => {
+        el.remove(); 
+        el.srcObject = null;
+    });
 
     let isReload = false;
     document.querySelector('section') === null ? (isReload = true) : (isReload = false);

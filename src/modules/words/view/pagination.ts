@@ -82,7 +82,10 @@ export const pagination = (isAuthorization: boolean, page: number) => {
             btnRight.classList.remove('disabled');
         }
         const root = document.querySelectorAll('audio');
-        root.forEach((el) => el.remove());
+        root.forEach((el) => {
+            el.remove(); 
+            el.srcObject = null;
+        });
         localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };
 
@@ -101,7 +104,10 @@ export const pagination = (isAuthorization: boolean, page: number) => {
             btnLeft.classList.remove('disabled');
         }
         const root = document.querySelectorAll('audio');
-        root.forEach((el) => el.remove());
+        root.forEach((el) => {
+            el.remove(); 
+            el.srcObject = null;
+        });
         localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };
 
