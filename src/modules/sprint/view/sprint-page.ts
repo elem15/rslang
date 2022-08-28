@@ -69,6 +69,9 @@ export const renderSprintPage = async () => {
     sprint.className = 'sprint-container container';
     sprint.innerHTML = '<h2>SPRINT</h2>';
     root.append(sprint);
+    const header = document.querySelector('header');
+    const links = header.querySelectorAll('button');
+    links.forEach((link: HTMLButtonElement) => (link.disabled = true));
     const counterWrapper = await renderPreCounter();
     sprint.append(counterWrapper);
 };
