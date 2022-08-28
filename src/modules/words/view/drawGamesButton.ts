@@ -9,11 +9,11 @@ export const addListenerGameButton = () => {
     
     buttonGameAudio.addEventListener('click', () => {
         localStorage.setItem('router', Router.GAME_1);
-        renderPage(Router.GAME_1, game1Link);
+        renderPage(Router.GAME_1, game1Link, true);
     });
     
     buttonGameSprint.addEventListener('click', () => {
         localStorage.setItem('router', Router.SPRINT);
-        renderPage(Router.SPRINT, sprintLink);
+        renderPage(Router.SPRINT, sprintLink, true);
     });
 }
