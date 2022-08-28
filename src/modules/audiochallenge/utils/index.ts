@@ -20,7 +20,8 @@ export const getRandomNumber = (max: number): number => Math.floor(Math.random()
 export const getRandomWords = async (excludeWord: Word, words: Word[]): Promise<Word[]> => {
     const arr: Word[] = [];
     arr.push(excludeWord);
-    while (arr.length < 5) {
+    const max = words.length < 5 ? words.length : 5;
+    while (arr.length < max) {
         const index = getRandomNumber(Math.random() * words.length);
         const next = words[index];
         if (!arr.includes(next)) arr.push(next);
