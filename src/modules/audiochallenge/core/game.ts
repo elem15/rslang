@@ -14,6 +14,9 @@ import { mute } from '../view/switcher';
 import { showManual } from '../view/manual';
 import { StatisticsType, updateStatistics } from '../services/statistics';
 import { getUser } from '../services/auth';
+import { toolbar } from '../view/toolbar';
+import { Router } from '../../../types/router-types';
+import { renderPage } from '../../router/services/router';
 
 export default class Game {
     root: HTMLElement;
@@ -22,6 +25,7 @@ export default class Game {
     container: HTMLElement;
     next: HTMLButtonElement;
     audio: HTMLAudioElement;
+    toolbar: HTMLElement;
 
     words: Word[] = [];
     group: number;
@@ -41,6 +45,7 @@ export default class Game {
     constructor(root: HTMLElement, group?: number) {
         this.root = root;
         this.mute = mute();
+        this.toolbar = toolbar(this.onClose);
         this.container = <HTMLElement>document.createElement('div');
         this.progress = <HTMLElement>document.createElement('div');
         this.next = <HTMLButtonElement>document.createElement('button');
@@ -59,7 +64,8 @@ export default class Game {
 
     onLevelSelect = async (level: number): Promise<void> => {
         this.toggleListeners();
-        this.root.prepend(this.mute);
+        this.toolbar.prepend(this.mute);
+        this.root.prepend(this.toolbar);
         await clear(this.container);
         this.progress.append(...progress());
 
@@ -88,9 +94,10 @@ export default class Game {
     onKeyPress = async (e: Event): Promise<void> => {
         switch ((e as KeyboardEvent).key) {
             case 'Enter':
-                if (this.canMoveToNext) this.onNextWord();
+                this.canMoveToNext ? this.onNextWord() : this.onSelectVariant(e);
                 break;
             case ' ':
+                e.preventDefault();
                 this.playAudio(`${host}/${this.current.audio}`);
                 break;
             case '1':
@@ -106,6 +113,10 @@ export default class Game {
                 else this.onSelectVariant(e);
                 break;
             case '4':
+                if (this.canMoveToNext) return;
+                else this.onSelectVariant(e);
+                break;
+            case '5':
                 if (this.canMoveToNext) return;
                 else this.onSelectVariant(e);
                 break;
@@ -166,6 +177,7 @@ export default class Game {
             }
         } else {
             elementCorrect.classList.add('unselected-correct');
+            this.incorrect?.push(this.current.id);
             path = mistake;
         }
 
@@ -216,7 +228,7 @@ export default class Game {
         const incorrect = this.words.filter((item) => this.incorrect?.includes(item.id));
         this.updateMaxInRow();
         clear(this.container);
-        showResult(correct, incorrect, this.maxInRow, this.onRestart);
+        showResult(correct, incorrect, this.maxInRow, this.onRestart, this.onClose);
         this.toggleListeners(false);
     };
 
@@ -255,6 +267,15 @@ export default class Game {
         this.toggleListeners(true);
     };
 
+    onClose = () => {
+        this.resetGame();
+        this.toggleListeners(false);
+        const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
+        localStorage.setItem('router', Router.MAIN);
+        document.location.hash = `#${Router.MAIN}`;
+        renderPage(Router.MAIN, mainLink);
+    };
+
     toggleListeners = (needToAdd = true): void => {
         if (needToAdd) {
             this.next.addEventListener('click', this.onClickNext);
@@ -266,11 +287,7 @@ export default class Game {
     };
 
     formateDate = (date: Date): string => {
-        return date.toLocaleDateString('ru-RU', {
-            day: 'numeric',
-            month: 'numeric',
-            year: 'numeric',
-        });
+        return date.toLocaleDateString('ru-RU');
     };
 
     prepareStatistics = (): StatisticsType => {
