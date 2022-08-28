@@ -71,7 +71,13 @@ const getBody = (correct: Word[], incorrect: Word[], inRow: number): HTMLElement
     return body;
 };
 
-export const showResult = (correct: Word[], incorrect: Word[], inRow: number, handler: CallableFunction) => {
+export const showResult = (
+    correct: Word[],
+    incorrect: Word[],
+    inRow: number,
+    resetHandler: CallableFunction,
+    closeHandler: CallableFunction
+) => {
     const modal = document.createElement('div') as HTMLElement;
     const dialog = document.createElement('div') as HTMLElement;
     const content = document.createElement('div') as HTMLElement;
@@ -81,7 +87,7 @@ export const showResult = (correct: Word[], incorrect: Word[], inRow: number, ha
 
     playAgain.addEventListener('click', () => {
         closeResult(modal);
-        setTimeout(() => handler(), 200);
+        setTimeout(() => resetHandler(), 200);
     });
 
     modal.classList.add('modal', 'fade');
@@ -120,6 +126,7 @@ export const showResult = (correct: Word[], incorrect: Word[], inRow: number, ha
 
     close.addEventListener('click', () => {
         closeResult(modal);
+        setTimeout(() => closeHandler(), 200);
     });
 
     document.body.append(modal);
