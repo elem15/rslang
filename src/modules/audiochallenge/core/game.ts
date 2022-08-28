@@ -29,6 +29,7 @@ export default class Game {
 
     words: Word[] = [];
     group: number;
+    page: number;
     current: Word | undefined;
     count: number;
     answers: HTMLElement[] = [];
@@ -38,11 +39,12 @@ export default class Game {
     incorrect?: string[] = [];
     canMoveToNext = false;
     isRestartGame = false;
+    isFromBook: boolean;
     isMute: boolean;
     inRow = 0;
     maxInRow = 0;
 
-    constructor(root: HTMLElement, group?: number) {
+    constructor(root: HTMLElement, fromBook = false, group?: number, page?: number) {
         this.root = root;
         this.mute = mute();
         this.toolbar = toolbar(this.onClose);
@@ -54,12 +56,14 @@ export default class Game {
         this.selected = [];
         this.count = 0;
         this.group = group || 0;
+        this.page = page || Math.floor(Math.random() * 30);
+        this.isFromBook = fromBook;
     }
 
     start = async (): Promise<void> => {
         await this.beforeGame();
         await this.render();
-        if (!this.isRestartGame) showManual();
+        if (!this.isRestartGame && !this.isFromBook) showManual();
     };
 
     onLevelSelect = async (level: number): Promise<void> => {
@@ -71,7 +75,7 @@ export default class Game {
 
         this.group = level;
         try {
-            const words = await getWords(Math.floor(Math.random() * 31), this.group);
+            const words = await getWords(this.page, this.group);
             if (typeof words !== 'undefined') {
                 this.words = words;
                 this.current = await getRandomWord(this.selected, this.words);
@@ -249,7 +253,10 @@ export default class Game {
     };
 
     beforeGame = async (): Promise<void> => {
-        this.group === 0 && !this.isRestartGame ? await this.showLevels() : await this.onLevelSelect(this.group);
+        if (this.group === 0 && !this.isRestartGame) await this.showLevels();
+        else {
+            await this.onLevelSelect(this.group);
+        }
         this.progress.classList.add('game__progress');
         this.container.className = 'game';
         this.next.classList.add('game__next_word');
