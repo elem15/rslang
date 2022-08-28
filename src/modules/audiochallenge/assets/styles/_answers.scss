@@ -33,6 +33,9 @@
       line-height: 1.5em;
       letter-spacing: .0125em;
     }
+    &:hover{
+      background-color: rgba($light, .2);
+    }
   }
 }
 
