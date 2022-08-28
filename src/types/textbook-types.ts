@@ -45,7 +45,7 @@ export interface pageLearnedPagesGroup {
 }
 
 export interface BodyRequest {
-    wordsPerDay: number;
+    wordsPerDay?: number;
     optional?: Optional;
 }
 

@@ -2,13 +2,13 @@ import { draw, drawPageDifficultWords, drawPageNav, pageLearned } from './draw';
 const quantityPages = 29;
 const groupHardWordsNumber = 6;
 
-export const pagination = (isAuthorization: boolean) => {
+export const pagination = (isAuthorization: boolean, page: number) => {
     const btnLeft = document.querySelector('.page-item__previous') as HTMLLIElement;
     const btnRight = document.querySelector('.page-item__next') as HTMLLIElement;
-    const pagination = document.querySelector('.pagination') as HTMLUListElement;
+    const pagination = document.querySelector('.navigation') as HTMLUListElement;
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
-    const currentPage = pageTextbook.selectedIndex;
+    const currentPage = Number(page);
     if (currentPage === quantityPages) {
         btnRight.classList.add('disabled');
     }
@@ -45,6 +45,7 @@ export const pagination = (isAuthorization: boolean) => {
         if (currentPage !== 0) {
             btnLeft.classList.remove('disabled');
         }
+        localStorage.setItem('currentPageGroup', JSON.stringify({ page: pageTextbook.value, group: groupTextbook.value }));
     });
 
     pageTextbook.addEventListener('change', () => {
@@ -63,6 +64,7 @@ export const pagination = (isAuthorization: boolean) => {
         if (currentPage !== 0) {
             btnLeft.classList.remove('disabled');
         }
+        localStorage.setItem('currentPageGroup', JSON.stringify({ page: pageTextbook.value, group: groupTextbook.value }));
     });
 
     const moveLeft = () => {
@@ -81,6 +83,7 @@ export const pagination = (isAuthorization: boolean) => {
         }
         const root = document.querySelectorAll('audio');
         root.forEach((el) => el.remove());
+        localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };
 
     btnLeft.addEventListener('click', moveLeft);
@@ -99,6 +102,7 @@ export const pagination = (isAuthorization: boolean) => {
         }
         const root = document.querySelectorAll('audio');
         root.forEach((el) => el.remove());
+        localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };
 
     btnRight.addEventListener('click', moveRight);

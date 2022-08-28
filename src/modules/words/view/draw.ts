@@ -13,6 +13,7 @@ import { addLearnedWords, addWordsForHardWordsPage, deleteWordsFromHardWordsPage
 import { host } from '../../auth/controllers/hosts';
 import { addAllLearnedMessage } from './messageAllLearned';
 import audioImage from '../assets/images/volume.svg';
+import { addListenerGameButton } from './drawGamesButton';
 
 const groupTextbookColor = ['&#x1f534;', '&#x1f7e0;', '&#x1f7e1;', '&#x1f7e2;', '&#x1f535;', '&#x1f7e3;', '&#x1f7e4;'];
 const quantityGroups = 5;
@@ -197,11 +198,12 @@ export const drawTextbook = (
     if (Number(groupTextbook.value) !== groupHardWordsNumber)
         draw(pageTextbookFromLocaleStorage, groupTextbookFromLocaleStorage, isAuthorization);
     if (Number(groupTextbook.value) === groupHardWordsNumber) drawPageDifficultWords(isAuthorization);
-
-    pagination(isAuthorization);
+    
+    addListenerGameButton();
+    pagination(isAuthorization, pageTextbookFromLocaleStorage);
 };
 
-export const drawPageNav = (
+export const drawPageNav = async (
     page: number,
     group: number,
     pageLearnedDraw: pageLearnedPagesGroup[] = [],
@@ -210,16 +212,27 @@ export const drawPageNav = (
     if (!isAuthorization) {
         pageLearnedDraw = [];
     }
+
+    if (isAuthorization) {
+        const pageLearnedResponse = await getSettings();
+        let pageLearnedObject: OptionalFromResponse;
+        if (pageLearnedResponse) {
+            pageLearnedObject = pageLearnedResponse.optional;
+            if (pageLearnedObject) {
+                pageLearnedDraw = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
+            }
+        }
+    }
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
-    const pagination = document.querySelector('.pagination') as HTMLSelectElement;
+    const pagination = document.querySelector('.navigation') as HTMLSelectElement;
     if (Number(groupTextbook.value) === groupHardWordsNumber) pagination.style.display = 'none';
     if (Number(groupTextbook.value) !== groupHardWordsNumber) {
         pageTextbook.innerHTML = '';
         for (let i = 0; i <= quantityPages; i++) {
             const pageElement = document.createElement('option');
             const itemFind = pageLearnedDraw.find((el) => {
-                return el.page === i && el.group === group;
+                return el.page === i && el.group === Number(group);
             });
             if (itemFind) pageElement.innerHTML = `&#9989; &nbsp; Страница ${i + 1}`;
             if (!itemFind) pageElement.innerHTML = `&#x1F56E &nbsp; Страница ${i + 1}`;
@@ -233,14 +246,13 @@ export const drawPageNav = (
 
 export const changePageIconLearned = async (page: number, group: number) => {
     const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-    pageElement[page].innerHTML = `&#9989; &nbsp; Страница ${page + 1}`;
+    pageElement[page].innerHTML = `&#9989; &nbsp; Страница ${Number(page) + 1}`;
     pageLearned = pageLearned.filter((el) => {
         return el.page !== page || el.group !== group;
     });
     pageLearned.push({ page: page, group: group });
 
     await updateSettings({
-        wordsPerDay: 1,
         optional: Object.assign({}, pageLearned),
     });
 };
@@ -249,12 +261,11 @@ export const changePageIconDefault = async (page: number, group: number) => {
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     if (Number(groupTextbook.value) !== groupHardWordsNumber) {
         const pageElement = document.querySelector('.form-select.page') as HTMLSelectElement;
-        pageElement[page].innerHTML = `&#x1F56E &nbsp; Страница ${page + 1}`;
+        pageElement[page].innerHTML = `&#x1F56E &nbsp; Страница ${Number(page) + 1}`;
         pageLearned = pageLearned.filter((el) => {
             return el.page !== page || el.group !== group;
         });
         await updateSettings({
-            wordsPerDay: 1,
             optional: Object.assign({}, pageLearned),
         });
     }
