@@ -13,7 +13,7 @@ const removeClassActive = () => {
     });
 };
 
-export const renderPage = (router: string, button: HTMLElement) => {
+export const renderPage = (router: string, button: HTMLElement, fromBook = false) => {
     router = router ? router : localStorage.getItem('router') ? localStorage.getItem('router') : Router.MAIN;
     button = button ? button : (document.querySelector(`.${router}`) as HTMLElement);
     const email = localStorage.getItem('email');
@@ -28,7 +28,7 @@ export const renderPage = (router: string, button: HTMLElement) => {
             renderWordsList();
             break;
         case Router.GAME_1:
-            renderGame1Page();
+            renderGame1Page(fromBook);
             break;
         case Router.SPRINT:
             renderSprintPage();
