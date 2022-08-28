@@ -12,7 +12,7 @@ export function renderCounter() {
     const interval = setInterval(() => {
         i++;
         counter.innerHTML = '' + i;
-        if (i >= 5) {
+        if (i >= 15) {
             clearInterval(interval);
             messageModal('Игра закончена');
             links.forEach((link: HTMLButtonElement) => (link.disabled = false));

@@ -20,12 +20,35 @@
 .textbook-navigation {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 20px;
     padding-top: 20px;
     @media (max-width: 767px) {
         flex-direction: column;
         align-items: center;
     }
+}
+
+.page-item {
+    width: 90px;
+    text-align: center;
+    @media (max-width: 767px) {
+        display: none;
+    }
+}
+
+.game__button {
+    display: flex;
+    gap: 20px;
+}
+
+.game__button-audio,
+.game__button-sprint {
+    box-sizing: border-box;
+    padding-left: 0;
+    padding-right: 0;
+    width: 120px;
+    background-color: white;
 }
 
 .items-container {

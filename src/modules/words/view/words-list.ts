@@ -34,6 +34,10 @@ export const renderWordsList = async (): Promise<void> => {
                         </li>
                     </ul>
                 </nav>
+                <div class="game__button">
+                    <button class="button game__button-audio">Аудиовызов</button>
+                    <button class="button game__button-sprint">Спринт</button> 
+                </div>
             </div>
             <div class="items-container"></div>
         </div>

@@ -8,6 +8,16 @@ export const startTextbook = (isAuthorization: boolean, isReload: boolean) => {
     let groupTextbookFromLocaleStorage = 0;
     let pageLearnedFromLocaleStorage: pageLearnedPagesGroup[] = [];
     if (!isReload) {
+        if (localStorage.getItem('currentPageGroup')) {
+            const currentPageGroupJSON = localStorage.getItem('currentPageGroup');
+            const currentPageGroup = JSON.parse(currentPageGroupJSON);
+            pageTextbookFromLocaleStorage = currentPageGroup.page < 0 ? 0 : currentPageGroup.page;
+            groupTextbookFromLocaleStorage = currentPageGroup.group < 0 ? 0 : currentPageGroup.group;
+        }
+        if (localStorage.getItem('pageLearned')) {
+            const pageLearnedJSON = localStorage.getItem('pageLearned');
+            pageLearnedFromLocaleStorage = JSON.parse(pageLearnedJSON);
+        }
         drawTextbook(
             pageTextbookFromLocaleStorage,
             groupTextbookFromLocaleStorage,
