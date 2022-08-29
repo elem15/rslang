@@ -87,7 +87,7 @@ export default class Game {
                 this.render();
             }
         } catch (Exception) {
-            console.log(Exception);
+            console.error(Exception);
         }
     };
 
@@ -300,7 +300,7 @@ export default class Game {
     prepareStatistics = (): StatisticsType => {
         const learnedWords = this.words
             .map((w) => {
-                if (this.correct.includes(w.id)) return w.word;
+                if (this.correct.includes(w.word)) return w.word;
             })
             .filter((w) => w)
             .join(',');
