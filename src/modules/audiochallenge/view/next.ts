@@ -1,6 +1,7 @@
-import { host, soundIcon } from '../core/settings';
+import { soundIcon } from '../core/settings';
 import { Word } from '../../../types';
 import { clear } from '../utils';
+import { host } from '../../auth/controllers/hosts';
 
 const drawAnswersItem = (card: HTMLElement, word: Word, index: number) => {
     const answerItem = document.createElement('label') as HTMLElement;
@@ -22,9 +23,9 @@ export const nextWord = async (container: HTMLElement, word: Word, answers: Word
     const card = document.createElement('div') as HTMLDivElement;
     const imageContainer = document.createElement('div') as HTMLElement;
 
-    audio.src = `${host}${word.audio}`;
+    audio.src = `${host}/${word.audio}`;
     audio.autoplay = true;
-    image.src = `${host}${word.image}`;
+    image.src = `${host}/${word.image}`;
     image.alt = `${word.word}`;
     button.className = 'word__sound';
     button.innerHTML = soundIcon;

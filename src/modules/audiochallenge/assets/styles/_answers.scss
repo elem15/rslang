@@ -1,5 +1,6 @@
 .answers{
   display: flex;
+  flex-wrap: wrap;
   padding: 2rem 0;
   justify-content: center;
   &__item{
@@ -13,11 +14,11 @@
       margin: 0 .25rem;
     }
     &.selected-correct{
-      background-color: rgba($color: lightgreen, $alpha: .5);
+      background-color: $teal-500;
         color: $white;
     }
     &.unselected-correct{
-      background-color: rgba($color: lightgreen, $alpha: .5);
+      background-color: $teal-500;
       color: $white;
     }
     &.unselected{
@@ -31,6 +32,9 @@
       padding: 0 .25rem 0 0;
       line-height: 1.5em;
       letter-spacing: .0125em;
+    }
+    &:hover{
+      background-color: rgba($light, .2);
     }
   }
 }

@@ -1,5 +1,7 @@
-import { host, soundIcon, statisticCircleGraph } from '../core/settings';
+import { soundIcon } from '../core/settings';
 import { Word } from '../../../types';
+import { host } from '../../auth/controllers/hosts';
+import result from '../assets/images/result.svg';
 
 const playAudio = async (e: MouseEvent): Promise<void> => {
     let target = e.target as HTMLElement;
@@ -25,7 +27,7 @@ const makeListOfWords = (collection: Word[], type: string): HTMLElement[] => {
     });
 };
 
-const getBody = (correct: Word[], incorrect: Word[], inRow: number): HTMLElement => {
+const getBody = (correct: Word[], incorrect: Word[], inRow: number, total: number): HTMLElement => {
     const body = document.createElement('div') as HTMLElement;
     const statistic = document.createElement('ul') as HTMLUListElement;
     const right = document.createElement('ul') as HTMLUListElement;
@@ -46,9 +48,9 @@ const getBody = (correct: Word[], incorrect: Word[], inRow: number): HTMLElement
     wrongParagraph.classList.add('h6', 'text-muted');
 
     statistic.innerHTML = `
-        <li class="game__statistic__item">In row<span class="badge badge-warning">${inRow}</span></li>
-        <li class="game__statistic__item">Correct<span class="badge badge-success">${rightQty}</span></li>
-        <li class="game__statistic__item">Wrong<span class="badge badge-danger">${wrongQty}</span></li>
+        <li class="game__statistic__item">In row<span class="badge bg-warning">${inRow}</span></li>
+        <li class="game__statistic__item">Correct<span class="badge bg-success">${rightQty}</span></li>
+        <li class="game__statistic__item">Wrong<span class="badge bg-danger">${wrongQty}</span></li>
     `;
 
     rightParagraph.innerHTML = `Correct&nbsp;<span class="badge bg-success text-light">${rightQty}</span>`;
@@ -56,11 +58,12 @@ const getBody = (correct: Word[], incorrect: Word[], inRow: number): HTMLElement
 
     right.append(...makeListOfWords(correct, 'correct'));
     wrong.append(...makeListOfWords(incorrect, 'incorrect'));
+    const percentage = Math.ceil((correct.length / total) * 100);
 
-    statisticSection.innerHTML = statisticCircleGraph;
-    statisticSection
-        .querySelector('path')
-        ?.setAttribute('stroke-dasharray', `${Math.ceil((correct.length / 20) * 100)} ,100`);
+    statisticSection.innerHTML = result;
+    (statisticSection.querySelector('.percentage') as SVGTextElement).textContent = `${percentage}%`;
+    statisticSection.querySelector('.circle-bg')?.setAttribute('stroke-dasharray', `${percentage} ,100`);
+    statisticSection.querySelector('.circle')?.setAttribute('stroke-dasharray', `${percentage} ,100`);
     statisticSection.appendChild(statistic);
 
     body.append(statisticSection, rightParagraph, right, wrongParagraph, wrong);
@@ -68,17 +71,24 @@ const getBody = (correct: Word[], incorrect: Word[], inRow: number): HTMLElement
     return body;
 };
 
-export const showResult = (correct: Word[], incorrect: Word[], handler: CallableFunction) => {
+export const showResult = (
+    correct: Word[],
+    incorrect: Word[],
+    inRow: number,
+    total: number,
+    resetHandler: CallableFunction,
+    closeHandler: CallableFunction
+) => {
     const modal = document.createElement('div') as HTMLElement;
     const dialog = document.createElement('div') as HTMLElement;
     const content = document.createElement('div') as HTMLElement;
     const footer = document.createElement('div') as HTMLElement;
     const playAgain = document.createElement('button') as HTMLButtonElement;
-    const body = getBody(correct, incorrect, 0);
+    const body = getBody(correct, incorrect, inRow, total);
 
     playAgain.addEventListener('click', () => {
         closeResult(modal);
-        setTimeout(() => handler(), 200);
+        setTimeout(() => resetHandler(), 200);
     });
 
     modal.classList.add('modal', 'fade');
@@ -96,8 +106,7 @@ export const showResult = (correct: Word[], incorrect: Word[], handler: Callable
         'afterbegin',
         `<div class="modal-header">
         <h5 class="modal-title">Result</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
         </button>
         </div>`
     );
@@ -111,13 +120,14 @@ export const showResult = (correct: Word[], incorrect: Word[], handler: Callable
         (el as HTMLElement).addEventListener('click', playAudio);
     });
 
-    const close = content.querySelector('.close') as HTMLButtonElement;
+    const close = content.querySelector('.btn-close') as HTMLButtonElement;
     setTimeout(() => {
         modal.classList.add('show');
     }, 200);
 
     close.addEventListener('click', () => {
         closeResult(modal);
+        setTimeout(() => closeHandler(), 200);
     });
 
     document.body.append(modal);
