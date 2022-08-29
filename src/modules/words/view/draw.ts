@@ -1,4 +1,5 @@
 import {
+    BodyRequest,
     Dictionary,
     DictionaryHardWord,
     Difficulty,
@@ -39,7 +40,10 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
         if (pageLearnedResponse) {
             pageLearnedObject = pageLearnedResponse.optional;
             if (pageLearnedObject) {
-                pageLearned = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
+                const pageLearnedObjectArrayType = pageLearnedObject.pages
+                if (pageLearnedObjectArrayType) {
+                    pageLearned = Object.keys(pageLearnedObjectArrayType).map((key) => pageLearnedObjectArrayType[key]);
+                }
             }
         }
 
@@ -214,15 +218,20 @@ export const drawPageNav = async (
     }
 
     if (isAuthorization) {
+
         const pageLearnedResponse = await getSettings();
         let pageLearnedObject: OptionalFromResponse;
         if (pageLearnedResponse) {
             pageLearnedObject = pageLearnedResponse.optional;
             if (pageLearnedObject) {
-                pageLearnedDraw = Object.keys(pageLearnedObject).map((key) => pageLearnedObject[key]);
+                const pageLearnedObjectArrayType = pageLearnedObject.pages
+                if (pageLearnedObjectArrayType) {
+                    pageLearned = Object.keys(pageLearnedObjectArrayType).map((key) => pageLearnedObjectArrayType[key]);
+                }
             }
         }
     }
+    
     const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
     const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
     const pagination = document.querySelector('.navigation') as HTMLSelectElement;
@@ -253,7 +262,7 @@ export const changePageIconLearned = async (page: number, group: number) => {
     pageLearned.push({ page: page, group: group });
 
     await updateSettings({
-        optional: Object.assign({}, pageLearned),
+        optional: {pages: Object.assign({}, pageLearned)},
     });
 };
 
@@ -265,8 +274,9 @@ export const changePageIconDefault = async (page: number, group: number) => {
         pageLearned = pageLearned.filter((el) => {
             return el.page !== page || el.group !== group;
         });
+        console.log({optional: {pages: Object.assign({}, pageLearned)}})
         await updateSettings({
-            optional: Object.assign({}, pageLearned),
+            optional: {pages: Object.assign({}, pageLearned)},
         });
     }
 };

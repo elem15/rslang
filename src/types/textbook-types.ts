@@ -39,10 +39,7 @@ export interface UserWords {
     wordId: string;
 }
 
-export interface pageLearnedPagesGroup {
-    page: number;
-    group: number;
-}
+
 
 export interface BodyRequest {
     wordsPerDay?: number;
@@ -50,10 +47,22 @@ export interface BodyRequest {
 }
 
 export interface Optional {
+    pages: Pages;
+}
+
+export interface Pages {
     [index: number]: pageLearnedPagesGroup;
+}
+export interface pageLearnedPagesGroup {
+    page: number;
+    group: number;
 }
 
 export interface OptionalFromResponse {
+    pages: PagesFromResponse;
+}
+
+export interface PagesFromResponse {
     [index: string]: pageLearnedPagesGroup;
 }
 
