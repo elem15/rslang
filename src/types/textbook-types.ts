@@ -39,10 +39,7 @@ export interface UserWords {
     wordId: string;
 }
 
-export interface pageLearnedPagesGroup {
-    page: number;
-    group: number;
-}
+
 
 export interface BodyRequest {
     wordsPerDay?: number;
@@ -50,12 +47,24 @@ export interface BodyRequest {
 }
 
 export interface Optional {
-    [index: number]: pageLearnedPagesGroup;
+    pages: Pages;
 }
 
-export interface OptionalFromResponse {
-    [index: string]: pageLearnedPagesGroup;
+export interface Pages {
+    [index: number]: pageLearnedPagesGroup;
 }
+export interface pageLearnedPagesGroup {
+    page: number;
+    group: number;
+}
+
+// export interface OptionalFromResponse {
+//     pages: PagesFromResponse;
+// }
+
+// export interface PagesFromResponse {
+//     [index: string]: pageLearnedPagesGroup;
+// }
 
 export enum Difficulty {
     hard = 'hard',
