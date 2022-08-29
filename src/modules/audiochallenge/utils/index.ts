@@ -17,7 +17,7 @@ export const clear = async (container: HTMLElement): Promise<void> => {
 
 export const getRandomNumber = (max: number): number => Math.floor(Math.random() * max);
 
-export const getRandomWords = async (excludeWord: Word, words: Word[]): Promise<Word[]> => {
+export const generateWords = async (excludeWord: Word, words: Word[]): Promise<Word[]> => {
     const arr: Word[] = [];
     arr.push(excludeWord);
     const max = words.length < 5 ? words.length : 5;
@@ -29,7 +29,7 @@ export const getRandomWords = async (excludeWord: Word, words: Word[]): Promise<
     return shuffle(arr);
 };
 
-export const getRandomWord = async (selected: string[], words: Word[]): Promise<Word> => {
+export const generateWord = async (selected: string[], words: Word[]): Promise<Word> => {
     const filtered = words.filter((word) => !selected.includes(word.word));
     const index = getRandomNumber(words.length - selected.length);
 
