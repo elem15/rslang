@@ -227,12 +227,14 @@ export default class Game {
     };
 
     endGame = async (): Promise<void> => {
-        this.next.disabled = true;
         const correct = this.words.filter((item) => this.correct?.includes(item.word));
         const incorrect = this.words.filter((item) => this.incorrect?.includes(item.word));
+
+        this.next.disabled = true;
         this.updateMaxInRow();
         clear(this.container);
         showResult(correct, incorrect, this.maxInRow, this.words.length, this.onRestart, this.onClose);
+        if (this.isFromBook) updateStatistics(getUser(), this.prepareStatistics());
         this.toggleListeners(false);
     };
 
@@ -254,9 +256,8 @@ export default class Game {
 
     beforeGame = async (): Promise<void> => {
         if (this.group === 0 && !this.isRestartGame) await this.showLevels();
-        else {
-            await this.onLevelSelect(this.group);
-        }
+        else await this.onLevelSelect(this.group);
+
         this.progress.classList.add('game__progress');
         this.container.className = 'game';
         this.next.classList.add('game__next_word');
@@ -268,7 +269,6 @@ export default class Game {
     };
 
     onRestart = () => {
-        updateStatistics(getUser(), this.prepareStatistics());
         this.resetGame();
         this.start();
         this.toggleListeners(true);
