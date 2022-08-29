@@ -58,13 +58,13 @@ export interface pageLearnedPagesGroup {
     group: number;
 }
 
-export interface OptionalFromResponse {
-    pages: PagesFromResponse;
-}
+// export interface OptionalFromResponse {
+//     pages: PagesFromResponse;
+// }
 
-export interface PagesFromResponse {
-    [index: string]: pageLearnedPagesGroup;
-}
+// export interface PagesFromResponse {
+//     [index: string]: pageLearnedPagesGroup;
+// }
 
 export enum Difficulty {
     hard = 'hard',

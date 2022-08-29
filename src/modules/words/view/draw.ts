@@ -1,9 +1,8 @@
 import {
-    BodyRequest,
     Dictionary,
     DictionaryHardWord,
     Difficulty,
-    OptionalFromResponse,
+    Optional,
     pageLearnedPagesGroup,
     UserWords,
 } from '../../../types/textbook-types';
@@ -36,13 +35,13 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
 
     if (isAuthorization) {
         const pageLearnedResponse = await getSettings();
-        let pageLearnedObject: OptionalFromResponse;
+        let pageLearnedObject: Optional;
         if (pageLearnedResponse) {
             pageLearnedObject = pageLearnedResponse.optional;
             if (pageLearnedObject) {
                 const pageLearnedObjectArrayType = pageLearnedObject.pages
                 if (pageLearnedObjectArrayType) {
-                    pageLearned = Object.keys(pageLearnedObjectArrayType).map((key) => pageLearnedObjectArrayType[key]);
+                    pageLearned = Object.keys(pageLearnedObjectArrayType).map((key) => pageLearnedObjectArrayType[Number(key)]);
                 }
             }
         }
@@ -220,13 +219,13 @@ export const drawPageNav = async (
     if (isAuthorization) {
 
         const pageLearnedResponse = await getSettings();
-        let pageLearnedObject: OptionalFromResponse;
+        let pageLearnedObject: Optional;
         if (pageLearnedResponse) {
             pageLearnedObject = pageLearnedResponse.optional;
             if (pageLearnedObject) {
                 const pageLearnedObjectArrayType = pageLearnedObject.pages
                 if (pageLearnedObjectArrayType) {
-                    pageLearned = Object.keys(pageLearnedObjectArrayType).map((key) => pageLearnedObjectArrayType[key]);
+                    pageLearned = Object.keys(pageLearnedObjectArrayType).map((key) => pageLearnedObjectArrayType[Number(key)]);
                 }
             }
         }
@@ -274,7 +273,6 @@ export const changePageIconDefault = async (page: number, group: number) => {
         pageLearned = pageLearned.filter((el) => {
             return el.page !== page || el.group !== group;
         });
-        console.log({optional: {pages: Object.assign({}, pageLearned)}})
         await updateSettings({
             optional: {pages: Object.assign({}, pageLearned)},
         });
