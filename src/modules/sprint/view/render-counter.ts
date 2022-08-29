@@ -14,16 +14,11 @@ export function renderCounter() {
         counter.innerHTML = '' + i;
         if (i >= 15) {
             clearInterval(interval);
+            document.querySelector('.modal').remove();
             messageModal('Игра закончена');
             links.forEach((link: HTMLButtonElement) => (link.disabled = false));
         }
     }, 1000);
-    document
-        .querySelector('.sprint-container')
-        .insertAdjacentHTML(
-            'afterbegin',
-            `<button type="button" class="btn-close sprint-close" data-bs-dismiss="modal" aria-label="Close"></button>`
-        );
     document.querySelector('.sprint-close').addEventListener('click', () => {
         clearInterval(interval);
         const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;

@@ -32,7 +32,7 @@ export const messageModal = (message: string) => {
     modal.style.display = 'flex';
     modal.style.backgroundColor = 'rgba(100,100,100,0.3)';
     modal.innerHTML = `
-    <div class="modal-dialog">
+    <div class="modal-dialog" id="message-modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel"></h5>
@@ -49,4 +49,5 @@ export const messageModal = (message: string) => {
   `;
     document.querySelector('.sprint-container').append(modal);
     removeModal(modal);
+    return modal;
 };

@@ -1,6 +1,8 @@
 import { removeFooter } from '../../main/view/main-page';
 import { wordsState } from '../services/words-state';
 import { getWord, renderPreCounter } from './render-pre-counter';
+import '../scss/styles.scss';
+import img from '../../../images/palm.gif';
 import success from '../../audiochallenge/assets/sounds/success.wav';
 import mistake from '../../audiochallenge/assets/sounds/error.mp3';
 
@@ -12,23 +14,23 @@ function play(src: string) {
 //==============
 
 const getMark = (translateEqual: boolean) => {
-    const sprint = document.querySelector('.sprint-container');
+    const modalTitle = document.querySelector('.modal-title');
     if (translateEqual) {
         const rightAnswer = document.createElement('div');
         rightAnswer.className = 'text-success equal';
         rightAnswer.innerText = 'ВЕРНО';
-        const equal = sprint.querySelector('.equal');
+        const equal = modalTitle.querySelector('.equal');
         if (equal) equal.remove();
-        sprint.append(rightAnswer);
+        modalTitle.append(rightAnswer);
         setTimeout(() => rightAnswer.remove(), 700);
         play(success);
     } else {
         const wrongAnswer = document.createElement('div');
         wrongAnswer.className = 'text-danger equal';
         wrongAnswer.innerText = 'НЕ ВЕРНО';
-        const equal = sprint.querySelector('.equal');
+        const equal = modalTitle.querySelector('.equal');
         if (equal) equal.remove();
-        sprint.append(wrongAnswer);
+        modalTitle.append(wrongAnswer);
         setTimeout(() => wrongAnswer.remove(), 700);
         play(mistake);
     }
@@ -67,11 +69,16 @@ export const renderSprintPage = async () => {
     removeFooter();
     const sprint = document.createElement('section');
     sprint.className = 'sprint-container container';
-    sprint.innerHTML = '<h2>SPRINT</h2>';
+    sprint.innerHTML = '<h1 class="text-center">SPRINT</h1>';
     root.append(sprint);
     const header = document.querySelector('header');
     const links = header.querySelectorAll('button');
     links.forEach((link: HTMLButtonElement) => (link.disabled = true));
     const counterWrapper = await renderPreCounter();
     sprint.append(counterWrapper);
+    const background = document.createElement('div');
+    background.innerHTML = `
+        <img class="background-sprint" src=${img}> 
+    `;
+    root.append(background);
 };

@@ -2,6 +2,23 @@ import { getRandomWord } from '../services/get-random-word';
 import { wordsState } from '../services/words-state';
 import { renderCounter } from './render-counter';
 import { renderButtonsContainer } from './sprint-page';
+import wow from '../audio/Woosh-Mark_DiAngelo-4778593.mp3';
+import tick from '../audio/Button-SoundBible.com-1420500901.mp3';
+import gameTicks from '../audio/finish_tick.mp3';
+import { gameModal } from './game-modal';
+
+function play(src: string) {
+    const audio = new Audio(src);
+    const resp = audio.play();
+    //https://stackoverflow.com/questions/58846042/getting-play-failed-because-the-user-didnt-interact-with-the-document-first
+    if (resp !== undefined) {
+        resp.then((_) => {
+            // autoplay starts!
+        }).catch((error) => {
+            //show error
+        });
+    }
+}
 
 export const getWord = async () => {
     const { id, word, wordTranslate, translateEqual } = await getRandomWord();
@@ -19,17 +36,30 @@ const startGameCounter = async (counterWrapper: HTMLElement) => {
     wordsState.translateEqual = translateEqual;
     const buttonsContainer = renderButtonsContainer();
     words.append(buttonsContainer);
-    const arr = [1, 2, 3, 'start', words];
+    const arr = [
+        '<div class="pre-timer round-border red">1</div>',
+        '<div class="pre-timer round-border yellow">2</div>',
+        '<div class="pre-timer round-border green">3</div>',
+        '<div class="pre-timer">START</div>',
+        words,
+    ];
     for (let i = 0; i < arr.length; i++) {
         setTimeout(async () => {
-            if (typeof arr[i] === 'string' || typeof arr[i] === 'number') {
-                counterWrapper.innerHTML = '' + arr[i];
+            if (typeof arr[i] === 'string' && i < 3) {
+                counterWrapper.innerHTML = arr[i] as string;
+                play(tick);
+            } else if (typeof arr[i] === 'string' && i === 3) {
+                counterWrapper.innerHTML = arr[i] as string;
+                play(wow);
             } else {
                 counterWrapper.innerHTML = '';
-                counterWrapper.append(arr[i] as HTMLElement);
+                const gameBody = document.createElement('div');
+                gameBody.append(arr[i] as HTMLElement);
+                gameModal();
                 counterWrapper.prepend(renderCounter());
+                document.querySelector('.modal-body').append(gameBody);
             }
-        }, 500 * i);
+        }, 1000 * i);
     }
 };
 
