@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getUserWordsByDifficulty, getWords } from '../services/words';
 import { Word } from '../../../types';
-import { clear, getElementsList, getRandomWord, getRandomWords } from '../utils';
+import { clear, getElementsList, generateWord, generateWords } from '../utils';
 import { drawLevels } from '../view/levels';
 import { nextWord as card } from '../view/next';
 import { progress } from '../view/progress';
@@ -78,8 +78,8 @@ export default class Game {
 
             if (typeof words !== 'undefined') {
                 this.words = words;
-                this.current = await getRandomWord(this.selected, this.words);
-                const variants = await getRandomWords(this.current, this.words);
+                this.current = await generateWord(this.selected, this.words);
+                const variants = await generateWords(this.current, this.words);
                 this.selected.push(this.current.word);
                 this.progress.append(...progress(this.words.length));
                 await card(this.container, this.current, variants);
@@ -96,33 +96,33 @@ export default class Game {
     };
 
     onKeyPress = async (e: Event): Promise<void> => {
-        switch ((e as KeyboardEvent).key) {
+        const { key } = e as KeyboardEvent;
+        if (localStorage.getItem('router') !== Router.GAME_1) {
+            document.removeEventListener('keydown', this.onKeyPress);
+            return;
+        }
+        switch (key) {
             case 'Enter':
                 this.canMoveToNext ? this.onNextWord() : this.onSelectVariant(e);
                 break;
             case ' ':
                 e.preventDefault();
-                this.playAudio(`${host}/${this.current.audio}`);
+                await this.playAudio(`${host}/${this.current.audio}`);
                 break;
             case '1':
-                if (this.canMoveToNext) return;
-                else this.onSelectVariant(e);
+                if (!this.canMoveToNext) this.onSelectVariant(e);
                 break;
             case '2':
-                if (this.canMoveToNext) return;
-                else this.onSelectVariant(e);
+                if (!this.canMoveToNext) this.onSelectVariant(e);
                 break;
             case '3':
-                if (this.canMoveToNext) return;
-                else this.onSelectVariant(e);
+                if (!this.canMoveToNext) this.onSelectVariant(e);
                 break;
             case '4':
-                if (this.canMoveToNext) return;
-                else this.onSelectVariant(e);
+                if (!this.canMoveToNext) this.onSelectVariant(e);
                 break;
             case '5':
-                if (this.canMoveToNext) return;
-                else this.onSelectVariant(e);
+                if (!this.canMoveToNext) this.onSelectVariant(e);
                 break;
             default:
                 return;
@@ -133,8 +133,8 @@ export default class Game {
         this.canMoveToNext = false;
         ++this.count;
         if (this.count !== this.words.length) {
-            this.current = await getRandomWord(this.selected, this.words);
-            const translationVariants = await getRandomWords(this.current, this.words);
+            this.current = await generateWord(this.selected, this.words);
+            const translationVariants = await generateWords(this.current, this.words);
             this.selected.push(this.current.word);
 
             await card(this.container, this.current, translationVariants);
@@ -218,7 +218,7 @@ export default class Game {
         translation.innerHTML = `<strong>${this.current?.word}</strong>`;
     };
 
-    playAudio = (path: string) => {
+    playAudio = async (path: string) => {
         this.audio.pause();
         this.audio.src = path;
         this.audio.addEventListener('canplaythrough', async () => {
@@ -277,10 +277,10 @@ export default class Game {
     onClose = () => {
         this.resetGame();
         this.toggleListeners(false);
-        const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
+        const route = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
         localStorage.setItem('router', Router.MAIN);
         document.location.hash = `#${Router.MAIN}`;
-        renderPage(Router.MAIN, mainLink);
+        renderPage(Router.MAIN, route);
     };
 
     toggleListeners = (needToAdd = true): void => {
