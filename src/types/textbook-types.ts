@@ -13,6 +13,12 @@ export interface Dictionary {
     wordTranslate: string;
     textMeaningTranslate: string;
     textExampleTranslate: string;
+    optional?: OptionalDictionary;
+}
+
+export interface OptionalDictionary {
+    date: string;
+    isWordNew: boolean;
 }
 
 export interface DictionaryHardWord {
@@ -47,15 +53,35 @@ export interface BodyRequest {
 }
 
 export interface Optional {
-    pages: Pages;
+    pages?: Pages;
+    wordStatistics?: WordStatistics;
+    gameStatistics?: GameStatistics;
 }
 
 export interface Pages {
     [index: number]: pageLearnedPagesGroup;
 }
+
 export interface pageLearnedPagesGroup {
     page: number;
     group: number;
+}
+
+export interface WordStatistics {
+    [index: string]: number,
+}
+
+export interface GameStatistics {
+    sprint: Result,
+    audiochallenge: Result,
+}
+
+export interface Result {
+    date: string,
+    learnedWords: number,
+    rightAnswers: number,
+    wrongAnswers: number,
+    longestSeries: number,
 }
 
 // export interface OptionalFromResponse {
