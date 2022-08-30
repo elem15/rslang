@@ -35,6 +35,29 @@ const getMark = (translateEqual: boolean) => {
         play(mistake);
     }
 };
+const getPushResult = async (translateEqual: boolean) => {
+    const buttonsContainer = document.querySelector('.buttons-container');
+    if (buttonsContainer) {
+        getMark(translateEqual);
+        const response = await getWord();
+        wordsState.translateEqual = response.translateEqual;
+        const { words } = response;
+        document.querySelector('.translate-word').remove();
+        buttonsContainer.prepend(words);
+    }
+};
+export const keyDirect = (e: KeyboardEvent) => {
+    switch (e.code) {
+        case 'ArrowRight':
+            getPushResult(wordsState.translateEqual);
+            break;
+        case 'ArrowLeft':
+            getPushResult(!wordsState.translateEqual);
+            break;
+        default:
+            null;
+    }
+};
 export const renderButtonsContainer = () => {
     const buttonsContainer = document.createElement('div');
     buttonsContainer.className = 'buttons-container';
@@ -45,22 +68,8 @@ export const renderButtonsContainer = () => {
     wrong.className = 'wrong btn btn-danger';
     wrong.innerText = '< ЛОЖЬ';
     buttonsContainer.append(wrong, right);
-    right.addEventListener('click', async () => {
-        getMark(wordsState.translateEqual);
-        const response = await getWord();
-        wordsState.translateEqual = response.translateEqual;
-        const { words } = response;
-        document.querySelector('.translate-word').remove();
-        buttonsContainer.prepend(words);
-    });
-    wrong.addEventListener('click', async () => {
-        getMark(!wordsState.translateEqual);
-        const response = await getWord();
-        wordsState.translateEqual = response.translateEqual;
-        const { words } = response;
-        document.querySelector('.translate-word').remove();
-        buttonsContainer.prepend(words);
-    });
+    right.addEventListener('click', async () => await getPushResult(wordsState.translateEqual));
+    wrong.addEventListener('click', async () => await getPushResult(!wordsState.translateEqual));
     return buttonsContainer;
 };
 export const renderSprintPage = async () => {

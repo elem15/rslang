@@ -16,7 +16,6 @@ export const getRandomWord = async (): Promise<sprintWords> => {
     let { id, word, wordTranslate } = data[randomNum];
     let i = 0;
     while (wordsState.usedWordsIds.includes(id) && i < 20) {
-        console.log(randomNum, '!!!');
         i++;
         randomNum = getRandom();
         id = data[randomNum].id;

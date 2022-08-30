@@ -39,5 +39,4 @@ export const gameModal = () => {
     </div>
   `;
     document.querySelector('.sprint-container').append(modal);
-    // removeModal(modal);
 };

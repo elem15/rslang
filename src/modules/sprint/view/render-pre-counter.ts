@@ -1,20 +1,19 @@
 import { getRandomWord } from '../services/get-random-word';
 import { wordsState } from '../services/words-state';
 import { renderCounter } from './render-counter';
-import { renderButtonsContainer } from './sprint-page';
+import { keyDirect, renderButtonsContainer } from './sprint-page';
 import wow from '../audio/Woosh-Mark_DiAngelo-4778593.mp3';
 import tick from '../audio/Button-SoundBible.com-1420500901.mp3';
-import gameTicks from '../audio/finish_tick.mp3';
 import { gameModal } from './game-modal';
 
-function play(src: string) {
+export function play(src: string) {
     const audio = new Audio(src);
     const resp = audio.play();
     //https://stackoverflow.com/questions/58846042/getting-play-failed-because-the-user-didnt-interact-with-the-document-first
     if (resp !== undefined) {
-        resp.then((_) => {
+        resp.then(() => {
             // autoplay starts!
-        }).catch((error) => {
+        }).catch(() => {
             //show error
         });
     }
@@ -58,6 +57,7 @@ const startGameCounter = async (counterWrapper: HTMLElement) => {
                 gameModal();
                 counterWrapper.prepend(renderCounter());
                 document.querySelector('.modal-body').append(gameBody);
+                document.addEventListener('keydown', keyDirect);
             }
         }, 1000 * i);
     }
