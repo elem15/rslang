@@ -11,12 +11,12 @@ export const getWords = async (page = 0, group: number): Promise<Word[] | undefi
     throw new Error(response.statusText);
 };
 
-export const getUserWordsByDifficulty = async (difficulty = 'hard', wordsPerPage = 3600) => {
+export const getUserWordsByDifficulty = async (difficulty = 'hard', wordsPerPage = 20) => {
     const user: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = user;
     try {
         const response = await fetch(
-            `${host}/users/${userId}/aggregatedWords?wordsPerPage=${wordsPerPage}&filter=%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22${difficulty}%22%7D%5D%7D`,
+            `${host}/users/${userId}/aggregatedWords?wordsPerPage=${wordsPerPage}&filter={"$and":[{"userWord.difficulty":"${difficulty}"}]}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -67,7 +67,28 @@ export const getUserWord = async (wordID: string): Promise<any> => {
     }
 };
 
-export const upsertWord = async (wordID: string): Promise<any> => {
+export const getAggregatedWord = async (wordID: string): Promise<any> => {
+    const user: UserData = JSON.parse(localStorage.getItem('data'));
+    const { userId, token } = user;
+
+    try {
+        const response = await fetch(`${host}/users/${userId}/aggregatedWords/${wordID}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        });
+        if (response.status === 200) {
+            const collection = await response.json();
+            return collection[0];
+        }
+        return undefined;
+    } catch (Exception) {
+        console.error(Exception);
+    }
+};
+
+export const addNewWord = async (wordID: string): Promise<any> => {
     const user: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = user;
     const word = await getUserWord(wordID);

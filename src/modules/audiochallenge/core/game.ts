@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getUserWordsByDifficulty, getWords } from '../services/words';
+import { addNewWord, getAggregatedWord, getUserWordsByDifficulty, getWords } from '../services/words';
 import { Word } from '../../../types';
 import { clear, getElementsList, generateWord, generateWords, formateDate } from '../utils';
 import { drawLevels } from '../view/levels';
@@ -44,6 +44,7 @@ export default class Game {
     isMute: boolean;
     inRow = 0;
     maxInRow = 0;
+    countLearnedWords = 0;
 
     constructor(root: HTMLElement, fromBook = false, group?: number, page?: number) {
         this.root = root;
@@ -143,7 +144,6 @@ export default class Game {
         ++this.count;
         if (this.count !== this.words.length) {
             this.current = await generateWord(this.selected, this.words);
-            console.log(this.current.word);
             const translationVariants = await generateWords(this.current, this.words);
             this.selected.push(this.current.id);
 
@@ -181,6 +181,17 @@ export default class Game {
                 target.classList.add('selected-correct');
                 target.innerHTML = `${checkIcon} ${target.innerText}`;
                 if (this.current) this.correct?.push(this.current.id);
+
+                const aggregated = await getAggregatedWord(this.current.id);
+
+                if (aggregated) {
+                    const { userWord } = aggregated;
+
+                    if (userWord.optional.date !== formateDate(new Date())) this.countLearnedWords++;
+                } else {
+                    await addNewWord(this.current.id);
+                    this.countLearnedWords++;
+                }
             } else {
                 this.updateMaxInRow();
                 this.inRow = 0;
@@ -303,16 +314,9 @@ export default class Game {
     };
 
     prepareStatistics = (): StatisticsType => {
-        const learnedWords = this.words
-            .map((w) => {
-                if (this.correct.includes(w.id)) return w.id;
-            })
-            .filter((w) => w)
-            .join(',');
-
         return {
             date: formateDate(new Date()),
-            learnedWords: learnedWords.split(',').length,
+            learnedWords: this.countLearnedWords,
             rightAnswers: this.correct.length,
             wrongAnswers: this.incorrect.length,
             longestSeries: this.maxInRow,

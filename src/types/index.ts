@@ -3,7 +3,7 @@ export type GameLevel = {
     color: string;
 };
 
-export type Word = {
+export interface Word {
     id: string;
     _id?: string;
     group: number;
@@ -19,7 +19,16 @@ export type Word = {
     wordTranslate: string;
     textMeaningTranslate: string;
     textExampleTranslate: string;
-};
+    userWord: {
+        difficulty: string;
+        optional?: IOptional;
+    };
+}
+
+export interface IOptional {
+    date: string;
+    isWordNew: boolean;
+}
 
 export type HardWord = { _id: string } & Omit<Word, 'id'>;
 
