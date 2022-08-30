@@ -15,10 +15,11 @@ export interface Dictionary {
     textExampleTranslate: string;
     optional?: OptionalDictionary;
 }
-
 export interface OptionalDictionary {
     date: string;
     isWordNew: boolean;
+    rightAnswers: number;
+    wrongAnswers: number;
 }
 
 export interface DictionaryHardWord {
@@ -48,6 +49,7 @@ export interface UserWords {
 
 
 export interface BodyRequest {
+    id?: string;
     wordsPerDay?: number;
     optional?: Optional;
 }
@@ -72,13 +74,14 @@ export interface WordStatistics {
 }
 
 export interface GameStatistics {
-    sprint: Result,
-    audiochallenge: Result,
+    sprint?: Result,
+    audiochallenge?: Result,
+    [index: string]: Result,
 }
 
 export interface Result {
     date: string,
-    learnedWords: number,
+    newWords: number,
     rightAnswers: number,
     wrongAnswers: number,
     longestSeries: number,

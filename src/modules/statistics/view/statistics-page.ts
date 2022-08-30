@@ -1,6 +1,6 @@
 import { Optional, Pages, Result } from '../../../types/textbook-types';
 import { removeFooter } from '../../main/view/main-page';
-import { addNewWord, getSettings, updateSettings } from '../services/api';
+import { addNewWord, addResultGame, getNewWordsByDay, getSettings } from '../services/api';
 
 export const renderStatisticsPage = async () => {
     const root = document.getElementById('root');
@@ -17,54 +17,55 @@ export const renderStatisticsPage = async () => {
 };
 
 const workWithShortStatistic = async () => {
-    let pageLearnedObjectArrayType: Pages;
-    let pageLearnedObject: Optional;
-    let isAuthorization = true;
-    if (isAuthorization) {
+    // let pageLearnedObjectArrayType: Pages;
+    // let pageLearnedObject: Optional;
+    // let isAuthorization = true;
+//     if (isAuthorization) {
 
-        const pageLearnedResponse = await getSettings();
-        if (pageLearnedResponse) {
-            pageLearnedObject = pageLearnedResponse.optional;
-            if (pageLearnedObject) {
-                pageLearnedObjectArrayType = pageLearnedObject.pages
-        }
-    }
+//         const pageLearnedResponse = await getSettings();
+//         if (pageLearnedResponse) {
+//             pageLearnedObject = pageLearnedResponse.optional;
+//             if (pageLearnedObject) {
+//                 pageLearnedObjectArrayType = pageLearnedObject.pages
+//         }
+//     }
+// }
+//     console.log(pageLearnedObjectArrayType);
+
+    // let resultGame: Result = {
+    //     date: new Date().toLocaleDateString('ru-RU'),
+    //     newWords: 0,
+    //     rightAnswers: 0,
+    //     wrongAnswers: 0,
+    //     longestSeries: 0
+    // }
+
+    // let shortStatistic = {
+    //     optional: {
+    //         pages: pageLearnedObjectArrayType,
+    //         gameStatistics: {
+    //             sprint: resultGame,
+    //             audiochallenge: resultGame
+    //         }
+    //     }
+    // }
+
+    // await updateSettings(shortStatistic);
+
+    // if (isAuthorization) {
+
+    //     const pageLearnedResponse = await getSettings();
+    //     let pageLearnedObject: Optional;
+    //     if (pageLearnedResponse) {
+    //         pageLearnedObject = pageLearnedResponse.optional;
+    //     }
+    //     console.log(pageLearnedResponse);
+    // }
+
+    await addNewWord('5e9f5ee35eb9e72bc21af967', 0, 1);
+
+    await addResultGame('sprint', 1, 2, 3, 4);
+
+    console.log(await getNewWordsByDay());
 }
-    console.log(pageLearnedObjectArrayType);
 
-    let resultGame: Result = {
-        date: new Date().toLocaleDateString('ru-RU'),
-        learnedWords: 0,
-        rightAnswers: 0,
-        wrongAnswers: 0,
-        longestSeries: 0
-    }
-
-    let shortStatistic = {
-        optional: {
-            pages: pageLearnedObjectArrayType,
-            wordStatistics: {
-                [new Date().toLocaleDateString('ru-RU')]: 0
-            },
-            gameStatistics: {
-                sprint: resultGame,
-                audiochallenge: resultGame
-            }
-        }
-    }
-
-    await updateSettings(shortStatistic);
-
-    if (isAuthorization) {
-
-        const pageLearnedResponse = await getSettings();
-        let pageLearnedObject: Optional;
-        if (pageLearnedResponse) {
-            pageLearnedObject = pageLearnedResponse.optional;
-        }
-        console.log(pageLearnedResponse);
-    }
-
-    console.log(await addNewWord('5e9f5ee35eb9e72bc21af718'));
-
-}
