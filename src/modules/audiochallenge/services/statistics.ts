@@ -3,14 +3,15 @@ import { host } from '../../auth/controllers/hosts';
 
 export type StatisticsType = {
     date: string;
-    learnedWords: string;
-    totalLearningWords: number;
-    seriesMax: number;
+    learnedWords: number;
+    rightAnswers: number;
+    wrongAnswers: number;
+    longestSeries: number;
 };
 
 export const updateStatistics = async (user: UserData | null, statistics: StatisticsType): Promise<void> => {
     const data = {
-        learnedWords: statistics.learnedWords.split(',').length,
+        learnedWords: statistics.learnedWords,
         optional: statistics,
     };
 

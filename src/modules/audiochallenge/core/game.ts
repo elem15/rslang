@@ -307,9 +307,10 @@ export default class Game {
 
         return {
             date: this.formateDate(new Date()),
-            learnedWords: learnedWords,
-            totalLearningWords: this.correct.length + this.incorrect.length,
-            seriesMax: this.maxInRow,
+            learnedWords: learnedWords.split(',').length,
+            rightAnswers: this.correct.length,
+            wrongAnswers: this.incorrect.length,
+            longestSeries: this.maxInRow,
         };
     };
 }
