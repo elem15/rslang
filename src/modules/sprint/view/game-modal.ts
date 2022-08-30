@@ -1,7 +1,3 @@
-import { Router } from '../../../types/router-types';
-import { renderPage } from '../../router/services/router';
-import { renderSprintPage } from './sprint-page';
-
 export const removeModal = (modal: HTMLElement) => {
     const close = document.querySelector('.btn-close');
     const closeButtons = [modal, close] as HTMLButtonElement[];
@@ -11,12 +7,6 @@ export const removeModal = (modal: HTMLElement) => {
             close.removeEventListener('click', () => true);
         });
     });
-    // secondary.addEventListener('click', () => {
-    //     modal.remove();
-    //     const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
-    //     localStorage.setItem('router', Router.MAIN);
-    //     renderPage(Router.MAIN, mainLink);
-    // });
     const modalDialog = document.querySelector('.modal-dialog');
     modalDialog.addEventListener('click', (e) => {
         e.stopPropagation();

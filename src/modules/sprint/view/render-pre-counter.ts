@@ -20,10 +20,11 @@ export function play(src: string) {
 }
 
 export const getWord = async () => {
-    const { id, word, wordTranslate, translateEqual } = await getRandomWord();
+    const { id, word, wordTranslate, wordWrongTranslate, translateEqual } = await getRandomWord();
     const words = document.createElement('div');
     words.className = 'words';
-    words.innerHTML = `<div class="translate-word">${word} - ${wordTranslate}</div>`;
+    if (translateEqual) words.innerHTML = `<div class="translate-word">${word} - ${wordTranslate}</div>`;
+    else words.innerHTML = `<div class="translate-word">${word} - ${wordWrongTranslate}</div>`;
     return {
         words,
         translateEqual,

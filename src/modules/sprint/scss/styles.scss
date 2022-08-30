@@ -11,10 +11,14 @@
     margin-top: 35vh;
 }
 #message-modal-dialog {
-    margin-top: 37vh;
+    margin-top: 27vh;
 }
 #modal-header {
     height: 50px;
+}
+#answers {
+    max-height: 200px;
+    overflow: auto;
 }
 .translate-word {
     margin: 20px 0;

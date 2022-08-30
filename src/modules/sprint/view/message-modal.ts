@@ -1,5 +1,6 @@
 import { Router } from '../../../types/router-types';
 import { renderPage } from '../../router/services/router';
+import { statistics } from '../services/statistics';
 import { renderSprintPage } from './sprint-page';
 
 export const removeModal = (modal: HTMLElement) => {
@@ -35,12 +36,39 @@ export const messageModal = (message: string) => {
     <div class="modal-dialog" id="message-modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <h5 class="modal-title" id="exampleModalLabel">${message}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            ${message}
+            Результаты: 
+            <br>
+            ${statistics.correct} изученно.
+            <br>
+            ${statistics.incorrect} еще предстоит выучить.
         </div>
+        <div class="modal-body" id="answers">
+        Верные ответы:
+        <ul>       
+            ${statistics.correctWords
+                .map(
+                    ({ word, wordTranslate }) =>
+                        `
+                        <li>${word} - ${wordTranslate}</li>
+                    `
+                )
+                .join('')}</ul> 
+            <br>
+            Не верные ответы:
+            <ul>       
+                ${statistics.incorrectWords
+                    .map(
+                        ({ word, wordTranslate }) =>
+                            `
+                                  <li>${word} - ${wordTranslate}</li>
+                        `
+                    )
+                    .join('')}</ul>         
+            </div>
         <div class="modal-footer">
         <button type="button" class="btn btn-primary new-game">Играть еще</button>
         <button type="button" class="btn btn-secondary to-main-page" data-dismiss="modal">На главную</button>
@@ -48,6 +76,8 @@ export const messageModal = (message: string) => {
     </div>
   `;
     document.querySelector('.sprint-container').append(modal);
+    console.log(statistics.correctWords);
+    console.log(statistics.incorrectWords);
     removeModal(modal);
     return modal;
 };

@@ -5,17 +5,19 @@ import '../scss/styles.scss';
 import img from '../../../images/palm.gif';
 import success from '../../audiochallenge/assets/sounds/success.wav';
 import mistake from '../../audiochallenge/assets/sounds/error.mp3';
+import { statistics } from '../services/statistics';
 
-// code from https://stackoverflow.com/questions/9419263/how-to-play-audio
 function play(src: string) {
     const audio = new Audio(src);
     audio.play();
 }
-//==============
 
 const getMark = (translateEqual: boolean) => {
     const modalTitle = document.querySelector('.modal-title');
     if (translateEqual) {
+        statistics.correct += 1;
+        statistics.correctWords.push(statistics.word);
+        statistics.word = null;
         const rightAnswer = document.createElement('div');
         rightAnswer.className = 'text-success equal';
         rightAnswer.innerText = 'ВЕРНО';
@@ -25,6 +27,9 @@ const getMark = (translateEqual: boolean) => {
         setTimeout(() => rightAnswer.remove(), 700);
         play(success);
     } else {
+        statistics.incorrect += 1;
+        statistics.incorrectWords.push(statistics.word);
+        statistics.word = null;
         const wrongAnswer = document.createElement('div');
         wrongAnswer.className = 'text-danger equal';
         wrongAnswer.innerText = 'НЕ ВЕРНО';
