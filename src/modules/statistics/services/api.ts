@@ -50,29 +50,6 @@ export const getSettings = async () => {
     }
 };
 
-export const getNewWordsByDay = async () => {
-    const store: UserData = JSON.parse(localStorage.getItem('data'));
-    const { userId, token } = store;
-    const currentDate = new Date().toLocaleDateString('ru-RU')
-    // const currentDate = '31.08.2022';
-    try {
-        const response = await fetch(
-            `${host}/users/${userId}/aggregatedWords?wordsPerPage=3600&filter=%7B%22%24and%22%3A%5B%7B%22userWord.optional.date%22%3A%22${currentDate}%22%7D%5D%7D`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-            }
-        );
-        const words = await response.json();
-        return words[0].totalCount[0].count;
-    } catch {
-        console.log('Word not exist');
-    }
-};
-
 export const getUserWordById = async (wordId: string) => {
     const store: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = store;
@@ -137,8 +114,27 @@ export const addNewWord = async (wordId: string, rightAnswers: number, wrongAnsw
     }
 }
 
-export const getNumberNewWords = async () => {
-    
+export const getCountNewWords = async () => {
+    const store: UserData = JSON.parse(localStorage.getItem('data'));
+    const { userId, token } = store;
+    const currentDate = new Date().toLocaleDateString('ru-RU')
+    // const currentDate = '31.08.2022';
+    try {
+        const response = await fetch(
+            `${host}/users/${userId}/aggregatedWords?wordsPerPage=3600&filter=%7B%22%24and%22%3A%5B%7B%22userWord.optional.date%22%3A%22${currentDate}%22%7D%5D%7D`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+            }
+        );
+        const words = await response.json();
+        return words[0].totalCount[0].count;
+    } catch {
+        console.log('Word not exist');
+    }
 }
 
 export const addResultGame = async (typeOfGame: string, newWords: number, rightAnswers: number, wrongAnswers: number, longestSeries: number) => {

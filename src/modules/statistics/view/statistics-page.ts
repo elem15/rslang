@@ -1,6 +1,6 @@
-import { Optional, Pages, Result } from '../../../types/textbook-types';
+// import { Optional, Pages, Result } from '../../../types/textbook-types';
 import { removeFooter } from '../../main/view/main-page';
-import { addNewWord, addResultGame, getNewWordsByDay, getSettings } from '../services/api';
+import { addNewWord, addResultGame, getCountNewWords } from '../services/api';
 
 export const renderStatisticsPage = async () => {
     const root = document.getElementById('root');
@@ -64,8 +64,8 @@ const workWithShortStatistic = async () => {
 
     await addNewWord('5e9f5ee35eb9e72bc21af967', 0, 1);
 
-    await addResultGame('sprint', 1, 2, 3, 4);
+    await addResultGame('audiochallenge', 1, 2, 3, 4);
 
-    console.log(await getNewWordsByDay());
+    console.log(await getCountNewWords());
 }
 
