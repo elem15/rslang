@@ -5,6 +5,7 @@ export type GameLevel = {
 
 export type Word = {
     id: string;
+    _id?: string;
     group: number;
     page: 0;
     word: string;
@@ -19,6 +20,8 @@ export type Word = {
     textMeaningTranslate: string;
     textExampleTranslate: string;
 };
+
+export type HardWord = { _id: string } & Omit<Word, 'id'>;
 
 export type TSelectHandler = (level: number) => Promise<void>;
 

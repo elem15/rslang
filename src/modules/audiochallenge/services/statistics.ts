@@ -30,6 +30,6 @@ export const updateStatistics = async (user: UserData | null, statistics: Statis
         const content = await response.json();
         console.log(content);
     } else {
-        localStorage.setItem('statistic', JSON.stringify(statistics));
+        localStorage.setItem('statistics', JSON.stringify(statistics));
     }
 };

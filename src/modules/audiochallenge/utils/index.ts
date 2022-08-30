@@ -30,7 +30,7 @@ export const generateWords = async (excludeWord: Word, words: Word[]): Promise<W
 };
 
 export const generateWord = async (selected: string[], words: Word[]): Promise<Word> => {
-    const filtered = words.filter((word) => !selected.includes(word.word));
+    const filtered = words.filter((word) => !selected.includes(word.id));
     const index = getRandomNumber(words.length - selected.length);
 
     return filtered[index];
@@ -38,4 +38,8 @@ export const generateWord = async (selected: string[], words: Word[]): Promise<W
 
 export const getElementsList = (selector: string): NodeListOf<HTMLElement> => {
     return document.querySelectorAll(selector);
+};
+
+export const formateDate = (date: Date): string => {
+    return date.toLocaleDateString('ru-RU');
 };

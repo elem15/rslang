@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getUserWordsByDifficulty, getWords } from '../services/words';
 import { Word } from '../../../types';
-import { clear, getElementsList, generateWord, generateWords } from '../utils';
+import { clear, getElementsList, generateWord, generateWords, formateDate } from '../utils';
 import { drawLevels } from '../view/levels';
 import { nextWord as card } from '../view/next';
 import { progress } from '../view/progress';
@@ -74,13 +75,21 @@ export default class Game {
 
         this.group = level;
         try {
-            const words = this.group > 5 ? await getUserWordsByDifficulty() : await getWords(this.page, this.group);
+            let words = this.group > 5 ? await getUserWordsByDifficulty() : await getWords(this.page, this.group);
+            words = words.map((word: Word) => {
+                const w = {
+                    id: '_id' in word ? word._id : word.id,
+                    ...word,
+                };
 
+                if ('_id' in w) delete w._id;
+                return w;
+            });
             if (typeof words !== 'undefined') {
                 this.words = words;
                 this.current = await generateWord(this.selected, this.words);
                 const variants = await generateWords(this.current, this.words);
-                this.selected.push(this.current.word);
+                this.selected.push(this.current.id);
                 this.progress.append(...progress(this.words.length));
                 await card(this.container, this.current, variants);
                 this.container.append(this.next);
@@ -134,8 +143,9 @@ export default class Game {
         ++this.count;
         if (this.count !== this.words.length) {
             this.current = await generateWord(this.selected, this.words);
+            console.log(this.current.word);
             const translationVariants = await generateWords(this.current, this.words);
-            this.selected.push(this.current.word);
+            this.selected.push(this.current.id);
 
             await card(this.container, this.current, translationVariants);
             this.container.append(this.next);
@@ -170,18 +180,18 @@ export default class Game {
                 this.inRow++;
                 target.classList.add('selected-correct');
                 target.innerHTML = `${checkIcon} ${target.innerText}`;
-                if (this.current) this.correct?.push(this.current.word);
+                if (this.current) this.correct?.push(this.current.id);
             } else {
                 this.updateMaxInRow();
                 this.inRow = 0;
                 target.classList.add('selected-mistake');
                 elementCorrect.classList.add('unselected-correct');
                 path = mistake;
-                if (this.current) this.incorrect?.push(this.current.word);
+                if (this.current) this.incorrect?.push(this.current.id);
             }
         } else {
             elementCorrect.classList.add('unselected-correct');
-            this.incorrect?.push(this.current.word);
+            this.incorrect?.push(this.current.id);
             path = mistake;
         }
 
@@ -227,8 +237,8 @@ export default class Game {
     };
 
     endGame = async (): Promise<void> => {
-        const correct = this.words.filter((item) => this.correct?.includes(item.word));
-        const incorrect = this.words.filter((item) => this.incorrect?.includes(item.word));
+        const correct = this.words.filter((item) => this.correct?.includes(item.id));
+        const incorrect = this.words.filter((item) => this.incorrect?.includes(item.id));
 
         this.next.disabled = true;
         this.updateMaxInRow();
@@ -257,7 +267,6 @@ export default class Game {
     beforeGame = async (): Promise<void> => {
         if (this.group === 0 && !this.isRestartGame) await this.showLevels();
         else await this.onLevelSelect(this.group);
-
         this.progress.classList.add('game__progress');
         this.container.className = 'game';
         this.next.classList.add('game__next_word');
@@ -293,20 +302,16 @@ export default class Game {
         }
     };
 
-    formateDate = (date: Date): string => {
-        return date.toLocaleDateString('ru-RU');
-    };
-
     prepareStatistics = (): StatisticsType => {
         const learnedWords = this.words
             .map((w) => {
-                if (this.correct.includes(w.word)) return w.word;
+                if (this.correct.includes(w.id)) return w.id;
             })
             .filter((w) => w)
             .join(',');
 
         return {
-            date: this.formateDate(new Date()),
+            date: formateDate(new Date()),
             learnedWords: learnedWords.split(',').length,
             rightAnswers: this.correct.length,
             wrongAnswers: this.incorrect.length,
