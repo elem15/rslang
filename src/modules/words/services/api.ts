@@ -263,12 +263,12 @@ export const addLearnedHardNeutralWord = async (wordId: string, difficulty: stri
                     },
                 };
             }
-        } else if (difficulty === Difficulty.hard || wordUserStatus.difficulty === Difficulty.neutral) {
+        } else if (difficulty === Difficulty.hard || difficulty === Difficulty.neutral) {
             body = {
                 difficulty: difficulty,
                 optional: {
                     dateWordNew: wordUserStatus.optional.dateWordNew,
-                    dateWordLearned: wordUserStatus.optional.dateWordLearned,
+                    dateWordLearned: 0,
                     rightAnswers: wordUserStatus.optional.rightAnswers,
                     wrongAnswers: wordUserStatus.optional.wrongAnswers,
                     rightAnswersSeries: wordUserStatus.optional.rightAnswersSeries,
