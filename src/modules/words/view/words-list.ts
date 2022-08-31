@@ -9,6 +9,7 @@ export const renderWordsList = async (): Promise<void> => {
         el.remove();
     });
 
+
     let isReload = false;
     document.querySelector('section') === null ? (isReload = true) : (isReload = false);
 
@@ -18,6 +19,7 @@ export const renderWordsList = async (): Promise<void> => {
     const words = document.createElement('section');
     words.className = 'dictionary';
     root.append(words);
+
     words.innerHTML = `
         <div class="wrapper">
             <div class="textbook-navigation">
@@ -76,6 +78,7 @@ export const renderWordsList = async (): Promise<void> => {
             </div>
         </div>
         </template>`;
+
     let isAuthorization = false;
     const userSymbol = document.querySelector('.user') as HTMLSpanElement;
     if (localStorage.getItem('email') && userSymbol.classList.contains('logged')) {

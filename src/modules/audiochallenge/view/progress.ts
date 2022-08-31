@@ -1,5 +1,5 @@
-export const progress = (): HTMLElement[] => {
-    return Array(20)
+export const progress = (length = 20): HTMLElement[] => {
+    return Array(length)
         .fill('')
         .map((_, index) => {
             const span = document.createElement('span');

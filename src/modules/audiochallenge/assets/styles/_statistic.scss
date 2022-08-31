@@ -21,11 +21,20 @@
     svg{
       width: 120px;
       & path{
+        fill: none;
         stroke:blueviolet;
         stroke-width: 3;
         animation: progress .7s ease-in forwards;
       }
+
+      .percentage {
+        fill: #666;
+        font-family: sans-serif;
+        font-size: 0.5em;
+        text-anchor: middle;
+      }
   }
+
 
   @keyframes progress {
     0% {

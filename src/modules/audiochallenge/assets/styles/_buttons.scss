@@ -10,6 +10,7 @@ button{
   outline: 2px solid transparent;
   margin: .125rem .5rem;
   font: 700 1rem/1.5em Arial;
+  border-radius: $border-radius-sm;
   color: whitesmoke;
   &:hover{
     color: white;
