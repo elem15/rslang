@@ -12,25 +12,23 @@ export const renderStatisticsPage = async () => {
     root.append(statistics);
 
     workWithShortStatistic();
-
-
 };
 
 const workWithShortStatistic = async () => {
     // let pageLearnedObjectArrayType: Pages;
     // let pageLearnedObject: Optional;
     // let isAuthorization = true;
-//     if (isAuthorization) {
+    //     if (isAuthorization) {
 
-//         const pageLearnedResponse = await getSettings();
-//         if (pageLearnedResponse) {
-//             pageLearnedObject = pageLearnedResponse.optional;
-//             if (pageLearnedObject) {
-//                 pageLearnedObjectArrayType = pageLearnedObject.pages
-//         }
-//     }
-// }
-//     console.log(pageLearnedObjectArrayType);
+    //         const pageLearnedResponse = await getSettings();
+    //         if (pageLearnedResponse) {
+    //             pageLearnedObject = pageLearnedResponse.optional;
+    //             if (pageLearnedObject) {
+    //                 pageLearnedObjectArrayType = pageLearnedObject.pages
+    //         }
+    //     }
+    // }
+    //     console.log(pageLearnedObjectArrayType);
 
     // let resultGame: Result = {
     //     date: new Date().toLocaleDateString('ru-RU'),
@@ -62,10 +60,9 @@ const workWithShortStatistic = async () => {
     //     console.log(pageLearnedResponse);
     // }
 
-    await addNewWord('5e9f5ee35eb9e72bc21af967', 0, 1);
+    await addNewWord('5e9f5ee35eb9e72bc21af4c4', 0, 1, true);
 
     await addResultGame('audiochallenge', 1, 2, 3, 4);
 
     console.log(await getCountNewWords());
-}
-
+};

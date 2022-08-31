@@ -1,6 +1,14 @@
-import { BodyRequest, Pages, Result } from "../../../types/textbook-types";
-import { UserData } from "../../../types/user-types";
-import { host } from "../../auth/controllers/hosts";
+import {
+    BodyRequest,
+    Difficulty,
+    GameStatistics,
+    pageLearnedPagesGroup,
+    Pages,
+    Result,
+    UserWords,
+} from '../../../types/textbook-types';
+import { UserData } from '../../../types/user-types';
+import { host } from '../../auth/controllers/hosts';
 
 export const updateSettings = async (body: BodyRequest) => {
     const store: UserData = JSON.parse(localStorage.getItem('data'));
@@ -65,31 +73,31 @@ export const getUserWordById = async (wordId: string) => {
     } catch {
         console.log('Word not exist');
     }
-}
+};
 
-export const addNewWord = async (wordId: string, rightAnswers: number, wrongAnswers: number) => {
+export const addNewWord = async (
+    wordId: string,
+    rightAnswers: number,
+    wrongAnswers: number,
+    isRightAnswer: boolean
+) => {
     const store: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = store;
-    const wordUserStatus = await getUserWordById(wordId);
+    const wordUserStatus: UserWords = await getUserWordById(wordId);
     if (wordUserStatus === undefined) {
-       (
-            await fetch(`${host}/users/${userId}/words/${wordId}`, {
-                method: 'POST',
-                body: JSON.stringify({ difficulty: 'neutral', optional: {date: new Date().toLocaleDateString('ru-RU'), isWordNew: true, rightAnswers: rightAnswers, wrongAnswers: wrongAnswers}}),
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-            })
-       ).json();
-       //return await response.json();
-    } else if (wordUserStatus && !('optional' in wordUserStatus)) {
         (
             await fetch(`${host}/users/${userId}/words/${wordId}`, {
-                method: 'PUT',
-                body: JSON.stringify({optional: {date: new Date().toLocaleDateString('ru-RU'), isWordNew: true, rightAnswers: rightAnswers, wrongAnswers: wrongAnswers}}),
+                method: 'POST',
+                body: JSON.stringify({
+                    difficulty: 'neutral',
+                    optional: {
+                        dateWordNew: new Date().toLocaleDateString('ru-RU'),
+                        dateWordLearned: 0,
+                        rightAnswers: rightAnswers,
+                        wrongAnswers: wrongAnswers,
+                        rightAnswersSeries: isRightAnswer ? 1 : 0,
+                    },
+                }),
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -98,11 +106,87 @@ export const addNewWord = async (wordId: string, rightAnswers: number, wrongAnsw
                 },
             })
         ).json();
-    } else if (wordUserStatus && ('optional' in wordUserStatus)) {
+        // return await response.json();
+    } else if (wordUserStatus && !('optional' in wordUserStatus)) {
         (
             await fetch(`${host}/users/${userId}/words/${wordId}`, {
                 method: 'PUT',
-                body: JSON.stringify({optional: {date: wordUserStatus.optional.date, isWordNew: wordUserStatus.optional.isWordNew, rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers, wrongAnswers:  wordUserStatus.optional.wrongAnswers + wrongAnswers}}),
+                body: JSON.stringify({
+                    optional: {
+                        dateWordNew: new Date().toLocaleDateString('ru-RU'),
+                        dateWordLearned: 0,
+                        rightAnswers: rightAnswers,
+                        wrongAnswers: wrongAnswers,
+                        rightAnswersSeries: isRightAnswer ? 1 : 0,
+                    },
+                }),
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+            })
+        ).json();
+    } else if (wordUserStatus && 'optional' in wordUserStatus) {
+        let body: UserWords;
+        if (!isRightAnswer) {
+            body = {
+                difficulty: Difficulty.learned ? Difficulty.neutral : wordUserStatus.difficulty,
+                optional: {
+                    dateWordNew: wordUserStatus.optional.dateWordNew,
+                    dateWordLearned: 0,
+                    rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
+                    wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
+                    rightAnswersSeries: 0,
+                },
+            };
+        }
+        if (isRightAnswer) {
+            if (wordUserStatus.difficulty === Difficulty.neutral && wordUserStatus.optional.rightAnswersSeries > 2) {
+                body = {
+                    difficulty: Difficulty.learned,
+                    optional: {
+                        dateWordNew: wordUserStatus.optional.dateWordNew,
+                        dateWordLearned: new Date().toLocaleDateString('ru-RU'),
+                        rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
+                        wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
+                        rightAnswersSeries: 3,
+                    },
+                };
+            } else if (
+                wordUserStatus.difficulty === Difficulty.hard &&
+                wordUserStatus.optional.rightAnswersSeries > 4
+            ) {
+                body = {
+                    difficulty: Difficulty.learned,
+                    optional: {
+                        dateWordNew: wordUserStatus.optional.dateWordNew,
+                        dateWordLearned: new Date().toLocaleDateString('ru-RU'),
+                        rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
+                        wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
+                        rightAnswersSeries: 5,
+                    },
+                };
+            } else {
+                body = {
+                    optional: {
+                        dateWordNew: wordUserStatus.optional.dateWordNew,
+                        dateWordLearned: wordUserStatus.optional.dateWordLearned,
+                        rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
+                        wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
+                        rightAnswersSeries:
+                            wordUserStatus.difficulty === Difficulty.learned
+                                ? wordUserStatus.optional.rightAnswersSeries
+                                : wordUserStatus.optional.rightAnswersSeries++,
+                    },
+                };
+            }
+        }
+        (
+            await fetch(`${host}/users/${userId}/words/${wordId}`, {
+                method: 'PUT',
+                body: JSON.stringify(body),
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -112,12 +196,12 @@ export const addNewWord = async (wordId: string, rightAnswers: number, wrongAnsw
             })
         ).json();
     }
-}
+};
 
 export const getCountNewWords = async () => {
     const store: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = store;
-    const currentDate = new Date().toLocaleDateString('ru-RU')
+    const currentDate = new Date().toLocaleDateString('ru-RU');
     // const currentDate = '31.08.2022';
     try {
         const response = await fetch(
@@ -135,18 +219,25 @@ export const getCountNewWords = async () => {
     } catch {
         console.log('Word not exist');
     }
-}
+};
 
-export const addResultGame = async (typeOfGame: string, newWords: number, rightAnswers: number, wrongAnswers: number, longestSeries: number) => {
-    const store: UserData = JSON.parse(localStorage.getItem('data'));
-    const { userId, token } = store;
+export const addResultGame = async (
+    typeOfGame: string,
+    newWords: number,
+    rightAnswers: number,
+    wrongAnswers: number,
+    longestSeries: number
+) => {
     const resultPreviousGame: BodyRequest = await getSettings();
-    if (resultPreviousGame.optional === undefined || resultPreviousGame.optional.gameStatistics === undefined) {
+    if (resultPreviousGame === undefined) {
+        const resultPreviousGame = { optional: { pages: Object.assign({}, null) } };
+        updateSettings(resultPreviousGame);
+    } else if (resultPreviousGame.optional === undefined || resultPreviousGame.optional.gameStatistics === undefined) {
         delete resultPreviousGame.id;
         let previousPages: Pages;
 
         if (resultPreviousGame.optional) {
-            previousPages = resultPreviousGame.optional.pages
+            previousPages = resultPreviousGame.optional.pages;
         }
 
         const resultGame: Result = {
@@ -154,65 +245,64 @@ export const addResultGame = async (typeOfGame: string, newWords: number, rightA
             newWords: newWords,
             rightAnswers: rightAnswers,
             wrongAnswers: wrongAnswers,
-            longestSeries: longestSeries
-        }
-        const gameStatistics = { [typeOfGame]: resultGame}
-        const gameStatistics1 = { gameStatistics, pages: previousPages}
-        resultPreviousGame.optional = gameStatistics1;
+            longestSeries: longestSeries,
+        };
+        const gameStatistics = { [typeOfGame]: resultGame };
+        const gameStatisticsAndPages = { gameStatistics, pages: previousPages };
+        resultPreviousGame.optional = gameStatisticsAndPages;
 
-        updateSettings(resultPreviousGame)
-    } else if (resultPreviousGame.optional.gameStatistics[typeOfGame] === undefined || resultPreviousGame.optional.gameStatistics[typeOfGame].date !== new Date().toLocaleDateString('ru-RU')) {
+        updateSettings(resultPreviousGame);
+    } else if (
+        resultPreviousGame.optional.gameStatistics[typeOfGame] === undefined ||
+        resultPreviousGame.optional.gameStatistics[typeOfGame].date !== new Date().toLocaleDateString('ru-RU')
+    ) {
         delete resultPreviousGame.id;
         const resultGame: Result = {
             date: new Date().toLocaleDateString('ru-RU'),
             newWords: newWords,
             rightAnswers: rightAnswers,
             wrongAnswers: wrongAnswers,
-            longestSeries: longestSeries
-        }
+            longestSeries: longestSeries,
+        };
         resultPreviousGame.optional.gameStatistics[typeOfGame] = resultGame;
-        updateSettings(resultPreviousGame);    
+        updateSettings(resultPreviousGame);
     } else if (resultPreviousGame.optional.gameStatistics[typeOfGame].date === new Date().toLocaleDateString('ru-RU')) {
         console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].newWords);
         delete resultPreviousGame.id;
-            resultPreviousGame.optional.gameStatistics[typeOfGame].newWords = resultPreviousGame.optional.gameStatistics[typeOfGame].newWords + newWords;
-            resultPreviousGame.optional.gameStatistics[typeOfGame].rightAnswers = resultPreviousGame.optional.gameStatistics[typeOfGame].rightAnswers + rightAnswers;
-            resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers = resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers + wrongAnswers;
-            resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries = resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries < longestSeries ? longestSeries : resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries;
+        resultPreviousGame.optional.gameStatistics[typeOfGame].newWords =
+            resultPreviousGame.optional.gameStatistics[typeOfGame].newWords + newWords;
+        resultPreviousGame.optional.gameStatistics[typeOfGame].rightAnswers =
+            resultPreviousGame.optional.gameStatistics[typeOfGame].rightAnswers + rightAnswers;
+        resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers =
+            resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers + wrongAnswers;
+        resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries =
+            resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries < longestSeries
+                ? longestSeries
+                : resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries;
         console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].newWords);
         updateSettings(resultPreviousGame);
     }
-    console.log(resultPreviousGame.optional);
-}
+};
 
+export const addStyleLearnedPages = async (pageLearned: pageLearnedPagesGroup[]) => {
+    const resultPreviousGame: BodyRequest = await getSettings();
+    if (resultPreviousGame === undefined) {
+        const resultPreviousGame = { optional: { pages: Object.assign({}, null) } };
+        updateSettings(resultPreviousGame);
+    } else if (resultPreviousGame.optional === undefined || resultPreviousGame.optional.pages === undefined) {
+        delete resultPreviousGame.id;
+        let previousGameStatistic: GameStatistics;
 
-// await fetch(`${host}/users/${userId}/settings`, {
-//     method: 'PUT',
-//     body: JSON.stringify(body),
-//     headers: {
-//         Authorization: `Bearer ${token}`,
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json',
-//     },
-// });
+        if (resultPreviousGame.optional) {
+            previousGameStatistic = resultPreviousGame.optional.gameStatistics;
+        }
 
-let resultGame: Result = {
-    date: new Date().toLocaleDateString('ru-RU'),
-    newWords: 0,
-    rightAnswers: 0,
-    wrongAnswers: 0,
-    longestSeries: 0
-}
-
-// let shortStatistic = {
-//     optional: {
-//         pages: pageLearnedObjectArrayType,
-//         wordStatistics: {
-//             [new Date().toLocaleDateString('ru-RU')]: 0
-//         },
-//         gameStatistics: {
-//             sprint: resultGame,
-//             audiochallenge: resultGame
-//         }
-//     }
-// }
+        const gameStatisticsAndPages = { previousGameStatistic, pages: Object.assign({}, pageLearned) };
+        resultPreviousGame.optional = gameStatisticsAndPages;
+        updateSettings(resultPreviousGame);
+    } else if (resultPreviousGame.optional.pages) {
+        delete resultPreviousGame.id;
+        resultPreviousGame.optional.pages = Object.assign({}, pageLearned);
+        updateSettings(resultPreviousGame);
+    }
+};

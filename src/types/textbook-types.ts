@@ -16,10 +16,11 @@ export interface Dictionary {
     optional?: OptionalDictionary;
 }
 export interface OptionalDictionary {
-    date: string;
-    isWordNew: boolean;
+    dateWordNew: string | number;
+    dateWordLearned: string | number;
     rightAnswers: number;
     wrongAnswers: number;
+    rightAnswersSeries: number;
 }
 
 export interface DictionaryHardWord {
@@ -37,16 +38,15 @@ export interface DictionaryHardWord {
     wordTranslate: string;
     textMeaningTranslate: string;
     textExampleTranslate: string;
-    userWord: { difficulty: string };
+    userWord?: { difficulty?: string; optional?: OptionalDictionary };
 }
 
 export interface UserWords {
-    id: string;
-    difficulty: string;
-    wordId: string;
+    id?: string;
+    difficulty?: string;
+    wordId?: string;
+    optional?: OptionalDictionary;
 }
-
-
 
 export interface BodyRequest {
     id?: string;
@@ -70,21 +70,20 @@ export interface pageLearnedPagesGroup {
 }
 
 export interface WordStatistics {
-    [index: string]: number,
+    [index: string]: number;
 }
 
 export interface GameStatistics {
-    sprint?: Result,
-    audiochallenge?: Result,
-    [index: string]: Result,
+    sprint?: Result;
+    audiochallenge?: Result;
+    [index: string]: Result;
 }
-
 export interface Result {
-    date: string,
-    newWords: number,
-    rightAnswers: number,
-    wrongAnswers: number,
-    longestSeries: number,
+    date: string;
+    newWords: number;
+    rightAnswers: number;
+    wrongAnswers: number;
+    longestSeries: number;
 }
 
 // export interface OptionalFromResponse {
@@ -98,4 +97,5 @@ export interface Result {
 export enum Difficulty {
     hard = 'hard',
     learned = 'learned',
+    neutral = 'neutral',
 }
