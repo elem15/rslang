@@ -1,6 +1,7 @@
 import { Router } from '../../../types/router-types';
 import { renderPage } from '../../router/services/router';
 import { statistics } from '../services/statistics';
+import { wordsState } from '../services/words-state';
 import { renderSprintPage } from './sprint-page';
 
 export const removeModal = (modal: HTMLElement) => {
@@ -10,6 +11,7 @@ export const removeModal = (modal: HTMLElement) => {
     const closeButtons = [modal, close, primary] as HTMLButtonElement[];
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', () => {
+            wordsState.data = null;
             modal.remove();
             close.removeEventListener('click', () => true);
             renderSprintPage();

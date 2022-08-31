@@ -6,12 +6,15 @@ import { play } from './render-pre-counter';
 import bird from '../audio/Baby Chicks-SoundBible.com-2811441.mp3';
 import { keyDirect } from './sprint-page';
 import { statistics } from '../services/statistics';
+import { wordsState } from '../services/words-state';
 
 const GAME_TIME = 15;
 
 export const exitGame = (interval: NodeJS.Timer) => {
     const header = document.querySelector('header');
     const links = header.querySelectorAll('button');
+    wordsState.group = 0;
+    wordsState.data = null;
     clearInterval(interval);
     const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
     localStorage.setItem('router', Router.MAIN);

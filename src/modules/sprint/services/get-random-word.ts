@@ -9,10 +9,10 @@ interface sprintWords {
     wordWrongTranslate: string;
     translateEqual: boolean;
 }
-const getRandom = () => Math.ceil(Math.random() * 19);
+const getRandom = () => Math.floor(Math.random() * 19);
 
 export const getRandomWord = async (): Promise<sprintWords> => {
-    if (!wordsState.data) wordsState.data = await getWords();
+    if (!wordsState.data) wordsState.data = await getWords(wordsState.group);
     const { data } = wordsState;
     let randomNum = getRandom();
     let { id, word, wordTranslate } = data[randomNum];

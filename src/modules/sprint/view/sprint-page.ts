@@ -6,6 +6,7 @@ import img from '../../../images/palm.gif';
 import success from '../../audiochallenge/assets/sounds/success.wav';
 import mistake from '../../audiochallenge/assets/sounds/error.mp3';
 import { statistics } from '../services/statistics';
+import { levelSelectRender } from './level-select';
 
 function play(src: string) {
     const audio = new Audio(src);
@@ -77,6 +78,15 @@ export const renderButtonsContainer = () => {
     wrong.addEventListener('click', async () => await getPushResult(!wordsState.translateEqual));
     return buttonsContainer;
 };
+export const startGame = async () => {
+    const sprint = document.querySelector('.sprint-container');
+    const header = document.querySelector('header');
+    const links = header.querySelectorAll('button');
+    links.forEach((link: HTMLButtonElement) => (link.disabled = true));
+    const counterWrapper = await renderPreCounter();
+    sprint.append(counterWrapper);
+};
+
 export const renderSprintPage = async () => {
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
@@ -85,14 +95,10 @@ export const renderSprintPage = async () => {
     sprint.className = 'sprint-container container';
     sprint.innerHTML = '<h1 class="text-center">SPRINT</h1>';
     root.append(sprint);
-    const header = document.querySelector('header');
-    const links = header.querySelectorAll('button');
-    links.forEach((link: HTMLButtonElement) => (link.disabled = true));
-    const counterWrapper = await renderPreCounter();
-    sprint.append(counterWrapper);
     const background = document.createElement('div');
     background.innerHTML = `
-        <img class="background-sprint" src=${img}> 
+    <img class="background-sprint" src=${img}> 
     `;
     root.append(background);
+    levelSelectRender();
 };
