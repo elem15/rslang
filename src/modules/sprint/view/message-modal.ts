@@ -42,14 +42,14 @@ export const messageModal = (message: string) => {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            Результаты: 
+            <h6>Результаты:</h6> 
             <br>
-            ${statistics.correct} изученно.
+            <span class="text-success">${statistics.correct}</span> изученно.
             <br>
-            ${statistics.incorrect} еще предстоит выучить.
+            <span class="text-danger">${statistics.incorrect}</span> еще предстоит выучить.
         </div>
         <div class="modal-body" id="answers">
-        Верные ответы:
+        <p class="text-success">Верные ответы:</p>
         <ul>       
             ${statistics.correctWords
                 .map(
@@ -60,7 +60,7 @@ export const messageModal = (message: string) => {
                 )
                 .join('')}</ul> 
             <br>
-            Не верные ответы:
+            <p class="text-danger">Не верные ответы:</p>
             <ul>       
                 ${statistics.incorrectWords
                     .map(

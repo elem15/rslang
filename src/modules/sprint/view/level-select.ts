@@ -16,6 +16,11 @@ export const levelSelectRender = () => {
             <button type="button" class="btn-close sprint-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+        Для управления игрой используйте клавиши ⬅ -  ➡.
+        <br>
+        ESC для возврата в главное меню. 
+        </div>
+        <div class="modal-body">
         <select class="form-select" aria-label="level-select">
             <option value="0" selected>Уровень 1</option>
             <option value="1">Уровень 2</option>
@@ -23,7 +28,9 @@ export const levelSelectRender = () => {
             <option value="3">Уровень 4</option>
             <option value="4">Уровень 5</option>
             <option value="5">Уровень 6</option>
-        </select>   
+        </select>  
+        </div>
+        <div class="modal-body"> 
         <button type="button" class="btn btn-success new-game" data-action="start">Играть</button>
         </div>
     </div>
