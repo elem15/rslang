@@ -37,9 +37,9 @@ const startGameCounter = async (counterWrapper: HTMLElement) => {
     const buttonsContainer = renderButtonsContainer();
     words.append(buttonsContainer);
     const arr = [
-        '<div class="pre-timer round-border red">1</div>',
+        '<div class="pre-timer round-border red">3</div>',
         '<div class="pre-timer round-border yellow">2</div>',
-        '<div class="pre-timer round-border green">3</div>',
+        '<div class="pre-timer round-border green">1</div>',
         '<div class="pre-timer">START</div>',
         words,
     ];
