@@ -3,7 +3,11 @@ import { startTextbook } from './startTextbook';
 
 export const renderWordsList = async (): Promise<void> => {
     const audio = document.querySelectorAll('audio');
-    audio.forEach((el) => el.remove());
+    audio.forEach((el) => {
+        el.src = '';
+        el.srcObject = null;
+        el.remove();
+    });
 
 
     let isReload = false;
@@ -64,6 +68,8 @@ export const renderWordsList = async (): Promise<void> => {
                 <div class="item__text-meaning-translate"></div>
                 <div class="item__text-example"></div>
                 <div class="item__text-example-translate"></div>
+                <div class="item__wrong-answer"></div>
+                <div class="item__right-answer"></div> 
                 <div class="item__buttons">
                     <button class="button item__button-hard">Добавить в "Сложные слова"</button>
                     <button class="button item__button-learned">Добавить в "Изученные слова"</button>
