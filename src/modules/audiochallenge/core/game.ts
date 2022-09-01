@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { addNewWord, getAggregatedWord, getUserWordsByDifficulty, getWords } from '../services/words';
+import { addNewWord, getUserWordsByDifficulty, getWords } from '../services/words';
 import { Word } from '../../../types';
 import { clear, getElementsList, generateWord, generateWords, formateDate } from '../utils';
 import { drawLevels } from '../view/levels';
@@ -77,15 +77,7 @@ export default class Game {
         this.group = level;
         try {
             let words = this.group > 5 ? await getUserWordsByDifficulty() : await getWords(this.page, this.group);
-            words = words.map((word: Word) => {
-                const w = {
-                    id: '_id' in word ? word._id : word.id,
-                    ...word,
-                };
-
-                if ('_id' in w) delete w._id;
-                return w;
-            });
+            words = this.convertCollection(words);
             if (typeof words !== 'undefined') {
                 this.words = words;
                 this.current = await generateWord(this.selected, this.words);
@@ -181,17 +173,6 @@ export default class Game {
                 target.classList.add('selected-correct');
                 target.innerHTML = `${checkIcon} ${target.innerText}`;
                 if (this.current) this.correct?.push(this.current.id);
-
-                const aggregated = await getAggregatedWord(this.current.id);
-
-                if (aggregated) {
-                    const { userWord } = aggregated;
-
-                    if (userWord.optional.date !== formateDate(new Date())) this.countLearnedWords++;
-                } else {
-                    await addNewWord(this.current.id);
-                    this.countLearnedWords++;
-                }
             } else {
                 this.updateMaxInRow();
                 this.inRow = 0;
@@ -216,6 +197,15 @@ export default class Game {
         });
 
         if (!this.isMuteOn()) this.playAudio(path);
+
+        await this.afterSelectVariant(correctAnswer);
+    };
+
+    afterSelectVariant = async (rightAnswer: boolean): Promise<void> => {
+        // const aggregated = await getAggregatedWord(this.current.id);
+
+        await addNewWord(this.current.id, rightAnswer ? 1 : 0, !rightAnswer ? 1 : 0);
+        this.countLearnedWords;
     };
 
     render = async (): Promise<void> => {
@@ -321,5 +311,17 @@ export default class Game {
             wrongAnswers: this.incorrect.length,
             longestSeries: this.maxInRow,
         };
+    };
+
+    convertCollection = (words: any[]): Word[] => {
+        return words.map((word: Word) => {
+            const w = {
+                id: '_id' in word ? word._id : word.id,
+                ...word,
+            };
+
+            if ('_id' in w) delete w._id;
+            return w;
+        });
     };
 }

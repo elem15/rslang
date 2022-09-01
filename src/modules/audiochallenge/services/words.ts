@@ -67,7 +67,7 @@ export const getUserWord = async (wordID: string): Promise<any> => {
     }
 };
 
-export const getAggregatedWord = async (wordID: string): Promise<any> => {
+export const getAggregatedWord = async (wordID: string): Promise<Word> => {
     const user: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = user;
 
@@ -88,7 +88,7 @@ export const getAggregatedWord = async (wordID: string): Promise<any> => {
     }
 };
 
-export const addNewWord = async (wordID: string): Promise<any> => {
+export const addNewWord = async (wordID: string, rightAnswers: number, wrongAnwers: number): Promise<Word> => {
     const user: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = user;
     const word = await getUserWord(wordID);
@@ -99,6 +99,8 @@ export const addNewWord = async (wordID: string): Promise<any> => {
             optional: {
                 date: formateDate(new Date()),
                 isWordNew: true,
+                rightAnswers: rightAnswers,
+                wrongAnwers: wrongAnwers,
             },
         });
         const response = await fetch(`${host}/users/${userId}/words/${wordID}`, {
@@ -114,11 +116,35 @@ export const addNewWord = async (wordID: string): Promise<any> => {
 
         return await response.json();
     } else {
-        if (!('optional' in word) || !('isNewWord' in word.optional)) {
+        if (!('optional' in word) || !('isWordNew' in word.optional)) {
             const body = JSON.stringify({
                 optional: {
                     date: formateDate(new Date()),
                     isWordNew: true,
+                    rightAnswers: rightAnswers,
+                    wrongAnwers: wrongAnwers,
+                },
+            });
+
+            const response = await fetch(`${host}/users/${userId}/words/${wordID}`, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json',
+                    'Content-type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: body,
+            });
+
+            return await response.json();
+        } else {
+            const body = JSON.stringify({
+                optional: {
+                    date: formateDate(new Date()),
+                    isWordNew: false,
+                    rightAnswers: word.optional.rightAnswers + rightAnswers,
+                    wrongAnwers: word.optional.wrongAnwers + wrongAnwers,
                 },
             });
 

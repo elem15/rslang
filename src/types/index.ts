@@ -28,6 +28,8 @@ export interface Word {
 export interface IOptional {
     date: string;
     isWordNew: boolean;
+    rightAnswers: number;
+    wrongAnswers: number;
 }
 
 export type HardWord = { _id: string } & Omit<Word, 'id'>;
