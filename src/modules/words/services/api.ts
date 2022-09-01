@@ -33,6 +33,7 @@ export const getUserWords = async (page = 0, group = 0, wordsPerPage = 20): Prom
             }
         );
         const words = await response.json();
+        wordsState.data = words[0].paginatedResults;
         return words[0].paginatedResults;
     } catch {
         console.log('Word not exist');
@@ -64,7 +65,6 @@ export const getAllHardWords = async (difficulty: string, wordsPerPage = 3600) =
             }
         );
         const words = await response.json();
-        wordsState.data = words;
         return words;
     } catch {
         console.log('Word not exist');
@@ -132,7 +132,6 @@ export const getAllUserWords = async () => {
             },
         });
         const words = await response.json();
-        wordsState.data = words;
         return words;
     } catch {
         console.log('Word not exist');

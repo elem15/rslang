@@ -82,8 +82,6 @@ export const messageModal = (message: string) => {
     </div>
   `;
     document.querySelector('.sprint-container').append(modal);
-    console.log(statistics.correctWords);
-    console.log(statistics.incorrectWords);
     const soundButtons = document.querySelectorAll('.sound-button');
     [...soundButtons].map((btn) =>
         btn.addEventListener('click', (e) => {
