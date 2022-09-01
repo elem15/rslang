@@ -9,10 +9,12 @@ import {
 } from '../../../types/textbook-types';
 import { UserData } from '../../../types/user-types';
 import { host } from '../../auth/controllers/hosts';
+import { wordsState } from '../../sprint/services/words-state';
 
 export const getWords = async (page = 0, group = 0): Promise<Dictionary[]> => {
     const response = await fetch(`${host}/words?page=${page}&group=${group}`);
     const wordsPage = await response.json();
+    wordsState.data = wordsPage;
     return wordsPage;
 };
 
@@ -31,6 +33,7 @@ export const getUserWords = async (page = 0, group = 0, wordsPerPage = 20): Prom
             }
         );
         const words = await response.json();
+        wordsState.data = words[0].paginatedResults;
         return words[0].paginatedResults;
     } catch {
         console.log('Word not exist');
