@@ -1,4 +1,4 @@
-import { addWordToHardLearned } from '../services/api';
+import { addLearnedHardNeutralWord, addWordToHardLearned } from '../services/api';
 import { changePageIconDefault, changePageIconLearned, drawPageDifficultWords } from './draw';
 import { addAllLearnedMessage } from './messageAllLearned';
 
@@ -32,7 +32,7 @@ export const addWordsForHardWordsPage = () => {
             changePageIconLearned(pageElement.selectedIndex, groupTextbook.selectedIndex);
             addAllLearnedMessage(countHardAndLearnedWords, groupTextbook.selectedIndex);
         }
-        await addWordToHardLearned(wordId, { difficulty: 'hard' });
+        await addLearnedHardNeutralWord(wordId, 'hard');
     };
 
     btnHardWord.forEach((el) => {
@@ -51,7 +51,7 @@ export const deleteWordsFromHardWordsPage = (isAuthorization: boolean) => {
 
         if ((e.target as HTMLButtonElement).classList.contains('item__button-hard')) {
             (e.target as HTMLButtonElement).innerText = 'Добавить в "Сложные слова"';
-            await addWordToHardLearned(wordId, { difficulty: 'neutral' });
+            await addLearnedHardNeutralWord(wordId, 'neutral');
             drawPageDifficultWords(isAuthorization);
             itemContainer.classList.remove('red');
         } else {
@@ -60,7 +60,7 @@ export const deleteWordsFromHardWordsPage = (isAuthorization: boolean) => {
                 'Добавить в "Сложные слова"';
             itemContainer.classList.remove('red');
             itemContainer.classList.add('green');
-            await addWordToHardLearned(wordId, { difficulty: 'learned' });
+            await addLearnedHardNeutralWord(wordId, 'learned');
             drawPageDifficultWords(isAuthorization);
         }
     };
@@ -83,7 +83,7 @@ export const addLearnedWords = () => {
             'Добавить в "Сложные слова"';
 
         if ((e.target as HTMLButtonElement).textContent === 'Добавить в "Изученные слова"') {
-            await addWordToHardLearned(wordId, { difficulty: 'learned' });
+            await addLearnedHardNeutralWord(wordId, 'learned');
             (e.target as HTMLButtonElement).textContent = 'Добавлено в "Изученные слова"';
             itemContainer.classList.remove('red');
             itemContainer.classList.add('green');
@@ -109,7 +109,7 @@ export const addLearnedWords = () => {
             return;
         }
         if ((e.target as HTMLButtonElement).textContent === 'Добавлено в "Изученные слова"') {
-            await addWordToHardLearned(wordId, { difficulty: 'neutral' });
+            await addLearnedHardNeutralWord(wordId, 'neutral');
             (e.target as HTMLButtonElement).textContent = 'Добавить в "Изученные слова"';
             itemContainer.classList.remove('red');
             itemContainer.classList.remove('green');

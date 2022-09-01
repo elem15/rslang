@@ -6,6 +6,13 @@ export const addListenerGameButton = () => {
     const buttonGameSprint = document.querySelector('.game__button-sprint');
     const game1Link = document.querySelector(`.${Router.GAME_1}`) as HTMLButtonElement;
     const sprintLink = document.querySelector(`.${Router.SPRINT}`) as HTMLButtonElement;
+
+    const root = document.querySelectorAll('audio');
+    root.forEach((el) => {
+        el.src = '';
+        el.srcObject = null;
+        el.remove(); 
+    });
     
     buttonGameAudio.addEventListener('click', () => {
         localStorage.setItem('router', Router.GAME_1);
