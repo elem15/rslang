@@ -11,54 +11,92 @@ export const renderStatisticsPage = async () => {
     statistics.className = 'statistics';
     root.append(statistics);
 
-    // const shortStatisticAudio = await getResultGame('audiochallenge');
-    // const shortStatisticSprint = await getResultGame('sprint');
-    // console.log('audiochallenge',shortStatisticAudio,'sprint',shortStatisticSprint)
+    const shortStatisticAudio = await getResultGame('audiochallenge');
+    const shortStatisticSprint = await getResultGame('sprint');
+    console.log('audiochallenge',shortStatisticAudio,'sprint',shortStatisticSprint)
+    const quantityNewWordsAudio = shortStatisticAudio.optional.gameStatistics.audiochallenge.newWords
+    let percentRightAnswersAudio = shortStatisticAudio.optional.gameStatistics.audiochallenge.rightAnswers / (shortStatisticAudio.optional.gameStatistics.audiochallenge.rightAnswers + shortStatisticAudio.optional.gameStatistics.audiochallenge.wrongAnswers) * 100;
+    percentRightAnswersAudio = percentRightAnswersAudio ? percentRightAnswersAudio : 0;
+    const longestSeriesAudio = shortStatisticAudio.optional.gameStatistics.audiochallenge.longestSeries;
 
-    // statistics.innerHTML = `
-    //     <table class="table">
-    //         <thead>
-    //             <tr>
-    //                 <th scope="col">Краткосрочная статистика по мини-играм</th>
-    //             </tr>
-    //         </thead>
-    //         <tbody>
-    //             <tr>
-    //                 <th scope="row">Тип игры</th>
-    //                 <th>Аудиовызов</th>
-    //                 <th>Спринт</th>
-    //             </tr>
-    //             <tr>
-    //                 <th scope="row">Количество новых слов за день</th>
-    //                 <td>Mark</td>
-    //                 <td>Otto</td>
-    //             </tr>
-    //             <tr>
-    //                 <th scope="row">Процент правильных ответов</th>
-    //                 <td>Jacob</td>
-    //                 <td>Thornton</td>
-    //             </tr>
-    //             <tr>
-    //                 <th scope="row">Самая длинная серия правильных ответов</th>
-    //                 <td>Larry the Bird</td>
-    //                 <td>Larry the Bird</td>
-    //             </tr>
-    //         </tbody>
-    //     </table>
-    //     <div class="wrapper-statistic">
-    //         <div id="chart1" class="statistic__short-audio-challenge"></div>
-    //         <div id="chart2" class="statistic__short-sprint"></div>
-    //     </div>
-    // `;
+    const quantityNewWordsSprint = shortStatisticSprint.optional.gameStatistics.sprint.newWords
+    let percentRightAnswersSprint = shortStatisticSprint.optional.gameStatistics.sprint.rightAnswers / (shortStatisticSprint.optional.gameStatistics.sprint.rightAnswers + shortStatisticSprint.optional.gameStatistics.sprint.wrongAnswers) * 100;
+    percentRightAnswersSprint = percentRightAnswersSprint ? percentRightAnswersSprint : 0;
+    const longestSeriesSprint = shortStatisticSprint.optional.gameStatistics.sprint.longestSeries;
 
-    workWithShortStatistic();
-    // drawGraphics();
+    let percentRightAnswersPerDay = (shortStatisticAudio.optional.gameStatistics.audiochallenge.rightAnswers + shortStatisticSprint.optional.gameStatistics.sprint.rightAnswers) / (shortStatisticAudio.optional.gameStatistics.audiochallenge.rightAnswers + shortStatisticAudio.optional.gameStatistics.audiochallenge.wrongAnswers + shortStatisticSprint.optional.gameStatistics.sprint.rightAnswers + shortStatisticSprint.optional.gameStatistics.sprint.wrongAnswers) * 100;
+    percentRightAnswersPerDay = percentRightAnswersPerDay ? percentRightAnswersPerDay : 0;
+    statistics.innerHTML = `
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Краткосрочная статистика по мини-играм</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Тип игры</th>
+                    <th>Аудиовызов</th>
+                    <th>Спринт</th>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых слов за день</th>
+                    <td>${quantityNewWordsAudio}</td>
+                    <td>${quantityNewWordsSprint}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Процент правильных ответов</th>
+                    <td>${percentRightAnswersAudio}</td>
+                    <td>${percentRightAnswersSprint}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Самая длинная серия правильных ответов</th>
+                    <td>${longestSeriesAudio}</td>
+                    <td>${longestSeriesSprint}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Краткосрочная статистика по словам</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Параметр</th>
+                    <th>Значение</th>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых слов за день</th>
+                    <td>${quantityNewWordsAudio + quantityNewWordsSprint}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество изученных слов за день</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th scope="row">Процент правильных ответов за день</th>
+                    <td>${percentRightAnswersPerDay}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="wrapper-statistic">
+            <div id="chart1" class="statistic__short-audio-challenge"></div>
+            <div id="chart2" class="statistic__short-sprint"></div>
+        </div>
+    `;
+
+    // workWithShortStatistic();
+    drawGraphics();
 };
 
 const workWithShortStatistic = async () => {
 
-    await addNewWord('5e9f5ee35eb9e72bc21af4c4', 0, 1, true);
+    // await addNewWord('5e9f5ee35eb9e72bc21af4c4', 0, 1, true);
 
-    await addResultGame('audiochallenge', 1, 1, 1, 1);
-    console.log(await getCountNewWords());
+    // await addResultGame('audiochallenge', 1, 1, 1, 1);
+    // console.log(await getCountNewWords());
+
+
 };
