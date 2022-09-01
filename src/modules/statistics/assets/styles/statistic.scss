@@ -1,0 +1,11 @@
+.statistic__short-audio-challenge, 
+.statistic__short-sprint  {
+    padding-top: 50px;
+    margin: 0 auto;
+    @media (min-width: 1400px) {
+        max-width: 1320px;
+    }
+    @media (min-width: 1200px) {
+    max-width: 1140px;
+    }
+}

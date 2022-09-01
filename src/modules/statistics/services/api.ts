@@ -1,8 +1,6 @@
 import {
     BodyRequest,
     Difficulty,
-    GameStatistics,
-    pageLearnedPagesGroup,
     Pages,
     Result,
     UserWords,
@@ -89,7 +87,6 @@ export const addNewWord = async (
                 },
             })
         ).json();
-        // return await response.json();
     } else if (wordUserStatus && !('optional' in wordUserStatus)) {
         (
             await fetch(`${host}/users/${userId}/words/${wordId}`, {
@@ -185,7 +182,6 @@ export const getCountNewWords = async () => {
     const store: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = store;
     const currentDate = new Date().toLocaleDateString('ru-RU');
-    // const currentDate = '30.08.2022';
     try {
         const response = await fetch(
             `${host}/users/${userId}/aggregatedWords?wordsPerPage=3600&filter=%7B%22%24and%22%3A%5B%7B%22userWord.optional.dateWordNew%22%3A%22${currentDate}%22%7D%5D%7D`,
@@ -214,11 +210,25 @@ export const addResultGame = async (
     const resultPreviousGame: BodyRequest = await getSettings();
     if (resultPreviousGame === undefined) {
         const resultPreviousGame = { optional: { pages: Object.assign({}, null) } };
+        let previousPages: Pages;
+        if (resultPreviousGame.optional) {
+            previousPages = resultPreviousGame.optional.pages;
+        }
+
+        const resultGame: Result = {
+            date: new Date().toLocaleDateString('ru-RU'),
+            newWords: newWords,
+            rightAnswers: rightAnswers,
+            wrongAnswers: wrongAnswers,
+            longestSeries: longestSeries,
+        };
+        const gameStatistics = { [typeOfGame]: resultGame };
+        const gameStatisticsAndPages = { gameStatistics, pages: previousPages };
+        resultPreviousGame.optional = gameStatisticsAndPages;
         updateSettings(resultPreviousGame);
     } else if (resultPreviousGame.optional === undefined || resultPreviousGame.optional.gameStatistics === undefined) {
         delete resultPreviousGame.id;
         let previousPages: Pages;
-
         if (resultPreviousGame.optional) {
             previousPages = resultPreviousGame.optional.pages;
         }
@@ -240,6 +250,7 @@ export const addResultGame = async (
         resultPreviousGame.optional.gameStatistics[typeOfGame].date !== new Date().toLocaleDateString('ru-RU')
     ) {
         delete resultPreviousGame.id;
+
         const resultGame: Result = {
             date: new Date().toLocaleDateString('ru-RU'),
             newWords: newWords,
@@ -250,8 +261,8 @@ export const addResultGame = async (
         resultPreviousGame.optional.gameStatistics[typeOfGame] = resultGame;
         updateSettings(resultPreviousGame);
     } else if (resultPreviousGame.optional.gameStatistics[typeOfGame].date === new Date().toLocaleDateString('ru-RU')) {
-        console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].newWords);
         delete resultPreviousGame.id;
+        console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers)
         resultPreviousGame.optional.gameStatistics[typeOfGame].newWords =
             resultPreviousGame.optional.gameStatistics[typeOfGame].newWords + newWords;
         resultPreviousGame.optional.gameStatistics[typeOfGame].rightAnswers =
@@ -262,7 +273,47 @@ export const addResultGame = async (
             resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries < longestSeries
                 ? longestSeries
                 : resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries;
-        console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].newWords);
+                console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers)
         updateSettings(resultPreviousGame);
+    }
+};
+
+
+export const getResultGame = async (typeOfGame: string) => {
+    let resultPreviousGame: BodyRequest = await getSettings();
+    if (resultPreviousGame === undefined || resultPreviousGame.optional === undefined || resultPreviousGame.optional.gameStatistics === undefined) {
+        let previousPages: Pages;
+        resultPreviousGame = { optional: { pages: Object.assign({}, null) } };
+        if (resultPreviousGame.optional) {
+            previousPages = resultPreviousGame.optional.pages;
+        }
+
+        const resultGame: Result = {
+            date: new Date().toLocaleDateString('ru-RU'),
+            newWords: 0,
+            rightAnswers: 0,
+            wrongAnswers: 0,
+            longestSeries: 0,
+        };
+        const gameStatistics = { [typeOfGame]: resultGame };
+        const gameStatisticsAndPages = { gameStatistics, pages: previousPages };
+        resultPreviousGame.optional = gameStatisticsAndPages;
+
+        return resultPreviousGame;
+    } else if (
+        resultPreviousGame.optional.gameStatistics[typeOfGame] === undefined ||
+        resultPreviousGame.optional.gameStatistics[typeOfGame].date !== new Date().toLocaleDateString('ru-RU')
+    ) {
+        const resultGame: Result = {
+            date: new Date().toLocaleDateString('ru-RU'),
+            newWords: 0,
+            rightAnswers: 0,
+            wrongAnswers: 0,
+            longestSeries: 0,
+        };
+        resultPreviousGame.optional.gameStatistics[typeOfGame] = resultGame;
+        return resultPreviousGame;
+    } else if (resultPreviousGame.optional.gameStatistics[typeOfGame].date === new Date().toLocaleDateString('ru-RU')) {
+        return resultPreviousGame;
     }
 };
