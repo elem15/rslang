@@ -11,10 +11,10 @@ export const removeModal = (modal: HTMLElement) => {
     const closeButtons = [modal, close, primary] as HTMLButtonElement[];
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', () => {
-            wordsState.data = null;
+            if (!wordsState.fromBook) wordsState.data = null;
             modal.remove();
             close.removeEventListener('click', () => true);
-            renderSprintPage();
+            renderSprintPage(wordsState.fromBook);
         });
     });
     secondary.addEventListener('click', () => {

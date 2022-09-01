@@ -1,10 +1,12 @@
 import { Dictionary, BodyRequest } from '../../../types/textbook-types';
 import { UserData } from '../../../types/user-types';
 import { host } from '../../auth/controllers/hosts';
+import { wordsState } from '../../sprint/services/words-state';
 
 export const getWords = async (page = 0, group = 0): Promise<Dictionary[]> => {
     const response = await fetch(`${host}/words?page=${page}&group=${group}`);
     const wordsPage = await response.json();
+    wordsState.data = wordsPage;
     return wordsPage;
 };
 
@@ -33,6 +35,7 @@ export const getAllHardWords = async (difficulty: string, wordsPerPage = 3600) =
             }
         );
         const words = await response.json();
+        wordsState.data = words;
         return words;
     } catch {
         console.log('Word not exist');
@@ -100,6 +103,7 @@ export const getAllUserWords = async () => {
             },
         });
         const words = await response.json();
+        wordsState.data = words;
         return words;
     } catch {
         console.log('Word not exist');

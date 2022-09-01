@@ -6,4 +6,5 @@ export const wordsState = {
     translateEqual: true as boolean,
     group: 2 as number,
     page: 3 as number,
+    fromBook: false as boolean,
 };

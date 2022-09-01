@@ -87,7 +87,7 @@ export const startGame = async () => {
     sprint.append(counterWrapper);
 };
 
-export const renderSprintPage = async () => {
+export const renderSprintPage = async (fromBook: boolean) => {
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     removeFooter();
@@ -100,5 +100,7 @@ export const renderSprintPage = async () => {
     <img class="background-sprint" src=${img}> 
     `;
     root.append(background);
-    levelSelectRender();
+    wordsState.fromBook = fromBook;
+    if (fromBook) startGame();
+    else levelSelectRender();
 };
