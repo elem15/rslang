@@ -8,7 +8,7 @@ import mistake from '../../audiochallenge/assets/sounds/error.mp3';
 import { statistics } from '../services/statistics';
 import { levelSelectRender } from './level-select';
 
-function play(src: string) {
+export function play(src: string) {
     const audio = new Audio(src);
     audio.play();
 }

@@ -8,7 +8,7 @@ import { keyDirect } from './sprint-page';
 import { statistics } from '../services/statistics';
 import { wordsState } from '../services/words-state';
 
-const GAME_TIME = 15;
+const GAME_TIME = 30;
 
 export const exitGame = (interval: NodeJS.Timer) => {
     const header = document.querySelector('header');

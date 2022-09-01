@@ -3,6 +3,10 @@ import { renderPage } from '../../router/services/router';
 import { statistics } from '../services/statistics';
 import { wordsState } from '../services/words-state';
 import { renderSprintPage } from './sprint-page';
+import { host } from '../../auth/controllers/hosts';
+import { play } from './sprint-page';
+import '../scss/styles.scss';
+export const soundIcon = `<svg class="sound" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path></svg>`;
 
 export const removeModal = (modal: HTMLElement) => {
     const close = document.querySelector('.btn-close');
@@ -53,9 +57,9 @@ export const messageModal = (message: string) => {
         <ul>       
             ${statistics.correctWords
                 .map(
-                    ({ word, wordTranslate }) =>
+                    ({ word, wordTranslate, audio }) =>
                         `
-                        <li>${word} - ${wordTranslate}</li>
+                        <li><button class="sound-button" data-sound=${host}/${audio}>${soundIcon}</button> ${word} - ${wordTranslate}</li>
                     `
                 )
                 .join('')}</ul> 
@@ -64,9 +68,9 @@ export const messageModal = (message: string) => {
             <ul>       
                 ${statistics.incorrectWords
                     .map(
-                        ({ word, wordTranslate }) =>
+                        ({ word, wordTranslate, audio }) =>
                             `
-                                  <li>${word} - ${wordTranslate}</li>
+                                  <li><button class="sound-button" data-sound=${host}/${audio}>${soundIcon}</button> ${word} - ${wordTranslate}</li>
                         `
                     )
                     .join('')}</ul>         
@@ -80,6 +84,13 @@ export const messageModal = (message: string) => {
     document.querySelector('.sprint-container').append(modal);
     console.log(statistics.correctWords);
     console.log(statistics.incorrectWords);
+    const soundButtons = document.querySelectorAll('.sound-button');
+    [...soundButtons].map((btn) =>
+        btn.addEventListener('click', (e) => {
+            const target = e.currentTarget as HTMLButtonElement;
+            play(target.getAttribute('data-sound'));
+        })
+    );
     removeModal(modal);
     return modal;
 };
