@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { addNewWord, getUserWordsByDifficulty, getWords } from '../services/words';
+import { getUserWordsByDifficulty, getWords } from '../services/words';
 import { Word } from '../../../types';
-import { clear, getElementsList, generateWord, generateWords, formateDate } from '../utils';
+import { clear, getElementsList, generateWord, generateWords } from '../utils';
 import { drawLevels } from '../view/levels';
 import { nextWord as card } from '../view/next';
 import { progress } from '../view/progress';
@@ -18,6 +18,7 @@ import { getUser } from '../services/auth';
 import { toolbar } from '../view/toolbar';
 import { Router } from '../../../types/router-types';
 import { renderPage } from '../../router/services/router';
+import { addNewWord, getCountNewWords } from '../../statistics/services/api';
 
 export default class Game {
     root: HTMLElement;
@@ -44,7 +45,7 @@ export default class Game {
     isMute: boolean;
     inRow = 0;
     maxInRow = 0;
-    countLearnedWords = 0;
+    newWordsQty = 0;
 
     constructor(root: HTMLElement, fromBook = false, group?: number, page?: number) {
         this.root = root;
@@ -202,10 +203,7 @@ export default class Game {
     };
 
     afterSelectVariant = async (rightAnswer: boolean): Promise<void> => {
-        // const aggregated = await getAggregatedWord(this.current.id);
-
-        await addNewWord(this.current.id, rightAnswer ? 1 : 0, !rightAnswer ? 1 : 0);
-        this.countLearnedWords;
+        addNewWord(this.current.id, rightAnswer ? 1 : 0, !rightAnswer ? 1 : 0, rightAnswer);
     };
 
     render = async (): Promise<void> => {
@@ -245,7 +243,8 @@ export default class Game {
         this.updateMaxInRow();
         clear(this.container);
         showResult(correct, incorrect, this.maxInRow, this.words.length, this.onRestart, this.onClose);
-        if (this.isFromBook) updateStatistics(getUser(), this.prepareStatistics());
+        // if (this.isFromBook);
+        updateStatistics(getUser(), await this.prepareStatistics());
         this.toggleListeners(false);
     };
 
@@ -266,12 +265,14 @@ export default class Game {
     };
 
     beforeGame = async (): Promise<void> => {
+        const wordsQty = await getCountNewWords();
         if (this.group === 0 && !this.isRestartGame) await this.showLevels();
         else await this.onLevelSelect(this.group);
         this.progress.classList.add('game__progress');
         this.container.className = 'game';
         this.next.classList.add('game__next_word');
         this.next.innerText = nextDefaultText;
+        this.newWordsQty = wordsQty ?? 0;
     };
 
     showLevels = async (): Promise<void> => {
@@ -303,10 +304,11 @@ export default class Game {
         }
     };
 
-    prepareStatistics = (): StatisticsType => {
+    prepareStatistics = async (): Promise<StatisticsType> => {
+        const newWordsQty = await getCountNewWords();
+        const newWordsAfter = newWordsQty - this.newWordsQty;
         return {
-            date: formateDate(new Date()),
-            learnedWords: this.countLearnedWords,
+            learnedWords: newWordsAfter,
             rightAnswers: this.correct.length,
             wrongAnswers: this.incorrect.length,
             longestSeries: this.maxInRow,

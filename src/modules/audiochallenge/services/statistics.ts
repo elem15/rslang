@@ -1,8 +1,7 @@
 import { UserData } from '../../../types/user-types';
-import { host } from '../../auth/controllers/hosts';
+import { addResultGame } from '../../statistics/services/api';
 
 export type StatisticsType = {
-    date: string;
     learnedWords: number;
     rightAnswers: number;
     wrongAnswers: number;
@@ -10,25 +9,10 @@ export type StatisticsType = {
 };
 
 export const updateStatistics = async (user: UserData | null, statistics: StatisticsType): Promise<void> => {
-    const data = {
-        learnedWords: statistics.learnedWords,
-        optional: statistics,
-    };
-
+    const { learnedWords, rightAnswers, wrongAnswers, longestSeries } = statistics;
+    console.log(statistics);
     if (user) {
-        const { token, userId } = user;
-        const response = await fetch(`${host}/users/${userId}/statistics`, {
-            method: 'PUT',
-            body: JSON.stringify(data),
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        });
-
-        const content = await response.json();
-        console.log(content);
+        await addResultGame('audiochallenge', learnedWords, rightAnswers, wrongAnswers, longestSeries);
     } else {
         localStorage.setItem('statistics', JSON.stringify(statistics));
     }

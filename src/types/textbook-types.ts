@@ -13,6 +13,14 @@ export interface Dictionary {
     wordTranslate: string;
     textMeaningTranslate: string;
     textExampleTranslate: string;
+    optional?: OptionalDictionary;
+}
+export interface OptionalDictionary {
+    dateWordNew: string | number;
+    dateWordLearned: string | number;
+    rightAnswers: number;
+    wrongAnswers: number;
+    rightAnswersSeries: number;
 }
 
 export interface DictionaryHardWord {
@@ -30,13 +38,30 @@ export interface DictionaryHardWord {
     wordTranslate: string;
     textMeaningTranslate: string;
     textExampleTranslate: string;
-    userWord: { difficulty: string };
+    userWord?: { difficulty?: string; optional?: OptionalDictionary };
 }
 
 export interface UserWords {
-    id: string;
-    difficulty: string;
-    wordId: string;
+    id?: string;
+    difficulty?: string;
+    wordId?: string;
+    optional?: OptionalDictionary;
+}
+
+export interface BodyRequest {
+    id?: string;
+    wordsPerDay?: number;
+    optional?: Optional;
+}
+
+export interface Optional {
+    pages?: Pages;
+    wordStatistics?: WordStatistics;
+    gameStatistics?: GameStatistics;
+}
+
+export interface Pages {
+    [index: number]: pageLearnedPagesGroup;
 }
 
 export interface pageLearnedPagesGroup {
@@ -44,20 +69,33 @@ export interface pageLearnedPagesGroup {
     group: number;
 }
 
-export interface BodyRequest {
-    wordsPerDay?: number;
-    optional?: Optional;
+export interface WordStatistics {
+    [index: string]: number;
 }
 
-export interface Optional {
-    [index: number]: pageLearnedPagesGroup;
+export interface GameStatistics {
+    sprint?: Result;
+    audiochallenge?: Result;
+    [index: string]: Result;
+}
+export interface Result {
+    date: string;
+    newWords: number;
+    rightAnswers: number;
+    wrongAnswers: number;
+    longestSeries: number;
 }
 
-export interface OptionalFromResponse {
-    [index: string]: pageLearnedPagesGroup;
-}
+// export interface OptionalFromResponse {
+//     pages: PagesFromResponse;
+// }
+
+// export interface PagesFromResponse {
+//     [index: string]: pageLearnedPagesGroup;
+// }
 
 export enum Difficulty {
     hard = 'hard',
     learned = 'learned',
+    neutral = 'neutral',
 }
