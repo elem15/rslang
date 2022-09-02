@@ -10,31 +10,19 @@ export const soundIcon = `<svg class="sound" focusable="false" viewBox="0 0 24 2
 
 export const removeModal = (modal: HTMLElement) => {
     const close = document.querySelector('.close-modal-btn');
-    const primary = document.querySelector('.new-game') as HTMLButtonElement;
     const secondary = document.querySelector('.to-main-page');
-    const closeButtons = [close, primary] as HTMLButtonElement[];
+    const closeButtons = [close, secondary] as HTMLButtonElement[];
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', () => {
-            if (!wordsState.fromBook) wordsState.data = null;
+            const header = document.querySelector('header');
+            const links = header.querySelectorAll('button');
             modal.remove();
-            close.removeEventListener('click', () => true);
-            renderSprintPage(wordsState.fromBook);
+            const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
+            localStorage.setItem('router', Router.MAIN);
+            renderPage(Router.MAIN, mainLink);
+            links.forEach((link: HTMLButtonElement) => (link.disabled = false));
             wordsState.counter = 0;
         });
-    });
-    secondary.addEventListener('click', () => {
-        const header = document.querySelector('header');
-        const links = header.querySelectorAll('button');
-        modal.remove();
-        const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
-        localStorage.setItem('router', Router.MAIN);
-        renderPage(Router.MAIN, mainLink);
-        links.forEach((link: HTMLButtonElement) => (link.disabled = false));
-        wordsState.counter = 0;
-    });
-    const modalDialog = document.querySelector('.modal-dialog');
-    modalDialog.addEventListener('click', (e) => {
-        e.stopPropagation();
     });
 };
 
@@ -81,7 +69,6 @@ export const messageModal = (message: string) => {
                     .join('')}</ul>         
             </div>
         <div class="modal-footer">
-        <button type="button" class="btn btn-primary new-game">Играть еще</button>
         <button type="button" class="btn btn-secondary to-main-page" data-dismiss="modal">На главную</button>
         </div>
     </div>

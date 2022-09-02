@@ -4,7 +4,8 @@ export const wordsState = {
     usedWordsIds: [] as string[],
     data: null as Dictionary[],
     translateEqual: true as boolean,
-    group: 2 as number,
-    page: 3 as number,
+    group: 0 as number,
+    page: 0 as number,
+    counter: 0 as number,
     fromBook: false as boolean,
 };

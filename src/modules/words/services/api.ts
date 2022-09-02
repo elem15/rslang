@@ -65,6 +65,7 @@ export const getAllHardWords = async (difficulty: string, wordsPerPage = 3600) =
             }
         );
         const words = await response.json();
+        wordsState.data = words[0].paginatedResults;
         return words;
     } catch {
         console.log('Word not exist');

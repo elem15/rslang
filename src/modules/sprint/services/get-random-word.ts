@@ -1,4 +1,6 @@
 import { getWords } from '../controllers/get-words';
+import { messageModal } from '../view/message-modal-few';
+import { exitGame, renderCounter } from '../view/render-counter';
 import { statistics } from './statistics';
 import { wordsState } from './words-state';
 
@@ -9,20 +11,26 @@ interface sprintWords {
     wordWrongTranslate: string;
     translateEqual: boolean;
 }
-const getRandom = () => Math.floor(Math.random() * 19);
 
 export const getRandomWord = async (): Promise<sprintWords> => {
     if (!wordsState.data) wordsState.data = await getWords(wordsState.group);
     const { data } = wordsState;
+    const maxLength = data.length;
+    const getRandom = () => Math.floor(Math.random() * maxLength);
     let randomNum = getRandom();
     let { id, word, wordTranslate } = data[randomNum];
+    id = id ? id : data[randomNum]._id;
     let i = 0;
-    while (wordsState.usedWordsIds.includes(id) && i < 20) {
+    while (wordsState.usedWordsIds.includes(id) && i < maxLength * 2) {
         i++;
         randomNum = getRandom();
-        id = data[randomNum].id;
+        id = data[randomNum].id ? data[randomNum].id : data[randomNum]._id;
         word = data[randomNum].word;
         wordTranslate = data[randomNum].wordTranslate;
+    }
+    wordsState.counter++;
+    if (wordsState.counter > maxLength) {
+        return { id: '0', word, wordTranslate, wordWrongTranslate: '', translateEqual: true };
     }
     wordsState.usedWordsIds.push(id);
     statistics.word = data[randomNum];
