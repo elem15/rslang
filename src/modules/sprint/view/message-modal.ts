@@ -15,7 +15,7 @@ export const removeModal = (modal: HTMLElement) => {
     const closeButtons = [close, primary] as HTMLButtonElement[];
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', () => {
-            if (!wordsState.fromBook) wordsState.data = null;
+            wordsState.data = null;
             modal.remove();
             close.removeEventListener('click', () => true);
             renderSprintPage(wordsState.fromBook);

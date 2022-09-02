@@ -1,8 +1,8 @@
-import { Dictionary } from '../../../types/textbook-types';
+import { Dictionary, DictionaryHardWord } from '../../../types/textbook-types';
 
 export const wordsState = {
     usedWordsIds: [] as string[],
-    data: null as Dictionary[],
+    data: null as DictionaryHardWord[],
     translateEqual: true as boolean,
     group: 0 as number,
     page: 0 as number,
