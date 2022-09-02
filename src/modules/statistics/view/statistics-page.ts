@@ -1,6 +1,6 @@
 // import { Optional, Pages, Result } from '../../../types/textbook-types';
 import { removeFooter } from '../../main/view/main-page';
-import { addNewWord, addResultGame, getCountNewWords, getResultGame } from '../services/api';
+import { addNewWord, addResultGame, getCountLearnedWords, getCountNewWords, getResultGame } from '../services/api';
 import { drawGraphics } from './drawGraphics';
 
 export const renderStatisticsPage = async () => {
@@ -13,7 +13,7 @@ export const renderStatisticsPage = async () => {
 
     const shortStatisticAudio = await getResultGame('audiochallenge');
     const shortStatisticSprint = await getResultGame('sprint');
-    console.log('audiochallenge',shortStatisticAudio,'sprint',shortStatisticSprint)
+    
     const quantityNewWordsAudio = shortStatisticAudio.optional.gameStatistics.audiochallenge.newWords
     let percentRightAnswersAudio = shortStatisticAudio.optional.gameStatistics.audiochallenge.rightAnswers / (shortStatisticAudio.optional.gameStatistics.audiochallenge.rightAnswers + shortStatisticAudio.optional.gameStatistics.audiochallenge.wrongAnswers) * 100;
     percentRightAnswersAudio = percentRightAnswersAudio ? percentRightAnswersAudio : 0;
@@ -26,6 +26,9 @@ export const renderStatisticsPage = async () => {
 
     let percentRightAnswersPerDay = (shortStatisticAudio.optional.gameStatistics.audiochallenge.rightAnswers + shortStatisticSprint.optional.gameStatistics.sprint.rightAnswers) / (shortStatisticAudio.optional.gameStatistics.audiochallenge.rightAnswers + shortStatisticAudio.optional.gameStatistics.audiochallenge.wrongAnswers + shortStatisticSprint.optional.gameStatistics.sprint.rightAnswers + shortStatisticSprint.optional.gameStatistics.sprint.wrongAnswers) * 100;
     percentRightAnswersPerDay = percentRightAnswersPerDay ? percentRightAnswersPerDay : 0;
+
+    let quantityLearnedWordsPerDay = await getCountLearnedWords();
+    quantityLearnedWordsPerDay = quantityLearnedWordsPerDay ? quantityLearnedWordsPerDay : 0;
     statistics.innerHTML = `
         <table class="table">
             <thead>
@@ -73,7 +76,7 @@ export const renderStatisticsPage = async () => {
                 </tr>
                 <tr>
                     <th scope="row">Количество изученных слов за день</th>
-                    <td></td>
+                    <td>${quantityLearnedWordsPerDay}</td>
                 </tr>
                 <tr>
                     <th scope="row">Процент правильных ответов за день</th>
@@ -88,12 +91,12 @@ export const renderStatisticsPage = async () => {
     `;
 
     // workWithShortStatistic();
-    drawGraphics();
+    // drawGraphics();
 };
 
 const workWithShortStatistic = async () => {
 
-    // await addNewWord('5e9f5ee35eb9e72bc21af4c4', 0, 1, true);
+    // await addNewWord('5e9f5ee35eb9e72bc21af505', 0, 1, true);
 
     // await addResultGame('audiochallenge', 1, 1, 1, 1);
     // console.log(await getCountNewWords());
