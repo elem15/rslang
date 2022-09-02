@@ -1,6 +1,6 @@
 import { removeFooter } from '../../main/view/main-page';
 
-export const renderStatisticsPage = () => {
+export const renderStatisticsPage = async () => {
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     removeFooter();

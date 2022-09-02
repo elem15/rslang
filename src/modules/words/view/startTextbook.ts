@@ -34,6 +34,7 @@ export const startTextbook = (isAuthorization: boolean, isReload: boolean) => {
             const currentGroup = groupTextbook.selectedIndex;
             localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
         };
+
         window.addEventListener('beforeunload', () => setLocalStorage());
 
         const getLocalStorage = function () {

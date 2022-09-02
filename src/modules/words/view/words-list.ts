@@ -3,7 +3,12 @@ import { startTextbook } from './startTextbook';
 
 export const renderWordsList = async (): Promise<void> => {
     const audio = document.querySelectorAll('audio');
-    audio.forEach((el) => el.remove());
+    audio.forEach((el) => {
+        el.src = '';
+        el.srcObject = null;
+        el.remove();
+    });
+
 
     let isReload = false;
     document.querySelector('section') === null ? (isReload = true) : (isReload = false);
@@ -14,6 +19,7 @@ export const renderWordsList = async (): Promise<void> => {
     const words = document.createElement('section');
     words.className = 'dictionary';
     root.append(words);
+
     words.innerHTML = `
         <div class="wrapper">
             <div class="textbook-navigation">
@@ -62,6 +68,8 @@ export const renderWordsList = async (): Promise<void> => {
                 <div class="item__text-meaning-translate"></div>
                 <div class="item__text-example"></div>
                 <div class="item__text-example-translate"></div>
+                <div class="item__wrong-answer"></div>
+                <div class="item__right-answer"></div> 
                 <div class="item__buttons">
                     <button class="button item__button-hard">Добавить в "Сложные слова"</button>
                     <button class="button item__button-learned">Добавить в "Изученные слова"</button>
@@ -70,6 +78,7 @@ export const renderWordsList = async (): Promise<void> => {
             </div>
         </div>
         </template>`;
+
     let isAuthorization = false;
     const userSymbol = document.querySelector('.user') as HTMLSpanElement;
     if (localStorage.getItem('email') && userSymbol.classList.contains('logged')) {
