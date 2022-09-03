@@ -1,179 +1,59 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Word } from '../../../types';
-import { Dictionary, UserWords } from '../../../types/textbook-types';
-import { UserData } from '../../../types/user-types';
-import { host } from '../../auth/controllers/hosts';
-import { formateDate } from '../utils';
+import { Dictionary, DictionaryHardWord, Difficulty } from '../../../types/textbook-types';
+import { getAllHardWords, getUserWords, getWords } from '../../words/services/api';
+import { getRandomNumber } from '../utils';
+import { isAuthenticated } from './auth';
 
-/*export const getWords = async (group = 0, page = 0, fromBook = false): Promise<Dictionary[] | undefined> => {
-    try {
-        if (!fromBook) {
-            const response = await fetch(`${host}/words?page=${page}&group=${group}`);
-            return await response.json();
-        }
-    } catch (Exception) {
-        console.log(`words loading error: ${Exception}`);
-    }
-};*/
-
-/*export const getUserWordsByDifficulty = async (
-    difficulty = 'hard',
-    wordsPerPage = 20,
-    group?: number,
-    page?: number
-) => {
-    const user: UserData = JSON.parse(localStorage.getItem('data'));
-    const { userId, token } = user;
-    let queryString = `wordsPerPage=${wordsPerPage}`;
-    if (group) queryString += `&group=${group}`;
-    if (page) queryString += `&page=${page}`;
-
-    try {
-        const response = await fetch(
-            `${host}/users/${userId}/aggregatedWords?wordsPerPage=${queryString}&filter={"$and":[{"userWord.difficulty":"${difficulty}"}]}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-            }
-        );
-        const words = await response.json();
-        return words[0].paginatedResults;
-    } catch (err) {
-        console.log(err);
-    }
-};*/
-
-/*export const getUserWords = async (): Promise<UserWords[]> => {
-    const user: UserData = JSON.parse(localStorage.getItem('data'));
-    const { userId, token } = user;
-    try {
-        const response = await fetch(`${host}/users/${userId}/words`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/json',
-            },
-        });
-
-        return await response.json();
-    } catch (Exception) {
-        console.error(Exception);
+export const loadWords = async (group: number, currentPage: number): Promise<Dictionary[]> => {
+    if (!isAuthenticated()) {
+        return await getWords(currentPage, group);
+    } else {
+        if (group < 6) return await loadUserWords(currentPage, group);
+        else return await loadHardWords();
     }
 };
-*/
-/*export const getUserWord = async (wordID: string): Promise<any> => {
-    const user: UserData = JSON.parse(localStorage.getItem('data'));
-    const { userId, token } = user;
 
-    try {
-        const response = await fetch(`${host}/users/${userId}/words/${wordID}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/json',
-            },
-        });
-        if (response.status === 200) return await response.json();
-        return undefined;
-    } catch (Exception) {
-        console.error(Exception);
-    }
-};*/
+const loadUserWords = async (page: number, group: number): Promise<Dictionary[]> => {
+    const collection = await getUserWords(page, group);
+    const words = collection.filter((w) => w.userWord?.difficulty !== Difficulty.learned);
+    if (words.length == 20) {
+        while (words.length !== 20 && page !== -1) {
+            const previous = (await getUserWords(page--, group)).filter(
+                (w) => w.userWord?.difficulty !== Difficulty.learned
+            );
 
-/*export const getAggregatedWord = async (wordID: string): Promise<Word> => {
-    const user: UserData = JSON.parse(localStorage.getItem('data'));
-    const { userId, token } = user;
-
-    try {
-        const response = await fetch(`${host}/users/${userId}/aggregatedWords/${wordID}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/json',
-            },
-        });
-        if (response.status === 200) {
-            const collection = await response.json();
-            return collection[0];
-        }
-        return undefined;
-    } catch (Exception) {
-        console.error(Exception);
-    }
-};*/
-
-/*export const addNewWord = async (wordID: string, rightAnswers: number, wrongAnswers: number): Promise<Word> => {
-    const user: UserData = JSON.parse(localStorage.getItem('data'));
-    const { userId, token } = user;
-    const word = await getUserWord(wordID);
-
-    if (!word) {
-        const body = JSON.stringify({
-            difficulty: 'neutral',
-            optional: {
-                date: formateDate(new Date()),
-                isWordNew: true,
-                rightAnswers: rightAnswers,
-                wrongAnswers: wrongAnswers,
-            },
-        });
-        const response = await fetch(`${host}/users/${userId}/words/${wordID}`, {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/json',
-                'Content-type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-            },
-            body: body,
-        });
-
-        return await response.json();
-    } else {
-        if (!('optional' in word) || !('isWordNew' in word.optional)) {
-            const body = JSON.stringify({
-                optional: {
-                    date: formateDate(new Date()),
-                    isWordNew: true,
-                    rightAnswers: rightAnswers,
-                    wrongAnswers: wrongAnswers,
-                },
-            });
-
-            const response = await fetch(`${host}/users/${userId}/words/${wordID}`, {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/json',
-                    'Content-type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-                body: body,
-            });
-
-            return await response.json();
-        } else {
-            const body = JSON.stringify({
-                optional: {
-                    date: formateDate(new Date()),
-                    isWordNew: false,
-                    rightAnswers: word.optional.rightAnswers + rightAnswers,
-                    wrongAnswers: word.optional.wrongAnswers + wrongAnswers,
-                },
-            });
-
-            const response = await fetch(`${host}/users/${userId}/words/${wordID}`, {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/json',
-                    'Content-type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-                body: body,
-            });
-
-            return await response.json();
+            if (previous.length > words.length) words.push(...previous.slice(0, previous.length - words.length - 1));
+            else words.push(...previous);
         }
     }
-};*/
+    return convertCollection(words);
+};
+
+const loadHardWords = async (): Promise<Dictionary[]> => {
+    const { paginatedResults, totalCount } = (await getAllHardWords(Difficulty.hard))[0];
+    const total = totalCount[0].count;
+
+    if (total > 20) {
+        const words: DictionaryHardWord[] = [];
+
+        while (words.length !== 20) {
+            const num = getRandomNumber(total);
+            const next = paginatedResults[num];
+            if (!words.includes(next)) words.push(next);
+        }
+        return convertCollection(words);
+    }
+    return convertCollection(paginatedResults);
+};
+
+const convertCollection = (words: any[]): any[] => {
+    return words.map((word: any) => {
+        const w = {
+            id: '_id' in word ? word._id : word.id,
+            ...word,
+        };
+
+        if ('_id' in w) delete w._id;
+        return w;
+    });
+};

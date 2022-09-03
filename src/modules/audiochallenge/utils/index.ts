@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Dictionary, DictionaryHardWord, Difficulty } from '../../../types/textbook-types';
-import { getWords, getUserWords, getAllHardWords } from '../../words/services/api';
+import { Dictionary } from '../../../types/textbook-types';
 
 export const shuffle = <T>(collection: T[]): T[] => {
     const arr = collection.slice();
@@ -44,56 +43,4 @@ export const getElementsList = (selector: string): NodeListOf<HTMLElement> => {
 
 export const formateDate = (date: Date): string => {
     return date.toLocaleDateString('ru-RU');
-};
-
-export const loadWords = async (fromBook = false, group: number, currentPage: number): Promise<Dictionary[]> => {
-    if (fromBook) {
-        const words = await getWords(currentPage, group);
-        return words;
-    } else {
-        if (group < 6) {
-            const collection = await getUserWords(currentPage, group);
-            const words = collection.filter((w) => w.userWord?.difficulty !== Difficulty.learned);
-            if (words.length == 20) {
-                while (words.length !== 20 && currentPage !== -1) {
-                    const previous = (await getUserWords(currentPage--, group)).filter(
-                        (w) => w.userWord?.difficulty !== Difficulty.learned
-                    );
-
-                    if (previous.length > words.length)
-                        words.push(...previous.slice(0, previous.length - words.length - 1));
-                    else words.push(...previous);
-                }
-            }
-
-            return convertCollection(words);
-        } else {
-            const { paginatedResults, totalCount } = (await getAllHardWords(Difficulty.hard))[0];
-            const total = totalCount[0].count;
-
-            if (total > 20) {
-                const words: DictionaryHardWord[] = [];
-
-                while (words.length !== 20) {
-                    const num = getRandomNumber(total);
-                    const next = paginatedResults[num];
-                    if (!words.includes(next)) words.push(next);
-                }
-                return convertCollection(words);
-            }
-            return convertCollection(paginatedResults);
-        }
-    }
-};
-
-const convertCollection = (words: any[]): any[] => {
-    return words.map((word: any) => {
-        const w = {
-            id: '_id' in word ? word._id : word.id,
-            ...word,
-        };
-
-        if ('_id' in w) delete w._id;
-        return w;
-    });
 };
