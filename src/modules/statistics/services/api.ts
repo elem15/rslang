@@ -1,11 +1,4 @@
-import { Series, SeriesPrimitiveValue } from 'chartist';
-import {
-    BodyRequest,
-    Difficulty,
-    Pages,
-    Result,
-    UserWords,
-} from '../../../types/textbook-types';
+import { BodyRequest, Difficulty, Pages, Result, UserWords } from '../../../types/textbook-types';
 import { UserData } from '../../../types/user-types';
 import { host } from '../../auth/controllers/hosts';
 
@@ -115,7 +108,9 @@ export const addNewWord = async (
             body = {
                 difficulty: Difficulty.learned ? Difficulty.neutral : wordUserStatus.difficulty,
                 optional: {
-                    dateWordNew: wordUserStatus.optional.dateWordNew ? wordUserStatus.optional.dateWordNew : new Date().toLocaleDateString('ru-RU'),
+                    dateWordNew: wordUserStatus.optional.dateWordNew
+                        ? wordUserStatus.optional.dateWordNew
+                        : new Date().toLocaleDateString('ru-RU'),
                     dateWordLearned: 0,
                     rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
                     wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
@@ -128,7 +123,9 @@ export const addNewWord = async (
                 body = {
                     difficulty: Difficulty.learned,
                     optional: {
-                        dateWordNew: wordUserStatus.optional.dateWordNew ? wordUserStatus.optional.dateWordNew : new Date().toLocaleDateString('ru-RU'),
+                        dateWordNew: wordUserStatus.optional.dateWordNew
+                            ? wordUserStatus.optional.dateWordNew
+                            : new Date().toLocaleDateString('ru-RU'),
                         dateWordLearned: new Date().toLocaleDateString('ru-RU'),
                         rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
                         wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
@@ -142,7 +139,9 @@ export const addNewWord = async (
                 body = {
                     difficulty: Difficulty.learned,
                     optional: {
-                        dateWordNew: wordUserStatus.optional.dateWordNew ? wordUserStatus.optional.dateWordNew : new Date().toLocaleDateString('ru-RU'),
+                        dateWordNew: wordUserStatus.optional.dateWordNew
+                            ? wordUserStatus.optional.dateWordNew
+                            : new Date().toLocaleDateString('ru-RU'),
                         dateWordLearned: new Date().toLocaleDateString('ru-RU'),
                         rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
                         wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
@@ -152,14 +151,16 @@ export const addNewWord = async (
             } else {
                 body = {
                     optional: {
-                        dateWordNew: wordUserStatus.optional.dateWordNew ? wordUserStatus.optional.dateWordNew : new Date().toLocaleDateString('ru-RU'),
+                        dateWordNew: wordUserStatus.optional.dateWordNew
+                            ? wordUserStatus.optional.dateWordNew
+                            : new Date().toLocaleDateString('ru-RU'),
                         dateWordLearned: wordUserStatus.optional.dateWordLearned,
                         rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
                         wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
                         rightAnswersSeries:
                             wordUserStatus.difficulty === Difficulty.learned
                                 ? wordUserStatus.optional.rightAnswersSeries
-                                : wordUserStatus.optional.rightAnswersSeries++,
+                                : ++wordUserStatus.optional.rightAnswersSeries,
                     },
                 };
             }
@@ -285,7 +286,7 @@ export const addResultGame = async (
         updateSettings(resultPreviousGame);
     } else if (resultPreviousGame.optional.gameStatistics[typeOfGame].date === new Date().toLocaleDateString('ru-RU')) {
         delete resultPreviousGame.id;
-        console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers)
+        console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers);
         resultPreviousGame.optional.gameStatistics[typeOfGame].newWords =
             resultPreviousGame.optional.gameStatistics[typeOfGame].newWords + newWords;
         resultPreviousGame.optional.gameStatistics[typeOfGame].rightAnswers =
@@ -296,15 +297,18 @@ export const addResultGame = async (
             resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries < longestSeries
                 ? longestSeries
                 : resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries;
-                console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers)
+        console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers);
         updateSettings(resultPreviousGame);
     }
 };
 
-
 export const getResultGame = async (typeOfGame: string) => {
     let resultPreviousGame: BodyRequest = await getSettings();
-    if (resultPreviousGame === undefined || resultPreviousGame.optional === undefined || resultPreviousGame.optional.gameStatistics === undefined) {
+    if (
+        resultPreviousGame === undefined ||
+        resultPreviousGame.optional === undefined ||
+        resultPreviousGame.optional.gameStatistics === undefined
+    ) {
         let previousPages: Pages;
         resultPreviousGame = { optional: { pages: Object.assign({}, null) } };
         if (resultPreviousGame.optional) {
@@ -358,31 +362,81 @@ export const getAllUserWords = async () => {
     }
 };
 
-// export const getNewLearnedWords = async (): Promise<[Series<SeriesPrimitiveValue>, Series<SeriesPrimitiveValue>]> => {
-//     const allUserWords = await getAllUserWords();
-//     console.log(allUserWords);
-//     if (allUserWords === undefined) {
-//         return [[{ [new Date().toLocaleDateString('ru-RU')]: 0 }], [{ [new Date().toLocaleDateString('ru-RU')]: 0 }]];
-//     } else {
-//         console.log(allUserWords);
-//         let allDateWordNew = allUserWords.map((el: UserWords) => el.optional.dateWordNew);
-//         let allDateWordLearned = allUserWords.map((el: UserWords) => el.optional.dateWordLearned);
-//         if (allDateWordNew === undefined || allDateWordLearned === undefined) {
-//             return [{ [new Date().toLocaleDateString('ru-RU')]: 0 }, { [new Date().toLocaleDateString('ru-RU')]: 0 }];
-//         } else {
-//             allDateWordNew = allDateWordNew.filter((el: number) => el !== 0);
-//             allDateWordLearned = allDateWordLearned.filter((el: number) => el !== 0);
-//             let allDateWordNewObj;
-//             allDateWordNew.forEach((el: string) => { allDateWordNewObj[el] = (allDateWordNewObj[el] || 0) + 1; });
-//             let allDateWordLearnedObj;
-//             allDateWordLearned.forEach((el: string) => { allDateWordLearnedObj[el] = (allDateWordLearnedObj[el] || 0) + 1; });
-//             const allDateWordNewRes = Object
-//                 .entries(allDateWordNewObj)
-//                 .map(el => ({[el[0]]: el[1]}));
-//             const allDateWordLearnedRes = Object
-//                 .entries(allDateWordLearnedObj)
-//                 .map(el => ({[el[0]]: el[1]}));
-//             return [[allDateWordNewRes], [allDateWordLearnedRes]];
-//         }
-//     }
-// };
+export const getNewLearnedWords = async () => {
+    const allUserWords = await getAllUserWords();
+    console.log(allUserWords);
+    if (allUserWords === undefined) {
+        return [[{ [new Date().toLocaleDateString('ru-RU')]: 0 }], [{ [new Date().toLocaleDateString('ru-RU')]: 0 }]];
+    } else {
+        console.log(allUserWords);
+        let allDateWordNew = allUserWords.map((el: UserWords) => el.optional.dateWordNew);
+        let allDateWordLearned = allUserWords.map((el: UserWords) => el.optional.dateWordLearned);
+        if (allDateWordNew === undefined || allDateWordLearned === undefined) {
+            return [{ [new Date().toLocaleDateString('ru-RU')]: 0 }, { [new Date().toLocaleDateString('ru-RU')]: 0 }];
+        } else {
+            allDateWordNew = allDateWordNew.filter((el: number) => el !== 0);
+            allDateWordLearned = allDateWordLearned.filter((el: number) => el !== 0);
+            const startDayWordNew = Math.min(
+                ...allDateWordNew.map((el: string) => Date.parse(el.replace(/(...)(...)?/g, '$2$1')))
+            );
+            const startDayWordLearn = Math.min(
+                ...allDateWordLearned.map((el: string) => Date.parse(el.replace(/(...)(...)?/g, '$2$1')))
+            );
+            const startDay = startDayWordNew < startDayWordLearn ? startDayWordNew : startDayWordLearn;
+            const timeLeft = (Date.parse(String(new Date())) - startDay) / 86400000;
+            const daysLeft = Math.ceil(timeLeft);
+            // console.log(new Date(startDay + 86400000).toLocaleDateString('ru-RU'));
+            const arrResDatesMSec = [];
+            for (let i = 0; i < daysLeft; i++) {
+                arrResDatesMSec.push(startDay + i * 86400000);
+            }
+            const arrResDates = arrResDatesMSec.map((el) => new Date(el).toLocaleDateString('ru-RU'));
+
+            const allDateWordLearnedObj: { [x: string]: number } = {};
+            allDateWordLearned.forEach((el: string) => {
+                allDateWordLearnedObj[el] = (allDateWordLearnedObj[el] || 0) + 1;
+            });
+
+            arrResDates.forEach((el) => {
+                if (!Object.keys(allDateWordLearnedObj).includes(el)) {
+                    allDateWordLearnedObj[el] = 0;
+                }
+            });
+
+            const allDateWordLearnedObjMSec: { [x: string]: number } = {};
+            Object.entries(allDateWordLearnedObj).forEach(([key, value]) => {
+                allDateWordLearnedObjMSec[Date.parse(key.replace(/(...)(...)?/g, '$2$1'))] = value;
+            });
+
+            const allDateWordLearnedObjMSecSort = Object.fromEntries(Object.entries(allDateWordLearnedObjMSec).sort());
+            const allDateWordLearnedRes: { [x: string]: number } = {};
+            Object.entries(allDateWordLearnedObjMSecSort).forEach(([key, value]) => {
+                allDateWordLearnedRes[new Date(Number(key)).toLocaleDateString('ru-RU')] = value;
+            });
+
+            const allDateWordNewObj: { [x: string]: number } = {};
+            allDateWordNew.forEach((el: string) => {
+                allDateWordNewObj[el] = (allDateWordNewObj[el] || 0) + 1;
+            });
+
+            arrResDates.forEach((el) => {
+                if (!Object.keys(allDateWordNewObj).includes(el)) {
+                    allDateWordNewObj[el] = 0;
+                }
+            });
+
+            const allDateWordNewObjMSec: { [x: string]: number } = {};
+            Object.entries(allDateWordNewObj).forEach(([key, value]) => {
+                allDateWordNewObjMSec[Date.parse(key.replace(/(...)(...)?/g, '$2$1'))] = value;
+            });
+
+            const allDateWordNewObjMSecSort = Object.fromEntries(Object.entries(allDateWordNewObjMSec).sort());
+            const allDateWordNewRes: { [x: string]: number } = {};
+            Object.entries(allDateWordNewObjMSecSort).forEach(([key, value]) => {
+                allDateWordNewRes[new Date(Number(key)).toLocaleDateString('ru-RU')] = value;
+            });
+
+            return [allDateWordNewRes, allDateWordLearnedRes, arrResDates];
+        }
+    }
+};
