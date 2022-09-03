@@ -3,13 +3,13 @@ import { renderPage } from '../../router/services/router';
 
 export const removeModal = (modal: HTMLElement) => {
     const close = document.querySelector('.btn-close');
-    const closeButtons = [modal, close] as HTMLButtonElement[];
+    const closeButtons = [close] as HTMLButtonElement[];
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', () => {
             modal.remove();
             const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
             localStorage.setItem('router', Router.MAIN);
-            renderPage(Router.MAIN, mainLink);
+            renderPage(Router.MAIN);
         });
     });
     const modalDialog = document.querySelector('.modal-dialog');

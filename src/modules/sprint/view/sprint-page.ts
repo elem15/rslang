@@ -1,4 +1,4 @@
-import { removeFooter } from '../../main/view/main-page';
+import { removeFooter } from '../../main/view/footer';
 import { wordsState } from '../services/words-state';
 import { getWord, renderPreCounter } from './render-pre-counter';
 import '../scss/styles.scss';
@@ -54,6 +54,7 @@ const getPushResult = async (translateEqual: boolean) => {
         if (translateWord) translateWord.remove();
         if (response.id === '0') {
             clearInterval(renderCounter.prototype.interval);
+            document.removeEventListener('keydown', keyDirect);
             document.querySelector('.counter').innerHTML = '';
             document.querySelector('.sprint-container').append(messageModal('Слова в разделе закончились'));
             return;

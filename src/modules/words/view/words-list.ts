@@ -1,4 +1,4 @@
-import { renderFooter } from '../../main/view/main-page';
+import { renderFooter } from '../../main/view/footer';
 import { startTextbook } from './startTextbook';
 
 export const renderWordsList = async (): Promise<void> => {

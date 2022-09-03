@@ -1,7 +1,7 @@
 import { Dictionary, DictionaryHardWord } from '../../../types/textbook-types';
 
 export const wordsState = {
-    usedWordsIds: [] as string[],
+    usedWordsIds: new Set() as Set<string>,
     data: null as DictionaryHardWord[],
     translateEqual: true as boolean,
     group: 0 as number,

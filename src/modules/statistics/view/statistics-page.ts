@@ -1,4 +1,4 @@
-import { removeFooter } from '../../main/view/main-page';
+import { removeFooter } from '../../main/view/footer';
 
 export const renderStatisticsPage = async () => {
     const root = document.getElementById('root');

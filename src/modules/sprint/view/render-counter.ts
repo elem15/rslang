@@ -19,7 +19,7 @@ export const exitGame = (interval: NodeJS.Timer) => {
     const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
     localStorage.setItem('router', Router.MAIN);
     document.removeEventListener('keydown', keyDirect);
-    renderPage(Router.MAIN, mainLink);
+    renderPage(Router.MAIN);
     links.forEach((link: HTMLButtonElement) => (link.disabled = false));
     wordsState.counter = 0;
 };

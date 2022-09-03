@@ -15,10 +15,10 @@ export const removeModal = (modal: HTMLElement) => {
     const closeButtons = [close, primary] as HTMLButtonElement[];
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', () => {
-            wordsState.data = null;
             modal.remove();
             close.removeEventListener('click', () => true);
             renderSprintPage(wordsState.fromBook);
+            wordsState.data = null;
             wordsState.counter = 0;
         });
     });
@@ -28,8 +28,9 @@ export const removeModal = (modal: HTMLElement) => {
         modal.remove();
         const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
         localStorage.setItem('router', Router.MAIN);
-        renderPage(Router.MAIN, mainLink);
+        renderPage(Router.MAIN);
         links.forEach((link: HTMLButtonElement) => (link.disabled = false));
+        wordsState.data = null;
         wordsState.counter = 0;
     });
     const modalDialog = document.querySelector('.modal-dialog');

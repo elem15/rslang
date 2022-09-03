@@ -21,7 +21,7 @@ export const getRandomWord = async (): Promise<sprintWords> => {
     let { id, word, wordTranslate } = filteredData[randomNum];
     id = id ? id : filteredData[randomNum]._id;
     let i = 0;
-    while (wordsState.usedWordsIds.includes(id) && i < maxLength * 2) {
+    while (wordsState.usedWordsIds.has(id) && i < maxLength * 4) {
         i++;
         randomNum = getRandom();
         id = filteredData[randomNum].id ? filteredData[randomNum].id : filteredData[randomNum]._id;
@@ -32,7 +32,7 @@ export const getRandomWord = async (): Promise<sprintWords> => {
     if (wordsState.counter > maxLength) {
         return { id: '0', word, wordTranslate, wordWrongTranslate: '', translateEqual: true };
     }
-    wordsState.usedWordsIds.push(id);
+    wordsState.usedWordsIds.add(id);
     statistics.word = filteredData[randomNum];
     const random = Math.random();
     if (random > 0.5) {

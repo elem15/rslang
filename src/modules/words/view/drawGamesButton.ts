@@ -11,16 +11,14 @@ export const addListenerGameButton = () => {
     root.forEach((el) => {
         el.src = '';
         el.srcObject = null;
-        el.remove(); 
+        el.remove();
     });
-    
     buttonGameAudio.addEventListener('click', () => {
         localStorage.setItem('router', Router.GAME_1);
-        renderPage(Router.GAME_1, game1Link, true);
+        renderPage(Router.GAME_1, true);
     });
-    
     buttonGameSprint.addEventListener('click', () => {
         localStorage.setItem('router', Router.SPRINT);
-        renderPage(Router.SPRINT, sprintLink, true);
+        renderPage(Router.SPRINT, true);
     });
-}
+};
