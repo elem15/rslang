@@ -1,7 +1,7 @@
 import { soundIcon } from '../core/settings';
-import { Word } from '../../../types';
 import { host } from '../../auth/controllers/hosts';
 import result from '../assets/images/result.svg';
+import { Dictionary } from '../../../types/textbook-types';
 
 const playAudio = async (e: MouseEvent): Promise<void> => {
     let target = e.target as HTMLElement;
@@ -18,7 +18,7 @@ const closeResult = (modal: HTMLElement) => {
     }, 200);
 };
 
-const makeListOfWords = (collection: Word[], type: string): HTMLElement[] => {
+const makeListOfWords = (collection: Dictionary[], type: string): HTMLElement[] => {
     return collection.map((word) => {
         const li = document.createElement('li') as HTMLLIElement;
         li.classList.add(`${type}__answers_item`);
@@ -27,7 +27,7 @@ const makeListOfWords = (collection: Word[], type: string): HTMLElement[] => {
     });
 };
 
-const getBody = (correct: Word[], incorrect: Word[], inRow: number, total: number): HTMLElement => {
+const getBody = (correct: Dictionary[], incorrect: Dictionary[], inRow: number, total: number): HTMLElement => {
     const body = document.createElement('div') as HTMLElement;
     const statistic = document.createElement('ul') as HTMLUListElement;
     const right = document.createElement('ul') as HTMLUListElement;
@@ -72,8 +72,8 @@ const getBody = (correct: Word[], incorrect: Word[], inRow: number, total: numbe
 };
 
 export const showResult = (
-    correct: Word[],
-    incorrect: Word[],
+    correct: Dictionary[],
+    incorrect: Dictionary[],
     inRow: number,
     total: number,
     resetHandler: CallableFunction,
