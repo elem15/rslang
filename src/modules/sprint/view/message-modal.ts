@@ -20,18 +20,19 @@ export const removeModal = (modal: HTMLElement) => {
             renderSprintPage(wordsState.fromBook);
             wordsState.data = null;
             wordsState.counter = 0;
+            statistics.correct3word = -1;
         });
     });
     secondary.addEventListener('click', () => {
         const header = document.querySelector('header');
         const links = header.querySelectorAll('button');
         modal.remove();
-        const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
         localStorage.setItem('router', Router.MAIN);
         renderPage(Router.MAIN);
         links.forEach((link: HTMLButtonElement) => (link.disabled = false));
         wordsState.data = null;
         wordsState.counter = 0;
+        statistics.correct3word = -1;
     });
     const modalDialog = document.querySelector('.modal-dialog');
     modalDialog.addEventListener('click', (e) => {
@@ -48,7 +49,7 @@ export const messageModal = (message: string) => {
     <div class="modal-dialog" id="message-modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">${message}</h5>
+            <h5 class="modal-title" id="example-modal-label">${message}</h5>
             <button type="button" class="btn-close close-modal-btn" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

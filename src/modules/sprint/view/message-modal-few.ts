@@ -18,12 +18,12 @@ export const removeModal = (modal: HTMLElement) => {
         const header = document.querySelector('header');
         const links = header.querySelectorAll('button');
         modal.remove();
-        const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
         localStorage.setItem('router', Router.MAIN);
         renderPage(Router.MAIN);
         links.forEach((link: HTMLButtonElement) => (link.disabled = false));
         wordsState.counter = 0;
         wordsState.data = null;
+        statistics.correct3word = -1;
     };
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', goToMain);
@@ -36,6 +36,7 @@ export const removeModal = (modal: HTMLElement) => {
         counterWrapper.remove();
         wordsState.counter = 0;
         wordsState.data = null;
+        statistics.correct3word = -1;
         if (wordsState.fromBook) startGame();
         else levelSelectRender();
     });
@@ -51,7 +52,7 @@ export const messageModal = (message: string) => {
         <div class="modal-dialog" id="message-modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">${message}</h5>
+                <h5 class="modal-title" id="example-modal-label">${message}</h5>
                 <button type="button" class="btn-close close-modal-btn" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -76,13 +77,13 @@ export const messageModal = (message: string) => {
                 <p class="text-danger">Не верные ответы:</p>
                 <ul>       
                     ${statistics.incorrectWords
-                .map(
-                    ({ word, wordTranslate, audio }) =>
-                        `
+                        .map(
+                            ({ word, wordTranslate, audio }) =>
+                                `
                                       <li><button class="sound-button" data-sound=${host}/${audio}>${soundIcon}</button> ${word} - ${wordTranslate}</li>
                             `
-                )
-                .join('')}</ul>         
+                        )
+                        .join('')}</ul>         
                 </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-primary new-game">Играть еще</button>

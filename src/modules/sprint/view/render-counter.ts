@@ -16,12 +16,13 @@ export const exitGame = (interval: NodeJS.Timer) => {
     wordsState.group = 0;
     wordsState.data = null;
     clearInterval(interval);
-    const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
     localStorage.setItem('router', Router.MAIN);
     document.removeEventListener('keydown', keyDirect);
     renderPage(Router.MAIN);
     links.forEach((link: HTMLButtonElement) => (link.disabled = false));
     wordsState.counter = 0;
+    wordsState.data = null;
+    statistics.correct3word = -1;
 };
 
 export function renderCounter() {
@@ -68,23 +69,3 @@ export function renderCounter() {
 
     return counter;
 }
-
-// export class Counter {
-//     counter: HTMLElement;
-//     i: number;
-//     interval: NodeJS.Timer;
-//     constructor() {
-//         this.counter = document.createElement('div');
-//         this.counter.classList.add('counter');
-//         this.counter.innerHTML = '0';
-//         this.i = 0;
-//         this.interval = setInterval(() => {
-//             this.i++;
-//             this.counter.innerHTML = '' + this.i;
-//             if (this.i >= 5) {
-//                 clearInterval(this.interval);
-//                 messageModal('Игра закончена');
-//             }
-//         }, 1000);
-//     }
-// }

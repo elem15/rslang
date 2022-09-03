@@ -62,7 +62,7 @@ const startGameCounter = async (counterWrapper: HTMLElement) => {
                 document.querySelector('.modal-body').append(gameBody);
                 document.addEventListener('keydown', keyDirect);
             }
-        }, 1000 * i);
+        }, 100 * i);
     }
 };
 
