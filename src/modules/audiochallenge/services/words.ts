@@ -1,22 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Word } from '../../../types';
-import { UserWords } from '../../../types/textbook-types';
+import { Dictionary, UserWords } from '../../../types/textbook-types';
 import { UserData } from '../../../types/user-types';
 import { host } from '../../auth/controllers/hosts';
 import { formateDate } from '../utils';
 
-export const getWords = async (page = 0, group: number): Promise<Word[] | undefined> => {
-    const response = await fetch(`${host}/words?page=${page}&group=${group}`);
-    if (response.ok) return await response.json();
-    throw new Error(response.statusText);
-};
+/*export const getWords = async (group = 0, page = 0, fromBook = false): Promise<Dictionary[] | undefined> => {
+    try {
+        if (!fromBook) {
+            const response = await fetch(`${host}/words?page=${page}&group=${group}`);
+            return await response.json();
+        }
+    } catch (Exception) {
+        console.log(`words loading error: ${Exception}`);
+    }
+};*/
 
-export const getUserWordsByDifficulty = async (difficulty = 'hard', wordsPerPage = 20) => {
+/*export const getUserWordsByDifficulty = async (
+    difficulty = 'hard',
+    wordsPerPage = 20,
+    group?: number,
+    page?: number
+) => {
     const user: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = user;
+    let queryString = `wordsPerPage=${wordsPerPage}`;
+    if (group) queryString += `&group=${group}`;
+    if (page) queryString += `&page=${page}`;
+
     try {
         const response = await fetch(
-            `${host}/users/${userId}/aggregatedWords?wordsPerPage=${wordsPerPage}&filter={"$and":[{"userWord.difficulty":"${difficulty}"}]}`,
+            `${host}/users/${userId}/aggregatedWords?wordsPerPage=${queryString}&filter={"$and":[{"userWord.difficulty":"${difficulty}"}]}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -30,9 +44,9 @@ export const getUserWordsByDifficulty = async (difficulty = 'hard', wordsPerPage
     } catch (err) {
         console.log(err);
     }
-};
+};*/
 
-export const getUserWords = async (): Promise<UserWords[]> => {
+/*export const getUserWords = async (): Promise<UserWords[]> => {
     const user: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = user;
     try {
@@ -48,8 +62,8 @@ export const getUserWords = async (): Promise<UserWords[]> => {
         console.error(Exception);
     }
 };
-
-export const getUserWord = async (wordID: string): Promise<any> => {
+*/
+/*export const getUserWord = async (wordID: string): Promise<any> => {
     const user: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = user;
 
@@ -65,9 +79,9 @@ export const getUserWord = async (wordID: string): Promise<any> => {
     } catch (Exception) {
         console.error(Exception);
     }
-};
+};*/
 
-export const getAggregatedWord = async (wordID: string): Promise<Word> => {
+/*export const getAggregatedWord = async (wordID: string): Promise<Word> => {
     const user: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = user;
 
@@ -86,9 +100,9 @@ export const getAggregatedWord = async (wordID: string): Promise<Word> => {
     } catch (Exception) {
         console.error(Exception);
     }
-};
+};*/
 
-export const addNewWord = async (wordID: string, rightAnswers: number, wrongAnwers: number): Promise<Word> => {
+/*export const addNewWord = async (wordID: string, rightAnswers: number, wrongAnswers: number): Promise<Word> => {
     const user: UserData = JSON.parse(localStorage.getItem('data'));
     const { userId, token } = user;
     const word = await getUserWord(wordID);
@@ -100,7 +114,7 @@ export const addNewWord = async (wordID: string, rightAnswers: number, wrongAnwe
                 date: formateDate(new Date()),
                 isWordNew: true,
                 rightAnswers: rightAnswers,
-                wrongAnwers: wrongAnwers,
+                wrongAnswers: wrongAnswers,
             },
         });
         const response = await fetch(`${host}/users/${userId}/words/${wordID}`, {
@@ -122,7 +136,7 @@ export const addNewWord = async (wordID: string, rightAnswers: number, wrongAnwe
                     date: formateDate(new Date()),
                     isWordNew: true,
                     rightAnswers: rightAnswers,
-                    wrongAnwers: wrongAnwers,
+                    wrongAnswers: wrongAnswers,
                 },
             });
 
@@ -144,7 +158,7 @@ export const addNewWord = async (wordID: string, rightAnswers: number, wrongAnwe
                     date: formateDate(new Date()),
                     isWordNew: false,
                     rightAnswers: word.optional.rightAnswers + rightAnswers,
-                    wrongAnwers: word.optional.wrongAnwers + wrongAnwers,
+                    wrongAnswers: word.optional.wrongAnswers + wrongAnswers,
                 },
             });
 
@@ -162,4 +176,4 @@ export const addNewWord = async (wordID: string, rightAnswers: number, wrongAnwe
             return await response.json();
         }
     }
-};
+};*/
