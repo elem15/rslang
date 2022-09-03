@@ -11,10 +11,14 @@
     margin-top: 35vh;
 }
 #message-modal-dialog {
-    margin-top: 37vh;
+    margin-top: 27vh;
 }
 #modal-header {
     height: 50px;
+}
+#answers {
+    max-height: 200px;
+    overflow: auto;
 }
 .translate-word {
     margin: 20px 0;
@@ -55,4 +59,15 @@
 }
 .green {
     border-color: green;
+}
+.sound {
+    fill: green;
+    height: 20px;
+    width: 20px;
+}
+.sound-button {
+    // max-width: 20px;
+    width: 25px;
+    padding: 0;
+    border-radius: 50%;
 }

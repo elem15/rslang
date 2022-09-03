@@ -5,17 +5,20 @@ import '../scss/styles.scss';
 import img from '../../../images/palm.gif';
 import success from '../../audiochallenge/assets/sounds/success.wav';
 import mistake from '../../audiochallenge/assets/sounds/error.mp3';
+import { statistics } from '../services/statistics';
+import { levelSelectRender } from './level-select';
 
-// code from https://stackoverflow.com/questions/9419263/how-to-play-audio
-function play(src: string) {
+export function play(src: string) {
     const audio = new Audio(src);
     audio.play();
 }
-//==============
 
 const getMark = (translateEqual: boolean) => {
     const modalTitle = document.querySelector('.modal-title');
     if (translateEqual) {
+        statistics.correct += 1;
+        statistics.correctWords.push(statistics.word);
+        statistics.word = null;
         const rightAnswer = document.createElement('div');
         rightAnswer.className = 'text-success equal';
         rightAnswer.innerText = 'ВЕРНО';
@@ -25,6 +28,9 @@ const getMark = (translateEqual: boolean) => {
         setTimeout(() => rightAnswer.remove(), 700);
         play(success);
     } else {
+        statistics.incorrect += 1;
+        statistics.incorrectWords.push(statistics.word);
+        statistics.word = null;
         const wrongAnswer = document.createElement('div');
         wrongAnswer.className = 'text-danger equal';
         wrongAnswer.innerText = 'НЕ ВЕРНО';
@@ -72,7 +78,16 @@ export const renderButtonsContainer = () => {
     wrong.addEventListener('click', async () => await getPushResult(!wordsState.translateEqual));
     return buttonsContainer;
 };
-export const renderSprintPage = async () => {
+export const startGame = async () => {
+    const sprint = document.querySelector('.sprint-container');
+    const header = document.querySelector('header');
+    const links = header.querySelectorAll('button');
+    links.forEach((link: HTMLButtonElement) => (link.disabled = true));
+    const counterWrapper = await renderPreCounter();
+    sprint.append(counterWrapper);
+};
+
+export const renderSprintPage = async (fromBook: boolean) => {
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     removeFooter();
@@ -80,14 +95,12 @@ export const renderSprintPage = async () => {
     sprint.className = 'sprint-container container';
     sprint.innerHTML = '<h1 class="text-center">SPRINT</h1>';
     root.append(sprint);
-    const header = document.querySelector('header');
-    const links = header.querySelectorAll('button');
-    links.forEach((link: HTMLButtonElement) => (link.disabled = true));
-    const counterWrapper = await renderPreCounter();
-    sprint.append(counterWrapper);
     const background = document.createElement('div');
     background.innerHTML = `
-        <img class="background-sprint" src=${img}> 
+    <img class="background-sprint" src=${img}> 
     `;
     root.append(background);
+    wordsState.fromBook = fromBook;
+    if (fromBook) startGame();
+    else levelSelectRender();
 };

@@ -31,7 +31,7 @@ export const renderPage = (router: string, button: HTMLElement, fromBook = false
             renderGame1Page(fromBook);
             break;
         case Router.SPRINT:
-            renderSprintPage();
+            renderSprintPage(fromBook);
             break;
         case Router.STATISTICS:
             renderStatisticsPage();
