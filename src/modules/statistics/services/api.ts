@@ -286,7 +286,7 @@ export const addResultGame = async (
         updateSettings(resultPreviousGame);
     } else if (resultPreviousGame.optional.gameStatistics[typeOfGame].date === new Date().toLocaleDateString('ru-RU')) {
         delete resultPreviousGame.id;
-        console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers);
+
         resultPreviousGame.optional.gameStatistics[typeOfGame].newWords =
             resultPreviousGame.optional.gameStatistics[typeOfGame].newWords + newWords;
         resultPreviousGame.optional.gameStatistics[typeOfGame].rightAnswers =
@@ -297,7 +297,7 @@ export const addResultGame = async (
             resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries < longestSeries
                 ? longestSeries
                 : resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries;
-        console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers);
+
         updateSettings(resultPreviousGame);
     }
 };
@@ -364,11 +364,10 @@ export const getAllUserWords = async () => {
 
 export const getNewLearnedWords = async () => {
     const allUserWords = await getAllUserWords();
-    console.log(allUserWords);
+
     if (allUserWords === undefined) {
         return [[{ [new Date().toLocaleDateString('ru-RU')]: 0 }], [{ [new Date().toLocaleDateString('ru-RU')]: 0 }]];
     } else {
-        console.log(allUserWords);
         let allDateWordNew = allUserWords.map((el: UserWords) => el.optional.dateWordNew);
         let allDateWordLearned = allUserWords.map((el: UserWords) => el.optional.dateWordLearned);
         if (allDateWordNew === undefined || allDateWordLearned === undefined) {
@@ -385,7 +384,7 @@ export const getNewLearnedWords = async () => {
             const startDay = startDayWordNew < startDayWordLearn ? startDayWordNew : startDayWordLearn;
             const timeLeft = (Date.parse(String(new Date())) - startDay) / 86400000;
             const daysLeft = Math.ceil(timeLeft);
-            // console.log(new Date(startDay + 86400000).toLocaleDateString('ru-RU'));
+
             const arrResDatesMSec = [];
             for (let i = 0; i < daysLeft; i++) {
                 arrResDatesMSec.push(startDay + i * 86400000);

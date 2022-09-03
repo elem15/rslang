@@ -6,8 +6,8 @@ import { getNewLearnedWords } from '../services/api';
 
 export const drawGraphics = async () => {
     const allWordsForLongStatistic = await getNewLearnedWords();
-    console.log(allWordsForLongStatistic[2]);
     const arrResLearnedWords = Object.values(allWordsForLongStatistic[1]);
+
     for (let i = 1; i < arrResLearnedWords.length; i++) {
         if (i > 0) arrResLearnedWords[i] = arrResLearnedWords[i] + arrResLearnedWords[i - 1];
     }
