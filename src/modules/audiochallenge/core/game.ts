@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { clear, getElementsList, generateWord, generateWords, loadWords } from '../utils';
+import { clear, getElementsList, generateWord, generateWords, loadWords, getRandomNumber } from '../utils';
 import { drawLevels } from '../view/levels';
 import { nextWord as card } from '../view/next';
 import { progress } from '../view/progress';
@@ -255,6 +255,7 @@ export default class Game {
         this.current = undefined;
         this.isRestartGame = true;
         this.count = this.maxInRow = this.inRow = 0;
+        this.group = getRandomNumber(29);
     };
 
     isMuteOn = (): boolean => {
