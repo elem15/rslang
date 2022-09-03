@@ -1,3 +1,4 @@
+import { Series, SeriesPrimitiveValue } from 'chartist';
 import { BodyRequest, Difficulty, Pages, Result, UserWords } from '../../../types/textbook-types';
 import { UserData } from '../../../types/user-types';
 import { host } from '../../auth/controllers/hosts';
@@ -108,7 +109,9 @@ export const addNewWord = async (
             body = {
                 difficulty: Difficulty.learned ? Difficulty.neutral : wordUserStatus.difficulty,
                 optional: {
-                    dateWordNew: wordUserStatus.optional.dateWordNew,
+                    dateWordNew: wordUserStatus.optional.dateWordNew
+                        ? wordUserStatus.optional.dateWordNew
+                        : new Date().toLocaleDateString('ru-RU'),
                     dateWordLearned: 0,
                     rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
                     wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
@@ -121,7 +124,9 @@ export const addNewWord = async (
                 body = {
                     difficulty: Difficulty.learned,
                     optional: {
-                        dateWordNew: wordUserStatus.optional.dateWordNew,
+                        dateWordNew: wordUserStatus.optional.dateWordNew
+                            ? wordUserStatus.optional.dateWordNew
+                            : new Date().toLocaleDateString('ru-RU'),
                         dateWordLearned: new Date().toLocaleDateString('ru-RU'),
                         rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
                         wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
@@ -135,7 +140,9 @@ export const addNewWord = async (
                 body = {
                     difficulty: Difficulty.learned,
                     optional: {
-                        dateWordNew: wordUserStatus.optional.dateWordNew,
+                        dateWordNew: wordUserStatus.optional.dateWordNew
+                            ? wordUserStatus.optional.dateWordNew
+                            : new Date().toLocaleDateString('ru-RU'),
                         dateWordLearned: new Date().toLocaleDateString('ru-RU'),
                         rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
                         wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
@@ -145,14 +152,16 @@ export const addNewWord = async (
             } else {
                 body = {
                     optional: {
-                        dateWordNew: wordUserStatus.optional.dateWordNew,
+                        dateWordNew: wordUserStatus.optional.dateWordNew
+                            ? wordUserStatus.optional.dateWordNew
+                            : new Date().toLocaleDateString('ru-RU'),
                         dateWordLearned: wordUserStatus.optional.dateWordLearned,
                         rightAnswers: wordUserStatus.optional.rightAnswers + rightAnswers,
                         wrongAnswers: wordUserStatus.optional.wrongAnswers + wrongAnswers,
                         rightAnswersSeries:
                             wordUserStatus.difficulty === Difficulty.learned
                                 ? wordUserStatus.optional.rightAnswersSeries
-                                : wordUserStatus.optional.rightAnswersSeries++,
+                                : wordUserStatus.optional.rightAnswersSeries + rightAnswers,
                     },
                 };
             }
@@ -169,6 +178,28 @@ export const addNewWord = async (
                 },
             })
         ).json();
+    }
+};
+
+export const getCountLearnedWords = async () => {
+    const store: UserData = JSON.parse(localStorage.getItem('data'));
+    const { userId, token } = store;
+    const currentDate = new Date().toLocaleDateString('ru-RU');
+    try {
+        const response = await fetch(
+            `${host}/users/${userId}/aggregatedWords?wordsPerPage=3600&filter=%7B%22%24and%22%3A%5B%7B%22userWord.optional.dateWordLearned%22%3A%22${currentDate}%22%7D%5D%7D`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+            }
+        );
+        const words = await response.json();
+        return words[0].totalCount[0].count;
+    } catch {
+        console.log('Word not exist');
     }
 };
 
@@ -267,6 +298,7 @@ export const addResultGame = async (
             resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries < longestSeries
                 ? longestSeries
                 : resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries;
+        console.log(resultPreviousGame.optional.gameStatistics[typeOfGame].wrongAnswers);
         updateSettings(resultPreviousGame);
     }
 };
@@ -313,3 +345,49 @@ export const getResultGame = async (typeOfGame: string) => {
         return resultPreviousGame;
     }
 };
+
+export const getAllUserWords = async () => {
+    const store: UserData = JSON.parse(localStorage.getItem('data'));
+    const { userId, token } = store;
+    try {
+        const response = await fetch(`${host}/users/${userId}/words`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
+        });
+        const words = await response.json();
+        return words;
+    } catch {
+        console.log('Word not exist');
+    }
+};
+
+// export const getNewLearnedWords = async (): Promise<[Series<SeriesPrimitiveValue>, Series<SeriesPrimitiveValue>]> => {
+//     const allUserWords = await getAllUserWords();
+//     console.log(allUserWords);
+//     if (allUserWords === undefined) {
+//         return [[{ [new Date().toLocaleDateString('ru-RU')]: 0 }], [{ [new Date().toLocaleDateString('ru-RU')]: 0 }]];
+//     } else {
+//         console.log(allUserWords);
+//         let allDateWordNew = allUserWords.map((el: UserWords) => el.optional.dateWordNew);
+//         let allDateWordLearned = allUserWords.map((el: UserWords) => el.optional.dateWordLearned);
+//         if (allDateWordNew === undefined || allDateWordLearned === undefined) {
+//             return [{ [new Date().toLocaleDateString('ru-RU')]: 0 }, { [new Date().toLocaleDateString('ru-RU')]: 0 }];
+//         } else {
+//             allDateWordNew = allDateWordNew.filter((el: number) => el !== 0);
+//             allDateWordLearned = allDateWordLearned.filter((el: number) => el !== 0);
+//             let allDateWordNewObj;
+//             allDateWordNew.forEach((el: string) => { allDateWordNewObj[el] = (allDateWordNewObj[el] || 0) + 1; });
+//             let allDateWordLearnedObj;
+//             allDateWordLearned.forEach((el: string) => { allDateWordLearnedObj[el] = (allDateWordLearnedObj[el] || 0) + 1; });
+//             const allDateWordNewRes = Object
+//                 .entries(allDateWordNewObj)
+//                 .map(el => ({[el[0]]: el[1]}));
+//             const allDateWordLearnedRes = Object
+//                 .entries(allDateWordLearnedObj)
+//                 .map(el => ({[el[0]]: el[1]}));
+//             return [[allDateWordNewRes], [allDateWordLearnedRes]];
+//         }
+//     }
+// };
