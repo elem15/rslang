@@ -246,7 +246,9 @@ export const addLearnedHardNeutralWord = async (wordId: string, difficulty: stri
                     difficulty: difficulty,
                     optional: {
                         dateWordNew: wordUserStatus.optional.dateWordNew,
-                        dateWordLearned: wordUserStatus.optional.dateWordLearned ? wordUserStatus.optional.dateWordLearned : new Date().toLocaleDateString('ru-RU'),
+                        dateWordLearned: wordUserStatus.optional.dateWordLearned
+                            ? wordUserStatus.optional.dateWordLearned
+                            : new Date().toLocaleDateString('ru-RU'),
                         rightAnswers: wordUserStatus.optional.rightAnswers,
                         wrongAnswers: wordUserStatus.optional.wrongAnswers,
                         rightAnswersSeries: wordUserStatus.optional.rightAnswersSeries,
