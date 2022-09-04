@@ -20,10 +20,11 @@ export function play(src: string) {
 }
 
 export const getWord = async () => {
-    const { id, word, wordTranslate, translateEqual } = await getRandomWord();
+    const { id, word, wordTranslate, wordWrongTranslate, translateEqual } = await getRandomWord();
     const words = document.createElement('div');
     words.className = 'words';
-    words.innerHTML = `<div class="translate-word">${word} - ${wordTranslate}</div>`;
+    if (translateEqual) words.innerHTML = `<div class="translate-word">${word} - ${wordTranslate}</div>`;
+    else words.innerHTML = `<div class="translate-word">${word} - ${wordWrongTranslate}</div>`;
     return {
         words,
         translateEqual,
@@ -36,9 +37,9 @@ const startGameCounter = async (counterWrapper: HTMLElement) => {
     const buttonsContainer = renderButtonsContainer();
     words.append(buttonsContainer);
     const arr = [
-        '<div class="pre-timer round-border red">1</div>',
+        '<div class="pre-timer round-border red">3</div>',
         '<div class="pre-timer round-border yellow">2</div>',
-        '<div class="pre-timer round-border green">3</div>',
+        '<div class="pre-timer round-border green">1</div>',
         '<div class="pre-timer">START</div>',
         words,
     ];

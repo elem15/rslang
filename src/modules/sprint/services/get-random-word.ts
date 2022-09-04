@@ -1,16 +1,18 @@
 import { getWords } from '../controllers/get-words';
+import { statistics } from './statistics';
 import { wordsState } from './words-state';
 
 interface sprintWords {
     id: string;
     word: string;
     wordTranslate: string;
+    wordWrongTranslate: string;
     translateEqual: boolean;
 }
-const getRandom = () => Math.ceil(Math.random() * 19);
+const getRandom = () => Math.floor(Math.random() * 19);
 
 export const getRandomWord = async (): Promise<sprintWords> => {
-    if (!wordsState.data) wordsState.data = await getWords();
+    if (!wordsState.data) wordsState.data = await getWords(wordsState.group);
     const { data } = wordsState;
     let randomNum = getRandom();
     let { id, word, wordTranslate } = data[randomNum];
@@ -23,12 +25,15 @@ export const getRandomWord = async (): Promise<sprintWords> => {
         wordTranslate = data[randomNum].wordTranslate;
     }
     wordsState.usedWordsIds.push(id);
+    statistics.word = data[randomNum];
     const random = Math.random();
-    if (random > 0.5) return { id, word, wordTranslate, translateEqual: true };
+    if (random > 0.5) {
+        return { id, word, wordTranslate, wordWrongTranslate: '', translateEqual: true };
+    }
     let newRandomNum = getRandom();
     while (newRandomNum === randomNum) {
         newRandomNum = getRandom();
     }
     const wordWrongTranslate = data[newRandomNum].wordTranslate;
-    return { id, word, wordTranslate: wordWrongTranslate, translateEqual: false };
+    return { id, word, wordTranslate, wordWrongTranslate, translateEqual: false };
 };
