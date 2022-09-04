@@ -3,7 +3,7 @@ import { removeModal } from './game-modal';
 import { startGame } from './sprint-page';
 
 export const levelSelectRender = () => {
-    wordsState.data = null;
+    wordsState.exit();
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';

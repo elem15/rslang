@@ -18,9 +18,7 @@ export const removeModal = (modal: HTMLElement) => {
             modal.remove();
             close.removeEventListener('click', () => true);
             renderSprintPage(wordsState.fromBook);
-            wordsState.data = null;
-            wordsState.counter = 0;
-            statistics.correct3word = -1;
+            wordsState.exit();
         });
     });
     secondary.addEventListener('click', () => {
@@ -30,9 +28,7 @@ export const removeModal = (modal: HTMLElement) => {
         localStorage.setItem('router', Router.MAIN);
         renderPage(Router.MAIN);
         links.forEach((link: HTMLButtonElement) => (link.disabled = false));
-        wordsState.data = null;
-        wordsState.counter = 0;
-        statistics.correct3word = -1;
+        wordsState.exit();
     });
     const modalDialog = document.querySelector('.modal-dialog');
     modalDialog.addEventListener('click', (e) => {

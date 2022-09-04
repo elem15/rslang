@@ -21,9 +21,7 @@ export const removeModal = (modal: HTMLElement) => {
         localStorage.setItem('router', Router.MAIN);
         renderPage(Router.MAIN);
         links.forEach((link: HTMLButtonElement) => (link.disabled = false));
-        wordsState.counter = 0;
-        wordsState.data = null;
-        statistics.correct3word = -1;
+        wordsState.exit();
     };
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', goToMain);
@@ -34,9 +32,7 @@ export const removeModal = (modal: HTMLElement) => {
         close.removeEventListener('click', goToMain);
         secondary.removeEventListener('click', goToMain);
         counterWrapper.remove();
-        wordsState.counter = 0;
-        wordsState.data = null;
-        statistics.correct3word = -1;
+        wordsState.exit();
         if (wordsState.fromBook) startGame();
         else levelSelectRender();
     });
