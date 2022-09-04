@@ -258,7 +258,7 @@ export default class Game {
         this.current = undefined;
         this.isRestartGame = true;
         this.count = this.maxInRow = this.inRow = 0;
-        this.group = getRandomNumber(29);
+        this.page = getRandomNumber(29);
     };
 
     isMuteOn = (): boolean => {
