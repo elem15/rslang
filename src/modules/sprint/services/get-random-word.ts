@@ -31,14 +31,13 @@ export const getRandomWord = async (): Promise<sprintWords> => {
     const maxLength = filteredData.length;
     if (!wordsState.randomList.length) wordsState.randomList = getRandomList(maxLength);
     const randomNum = wordsState.randomList[wordsState.counter];
-    console.log(randomNum, wordsState.randomList);
+    wordsState.counter++;
+    if (wordsState.counter > maxLength) {
+        return { id: '0', word: 'word', wordTranslate: 'wordTranslate', wordWrongTranslate: '', translateEqual: true };
+    }
     const { word, wordTranslate } = filteredData[randomNum];
     const id = filteredData[randomNum].id ? filteredData[randomNum].id : filteredData[randomNum]._id;
     statistics.word = filteredData[randomNum];
-    wordsState.counter++;
-    if (wordsState.counter >= maxLength) {
-        return { id: '0', word, wordTranslate, wordWrongTranslate: '', translateEqual: true };
-    }
     const random = Math.random();
     if (random > 0.5) {
         return { id, word, wordTranslate, wordWrongTranslate: '', translateEqual: true };
@@ -51,40 +50,3 @@ export const getRandomWord = async (): Promise<sprintWords> => {
     const wordWrongTranslate = filteredData[newRandomNum].wordTranslate;
     return { id, word, wordTranslate, wordWrongTranslate, translateEqual: false };
 };
-
-// export const getRandomWord = async (): Promise<sprintWords> => {
-//     if (!wordsState.data) wordsState.data = await getWords(wordsState.group);
-//     const { data } = wordsState;
-//     const filteredData = data.filter((word: DictionaryHardWord) => !(word.userWord?.difficulty === 'learned'));
-//     const maxLength = filteredData.length;
-//     const getRandom = () => Math.floor(Math.random() * maxLength);
-//     let randomNum = getRandom();
-//     let { id, word, wordTranslate } = filteredData[randomNum];
-//     id = id ? id : filteredData[randomNum]._id;
-//     let i = 0;
-//     while (wordsState.usedWordsIds.includes(randomNum) && wordsState.counter + 1 > maxLength) {
-//         i++;
-//         // console.log(i)
-//         randomNum = getRandom();
-//         id = filteredData[randomNum].id ? filteredData[randomNum].id : filteredData[randomNum]._id;
-//         word = filteredData[randomNum].word;
-//         wordTranslate = filteredData[randomNum].wordTranslate;
-//     }
-//     wordsState.counter++;
-//     if (wordsState.counter > maxLength) {
-//         return { id: '0', word, wordTranslate, wordWrongTranslate: '', translateEqual: true };
-//     }
-//     wordsState.usedWordsIds.push(randomNum);
-//     statistics.word = filteredData[randomNum];
-//     const random = Math.random();
-//     console.log(word, randomNum, wordsState.usedWordsIds)
-//     if (random > 0.5) {
-//         return { id, word, wordTranslate, wordWrongTranslate: '', translateEqual: true };
-//     }
-//     let newRandomNum = getRandom();
-//     while (newRandomNum === randomNum) {
-//         newRandomNum = getRandom();
-//     }
-//     const wordWrongTranslate = filteredData[newRandomNum].wordTranslate;
-//     return { id, word, wordTranslate, wordWrongTranslate, translateEqual: false };
-// };
