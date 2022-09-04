@@ -1,11 +1,11 @@
-import { removeFooter } from '../../main/view/main-page';
+import { renderFooter } from '../../main/view/main-page';
 import { getCountLearnedWords, getResultGame } from '../services/api';
 import { drawGraphics } from './drawGraphics';
 
 export const renderStatisticsPage = async () => {
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
-    removeFooter();
+    renderFooter();
     const statistics = document.createElement('section');
     statistics.className = 'statistics';
     root.append(statistics);
