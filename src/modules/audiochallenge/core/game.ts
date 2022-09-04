@@ -78,7 +78,8 @@ export default class Game {
         this.group = level;
         try {
             const words = await loadWords(this.group, this.page);
-            if (typeof words !== 'undefined') {
+            console.log(words);
+            if (words.length !== 0) {
                 this.words = words;
                 this.current = await generateWord(this.selected, this.words);
                 const variants = await generateWords(this.current, this.words);
@@ -87,6 +88,11 @@ export default class Game {
                 await card(this.container, this.current, variants);
                 this.container.append(this.next);
                 this.render();
+            } else {
+                const route = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
+                localStorage.setItem('router', Router.MAIN);
+                document.location.hash = `#${Router.MAIN}`;
+                renderPage(Router.MAIN, route);
             }
         } catch (Exception) {
             console.error(Exception);
@@ -258,7 +264,7 @@ export default class Game {
         this.current = undefined;
         this.isRestartGame = true;
         this.count = this.maxInRow = this.inRow = 0;
-        this.page = getRandomNumber(29);
+        //this.page = getRandomNumber(29);
     };
 
     isMuteOn = (): boolean => {
