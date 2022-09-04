@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { clear, getElementsList, generateWord, generateWords, getRandomNumber } from '../utils';
+import { clear, getElementsList, generateWord, generateWords } from '../utils';
 import { drawLevels } from '../view/levels';
 import { nextWord as card } from '../view/next';
 import { progress } from '../view/progress';
@@ -78,7 +78,6 @@ export default class Game {
         this.group = level;
         try {
             const words = await loadWords(this.group, this.page);
-            console.log(words);
             if (words.length !== 0) {
                 this.words = words;
                 this.current = await generateWord(this.selected, this.words);

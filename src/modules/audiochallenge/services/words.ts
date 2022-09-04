@@ -16,16 +16,18 @@ export const loadWords = async (group: number, currentPage: number): Promise<Dic
 const loadUserWords = async (page: number, group: number): Promise<Dictionary[]> => {
     const collection = await getUserWords(page, group);
     const words = collection.filter((w) => w.userWord?.difficulty !== Difficulty.learned);
-    if (words.length == 20) {
-        while (words.length !== 20 && page !== -1) {
-            const previous = (await getUserWords(page--, group)).filter(
+    if (words.length < 20) {
+        while (words.length <= 20 && page !== 0) {
+            const previous = (await getUserWords(--page, group)).filter(
                 (w) => w.userWord?.difficulty !== Difficulty.learned
             );
-
-            if (previous.length > words.length) words.push(...previous.slice(0, previous.length - words.length - 1));
+            const need = 20 - words.length;
+            if (previous.length > need) words.push(...previous.slice(0, need));
+            else if (previous.length < need) words.push(...previous);
             else words.push(...previous);
         }
     }
+    console.log(words);
     return convertCollection(words);
 };
 
