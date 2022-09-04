@@ -59,7 +59,7 @@ export default class Game {
         this.selected = [];
         this.count = 0;
         this.group = group || 0;
-        this.page = page || Math.floor(Math.random() * 30);
+        this.page = page;
         this.isFromBook = fromBook;
     }
 
@@ -271,6 +271,7 @@ export default class Game {
     };
 
     beforeGame = async (): Promise<void> => {
+        if (!this.isFromBook) this.page = Math.floor(Math.random() * 30);
         if (this.group === 0 && !this.isRestartGame && !this.isFromBook) await this.showLevels();
         else await this.onLevelSelect(this.group);
         this.progress.classList.add('game__progress');
