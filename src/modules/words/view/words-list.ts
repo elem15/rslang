@@ -1,4 +1,4 @@
-import { removeFooter } from '../../main/view/main-page';
+import { renderFooter } from '../../main/view/main-page';
 import { startTextbook } from './startTextbook';
 
 export const renderWordsList = async (): Promise<void> => {
@@ -9,13 +9,12 @@ export const renderWordsList = async (): Promise<void> => {
         el.remove();
     });
 
-
     let isReload = false;
     document.querySelector('section') === null ? (isReload = true) : (isReload = false);
 
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
-    removeFooter();
+    renderFooter();
     const words = document.createElement('section');
     words.className = 'dictionary';
     root.append(words);
