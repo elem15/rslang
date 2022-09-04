@@ -48,13 +48,13 @@ const getBody = (correct: Dictionary[], incorrect: Dictionary[], inRow: number, 
     wrongParagraph.classList.add('h6', 'text-muted');
 
     statistic.innerHTML = `
-        <li class="game__statistic__item">In row<span class="badge bg-warning">${inRow}</span></li>
-        <li class="game__statistic__item">Correct<span class="badge bg-success">${rightQty}</span></li>
-        <li class="game__statistic__item">Wrong<span class="badge bg-danger">${wrongQty}</span></li>
+        <li class="game__statistic__item">Подряд<span class="badge bg-warning">${inRow}</span></li>
+        <li class="game__statistic__item">Верные<span class="badge bg-success">${rightQty}</span></li>
+        <li class="game__statistic__item">Неверные<span class="badge bg-danger">${wrongQty}</span></li>
     `;
 
-    rightParagraph.innerHTML = `Correct&nbsp;<span class="badge bg-success text-light">${rightQty}</span>`;
-    wrongParagraph.innerHTML = `Mistakes&nbsp;<span class="badge bg-danger text-light">${wrongQty}</span>`;
+    rightParagraph.innerHTML = `Верные&nbsp;<span class="badge bg-success text-light">${rightQty}</span>`;
+    wrongParagraph.innerHTML = `Нужно подучить&nbsp;<span class="badge bg-danger text-light">${wrongQty}</span>`;
 
     right.append(...makeListOfWords(correct, 'correct'));
     wrong.append(...makeListOfWords(incorrect, 'incorrect'));
@@ -98,14 +98,14 @@ export const showResult = (
 
     content.classList.add('modal-content');
 
-    playAgain.innerText = 'Restart';
+    playAgain.innerText = 'Играть снова';
     playAgain.classList.add('btn', 'btn-primary', 'btn-restart');
     footer.classList.add('modal-footer');
 
     content.insertAdjacentHTML(
         'afterbegin',
         `<div class="modal-header">
-        <h5 class="modal-title">Result</h5>
+        <h5 class="modal-title">Результаты</h5>
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
         </button>
         </div>`
