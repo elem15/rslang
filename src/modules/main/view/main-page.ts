@@ -1,5 +1,6 @@
 import '../scss/styles.scss';
 import yuri from '../../../images/yuri.jpg';
+import denis from '../../../images/denis.jpg';
 import img from '../../../images/DSC02301.jpg';
 import { renderFooter } from './footer';
 import { Router } from '../../../types/router-types';
@@ -38,7 +39,7 @@ export const renderMainPage = () => {
         <li class="main__list-item nav-item">
           <a class="git-link nav-link" href="https://github.com/dab10">
           <figure class="figure denis">
-          <div class="avatar"></div>
+          <img src=${denis} class="figure-img avatar" alt="author's photo">
           <figcaption class="figure-caption text-center">
             <div><strong>Денис Баженов</strong></div>
             <hr>

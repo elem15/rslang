@@ -12,6 +12,8 @@ interface sprintWords {
 }
 
 const getRandomList = (count: number) => {
+    if (count === 1) return [0];
+    if (count === 2) return [0, 1];
     let i = 0;
     const arr = [];
     const diff = count;
@@ -39,7 +41,7 @@ export const getRandomWord = async (): Promise<sprintWords> => {
     const id = filteredData[randomNum].id ? filteredData[randomNum].id : filteredData[randomNum]._id;
     statistics.word = filteredData[randomNum];
     const random = Math.random();
-    if (random > 0.5) {
+    if (random > 0.5 || maxLength === 1) {
         return { id, word, wordTranslate, wordWrongTranslate: '', translateEqual: true };
     }
     const getRandom = () => Math.floor(Math.random() * maxLength);
