@@ -119,7 +119,7 @@ export const addNewWord = async (
             };
         }
         if (isRightAnswer) {
-            if (wordUserStatus.difficulty === Difficulty.neutral && wordUserStatus.optional.rightAnswersSeries > 2) {
+            if (wordUserStatus.difficulty === Difficulty.neutral && wordUserStatus.optional.rightAnswersSeries >= 2) {
                 body = {
                     difficulty: Difficulty.learned,
                     optional: {
@@ -134,7 +134,7 @@ export const addNewWord = async (
                 };
             } else if (
                 wordUserStatus.difficulty === Difficulty.hard &&
-                wordUserStatus.optional.rightAnswersSeries > 4
+                wordUserStatus.optional.rightAnswersSeries >= 4
             ) {
                 body = {
                     difficulty: Difficulty.learned,
