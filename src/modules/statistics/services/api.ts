@@ -106,7 +106,7 @@ export const addNewWord = async (
         let body: UserWords;
         if (!isRightAnswer) {
             body = {
-                difficulty: Difficulty.learned ? Difficulty.neutral : wordUserStatus.difficulty,
+                difficulty: wordUserStatus.difficulty === Difficulty.learned ? Difficulty.neutral : wordUserStatus.difficulty,
                 optional: {
                     dateWordNew: wordUserStatus.optional.dateWordNew
                         ? wordUserStatus.optional.dateWordNew
