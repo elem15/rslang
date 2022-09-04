@@ -17,7 +17,7 @@ const loadUserWords = async (page: number, group: number): Promise<Dictionary[]>
     const collection = await getUserWords(page, group);
     const words = collection.filter((w) => w.userWord?.difficulty !== Difficulty.learned);
     if (words.length < 20) {
-        while (words.length <= 20 && page !== 0) {
+        while (words.length <= 20 && page !== -1) {
             const previous = (await getUserWords(--page, group)).filter(
                 (w) => w.userWord?.difficulty !== Difficulty.learned
             );
