@@ -28,7 +28,7 @@ export const renderStatisticsPage = async () => {
                 (shortStatisticAudio.optional.gameStatistics.audiochallenge.rightAnswers +
                     shortStatisticAudio.optional.gameStatistics.audiochallenge.wrongAnswers)) *
             100;
-        percentRightAnswersAudio = percentRightAnswersAudio ? percentRightAnswersAudio : 0;
+        percentRightAnswersAudio = percentRightAnswersAudio ? Math.round(percentRightAnswersAudio) : 0;
         const longestSeriesAudio = shortStatisticAudio.optional.gameStatistics.audiochallenge.longestSeries;
 
         const quantityNewWordsSprint = shortStatisticSprint.optional.gameStatistics.sprint.newWords;
@@ -37,7 +37,7 @@ export const renderStatisticsPage = async () => {
                 (shortStatisticSprint.optional.gameStatistics.sprint.rightAnswers +
                     shortStatisticSprint.optional.gameStatistics.sprint.wrongAnswers)) *
             100;
-        percentRightAnswersSprint = percentRightAnswersSprint ? percentRightAnswersSprint : 0;
+        percentRightAnswersSprint = percentRightAnswersSprint ? Math.round(percentRightAnswersSprint) : 0;
         const longestSeriesSprint = shortStatisticSprint.optional.gameStatistics.sprint.longestSeries;
 
         let percentRightAnswersPerDay =
@@ -48,7 +48,7 @@ export const renderStatisticsPage = async () => {
                     shortStatisticSprint.optional.gameStatistics.sprint.rightAnswers +
                     shortStatisticSprint.optional.gameStatistics.sprint.wrongAnswers)) *
             100;
-        percentRightAnswersPerDay = percentRightAnswersPerDay ? percentRightAnswersPerDay : 0;
+        percentRightAnswersPerDay = percentRightAnswersPerDay ? Math.round(percentRightAnswersPerDay) : 0;
 
         let quantityLearnedWordsPerDay = await getCountLearnedWords();
         quantityLearnedWordsPerDay = quantityLearnedWordsPerDay ? quantityLearnedWordsPerDay : 0;
@@ -67,17 +67,17 @@ export const renderStatisticsPage = async () => {
                             <th>Спринт</th>
                         </tr>
                         <tr>
-                            <th scope="row">Количество новых слов за день</th>
+                            <th scope="row">Количество новых слов за день, шт.</th>
                             <td>${quantityNewWordsAudio}</td>
                             <td>${quantityNewWordsSprint}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Процент правильных ответов</th>
+                            <th scope="row">Процент правильных ответов, %</th>
                             <td>${percentRightAnswersAudio}</td>
                             <td>${percentRightAnswersSprint}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Самая длинная серия правильных ответов</th>
+                            <th scope="row">Самая длинная серия правильных ответов, шт.</th>
                             <td>${longestSeriesAudio}</td>
                             <td>${longestSeriesSprint}</td>
                         </tr>
@@ -95,15 +95,15 @@ export const renderStatisticsPage = async () => {
                             <th>Значение</th>
                         </tr>
                         <tr>
-                            <th scope="row">Количество новых слов за день</th>
+                            <th scope="row">Количество новых слов за день, шт.</th>
                             <td>${quantityNewWordsAudio + quantityNewWordsSprint}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Количество изученных слов за день</th>
+                            <th scope="row">Количество изученных слов за день, шт.</th>
                             <td>${quantityLearnedWordsPerDay}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Процент правильных ответов за день</th>
+                            <th scope="row">Процент правильных ответов за день, %</th>
                             <td>${percentRightAnswersPerDay}</td>
                         </tr>
                     </tbody>
