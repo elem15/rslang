@@ -368,9 +368,13 @@ export const getNewLearnedWords = async () => {
     if (allUserWords === undefined) {
         return [[{ [new Date().toLocaleDateString('ru-RU')]: 0 }], [{ [new Date().toLocaleDateString('ru-RU')]: 0 }]];
     } else {
-        let allDateWordNew = allUserWords.map((el: UserWords) => el.optional.dateWordNew);
-        let allDateWordLearned = allUserWords.map((el: UserWords) => el.optional.dateWordLearned);
-        if (allDateWordNew === undefined || allDateWordLearned === undefined) {
+        let allDateWordNew = allUserWords
+            .filter((el: UserWords) => el.optional?.dateWordNew)
+            .map((el: UserWords) => el.optional?.dateWordNew);
+        let allDateWordLearned = allUserWords
+            .filter((el: UserWords) => el.optional?.dateWordLearned)
+            .map((el: UserWords) => el.optional?.dateWordLearned);
+        if (allDateWordNew.length === 0 && allDateWordLearned.length === 0) {
             return [{ [new Date().toLocaleDateString('ru-RU')]: 0 }, { [new Date().toLocaleDateString('ru-RU')]: 0 }];
         } else {
             allDateWordNew = allDateWordNew.filter((el: number) => el !== 0);
