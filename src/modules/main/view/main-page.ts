@@ -1,6 +1,7 @@
 import '../scss/styles.scss';
 import yuri from '../../../images/yuri.jpg';
 import denis from '../../../images/denis.jpg';
+import elem from '../../../images/elem.jpg';
 import img from '../../../images/DSC02301.jpg';
 import { renderFooter } from './footer';
 import { Router } from '../../../types/router-types';
@@ -64,7 +65,7 @@ export const renderMainPage = () => {
         <li class="main__list-item nav-item">
           <a class="git-link nav-link" href="https://github.com/elem15">          
           <figure class="figure mikhail">
-          <div class="avatar"></div>
+          <img src=${elem} class="figure-img avatar img-fluid" alt="author's photo">
           <figcaption class="figure-caption text-center">
           <div><strong>Михаил Дворкин</strong></div>
             <hr>
@@ -85,7 +86,7 @@ export const renderMainPage = () => {
     background.innerHTML = `
         <img class="background" src=${img}> 
     `;
-    main.append(background);
+    document.body.append(background);
     renderFooter();
     const wordsLink = document.querySelector(`.textbook-link`) as HTMLButtonElement;    
     wordsLink.addEventListener('click', () => {

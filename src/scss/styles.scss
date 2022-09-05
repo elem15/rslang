@@ -3,6 +3,9 @@
 ul {
     list-style: none;
 }
+#card-header {
+    background-color: rgb(230, 254, 254);
+}
 .hidden {
     display: none;
 }
@@ -22,8 +25,9 @@ ul {
 .footer {
     position: fixed;
     bottom: 0;
-    background-color: var(--bs-card-cap-bg);
+    background-color: rgb(230, 254, 254);
     width: 100%;
+    z-index: 1000;
 }
 .footer__list {
     display: flex;
