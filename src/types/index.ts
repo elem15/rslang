@@ -3,8 +3,9 @@ export type GameLevel = {
     color: string;
 };
 
-export type Word = {
+export interface Word {
     id: string;
+    _id?: string;
     group: number;
     page: 0;
     word: string;
@@ -18,7 +19,20 @@ export type Word = {
     wordTranslate: string;
     textMeaningTranslate: string;
     textExampleTranslate: string;
-};
+    userWord: {
+        difficulty: string;
+        optional?: IOptional;
+    };
+}
+
+export interface IOptional {
+    date: string;
+    isWordNew: boolean;
+    rightAnswers: number;
+    wrongAnswers: number;
+}
+
+export type HardWord = { _id: string } & Omit<Word, 'id'>;
 
 export type TSelectHandler = (level: number) => Promise<void>;
 

@@ -1,30 +1,61 @@
-import { Word } from '../../../types';
-import { UserData } from '../../../types/user-types';
-import { host } from '../../auth/controllers/hosts';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Dictionary, DictionaryHardWord, Difficulty } from '../../../types/textbook-types';
+import { getAllHardWords, getUserWords, getWords } from '../../words/services/api';
+import { getRandomNumber } from '../utils';
+import { isAuthenticated } from './auth';
 
-export const getWords = async (page = 0, group: number): Promise<Word[] | undefined> => {
-    const response = await fetch(`${host}/words?page=${page}&group=${group}`);
-    if (response.ok) return await response.json();
-    throw new Error(response.statusText);
+export const loadWords = async (group: number, currentPage: number): Promise<Dictionary[]> => {
+    if (!isAuthenticated()) {
+        return await getWords(currentPage, group);
+    } else {
+        if (group < 6) return await loadUserWords(currentPage, group);
+        else return await loadHardWords();
+    }
 };
 
-export const getUserWordsByDifficulty = async (difficulty = 'hard', wordsPerPage = 3600) => {
-    const user: UserData = JSON.parse(localStorage.getItem('data'));
-    const { userId, token } = user;
-    try {
-        const response = await fetch(
-            `${host}/users/${userId}/aggregatedWords?wordsPerPage=${wordsPerPage}&filter=%7B%22%24and%22%3A%5B%7B%22userWord.difficulty%22%3A%22${difficulty}%22%7D%5D%7D`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-            }
-        );
-        const words = await response.json();
-        return words[0].paginatedResults;
-    } catch (err) {
-        console.log(err);
+const loadUserWords = async (page: number, group: number): Promise<Dictionary[]> => {
+    const collection = await getUserWords(page, group);
+    const words = collection.filter((w) => w.userWord?.difficulty !== Difficulty.learned);
+    if (words.length < 20) {
+        while (words.length <= 20 && page !== -1) {
+            const previous = (await getUserWords(--page, group)).filter(
+                (w) => w.userWord?.difficulty !== Difficulty.learned
+            );
+            const need = 20 - words.length;
+            if (previous.length > need) words.push(...previous.slice(0, need));
+            else if (previous.length < need) words.push(...previous);
+            else words.push(...previous);
+        }
     }
+    console.log(words);
+    return convertCollection(words);
+};
+
+const loadHardWords = async (): Promise<Dictionary[]> => {
+    const { paginatedResults, totalCount } = (await getAllHardWords(Difficulty.hard))[0];
+    const total = totalCount[0].count;
+
+    if (total > 20) {
+        const words: DictionaryHardWord[] = [];
+
+        while (words.length !== 20) {
+            const num = getRandomNumber(total);
+            const next = paginatedResults[num];
+            if (!words.includes(next)) words.push(next);
+        }
+        return convertCollection(words);
+    }
+    return convertCollection(paginatedResults);
+};
+
+const convertCollection = (words: any[]): any[] => {
+    return words.map((word: any) => {
+        const w = {
+            id: '_id' in word ? word._id : word.id,
+            ...word,
+        };
+
+        if ('_id' in w) delete w._id;
+        return w;
+    });
 };

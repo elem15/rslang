@@ -286,7 +286,6 @@ export const addResultGame = async (
         updateSettings(resultPreviousGame);
     } else if (resultPreviousGame.optional.gameStatistics[typeOfGame].date === new Date().toLocaleDateString('ru-RU')) {
         delete resultPreviousGame.id;
-
         resultPreviousGame.optional.gameStatistics[typeOfGame].newWords =
             resultPreviousGame.optional.gameStatistics[typeOfGame].newWords + newWords;
         resultPreviousGame.optional.gameStatistics[typeOfGame].rightAnswers =
@@ -297,7 +296,6 @@ export const addResultGame = async (
             resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries < longestSeries
                 ? longestSeries
                 : resultPreviousGame.optional.gameStatistics[typeOfGame].longestSeries;
-
         updateSettings(resultPreviousGame);
     }
 };

@@ -1,7 +1,7 @@
 import { soundIcon } from '../core/settings';
-import { Word } from '../../../types';
 import { host } from '../../auth/controllers/hosts';
 import result from '../assets/images/result.svg';
+import { Dictionary } from '../../../types/textbook-types';
 
 const playAudio = async (e: MouseEvent): Promise<void> => {
     let target = e.target as HTMLElement;
@@ -18,7 +18,7 @@ const closeResult = (modal: HTMLElement) => {
     }, 200);
 };
 
-const makeListOfWords = (collection: Word[], type: string): HTMLElement[] => {
+const makeListOfWords = (collection: Dictionary[], type: string): HTMLElement[] => {
     return collection.map((word) => {
         const li = document.createElement('li') as HTMLLIElement;
         li.classList.add(`${type}__answers_item`);
@@ -27,7 +27,7 @@ const makeListOfWords = (collection: Word[], type: string): HTMLElement[] => {
     });
 };
 
-const getBody = (correct: Word[], incorrect: Word[], inRow: number, total: number): HTMLElement => {
+const getBody = (correct: Dictionary[], incorrect: Dictionary[], inRow: number, total: number): HTMLElement => {
     const body = document.createElement('div') as HTMLElement;
     const statistic = document.createElement('ul') as HTMLUListElement;
     const right = document.createElement('ul') as HTMLUListElement;
@@ -48,13 +48,13 @@ const getBody = (correct: Word[], incorrect: Word[], inRow: number, total: numbe
     wrongParagraph.classList.add('h6', 'text-muted');
 
     statistic.innerHTML = `
-        <li class="game__statistic__item">In row<span class="badge bg-warning">${inRow}</span></li>
-        <li class="game__statistic__item">Correct<span class="badge bg-success">${rightQty}</span></li>
-        <li class="game__statistic__item">Wrong<span class="badge bg-danger">${wrongQty}</span></li>
+        <li class="game__statistic__item">Подряд<span class="badge bg-warning">${inRow}</span></li>
+        <li class="game__statistic__item">Верные<span class="badge bg-success">${rightQty}</span></li>
+        <li class="game__statistic__item">Неверные<span class="badge bg-danger">${wrongQty}</span></li>
     `;
 
-    rightParagraph.innerHTML = `Correct&nbsp;<span class="badge bg-success text-light">${rightQty}</span>`;
-    wrongParagraph.innerHTML = `Mistakes&nbsp;<span class="badge bg-danger text-light">${wrongQty}</span>`;
+    rightParagraph.innerHTML = `Верные&nbsp;<span class="badge bg-success text-light">${rightQty}</span>`;
+    wrongParagraph.innerHTML = `Нужно подучить&nbsp;<span class="badge bg-danger text-light">${wrongQty}</span>`;
 
     right.append(...makeListOfWords(correct, 'correct'));
     wrong.append(...makeListOfWords(incorrect, 'incorrect'));
@@ -72,8 +72,8 @@ const getBody = (correct: Word[], incorrect: Word[], inRow: number, total: numbe
 };
 
 export const showResult = (
-    correct: Word[],
-    incorrect: Word[],
+    correct: Dictionary[],
+    incorrect: Dictionary[],
     inRow: number,
     total: number,
     resetHandler: CallableFunction,
@@ -98,14 +98,14 @@ export const showResult = (
 
     content.classList.add('modal-content');
 
-    playAgain.innerText = 'Restart';
+    playAgain.innerText = 'Играть снова';
     playAgain.classList.add('btn', 'btn-primary', 'btn-restart');
     footer.classList.add('modal-footer');
 
     content.insertAdjacentHTML(
         'afterbegin',
         `<div class="modal-header">
-        <h5 class="modal-title">Result</h5>
+        <h5 class="modal-title">Результаты</h5>
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
         </button>
         </div>`
