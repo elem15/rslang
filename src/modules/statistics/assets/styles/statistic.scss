@@ -1,5 +1,6 @@
 .wrapper-statistic,
-.wrapper-table  {
+.wrapper-table,
+.statistics__unauthorize  {
 
     margin: 0 auto;
         @media screen and (min-width: 576px) {
@@ -37,4 +38,10 @@
 
 .statistic__short-sprint {
     padding-bottom: 50px;
+}
+
+.statistics__unauthorize {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
 }
