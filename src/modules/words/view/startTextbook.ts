@@ -30,9 +30,11 @@ export const startTextbook = (isAuthorization: boolean, isReload: boolean) => {
         const setLocalStorage = function setLocalStorage() {
             const groupTextbook = document.querySelector('.form-select.group') as HTMLSelectElement;
             const pageTextbook = document.querySelector('.form-select.page') as HTMLSelectElement;
-            const currentPage = pageTextbook.selectedIndex;
-            const currentGroup = groupTextbook.selectedIndex;
-            localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
+            if (groupTextbook) {
+                const currentPage = pageTextbook.selectedIndex;
+                const currentGroup = groupTextbook.selectedIndex;
+                localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
+            }
         };
 
         window.addEventListener('beforeunload', () => setLocalStorage());

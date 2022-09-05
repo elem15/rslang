@@ -106,7 +106,7 @@ export const addNewWord = async (
         let body: UserWords;
         if (!isRightAnswer) {
             body = {
-                difficulty: Difficulty.learned ? Difficulty.neutral : wordUserStatus.difficulty,
+                difficulty: wordUserStatus.difficulty === Difficulty.learned ? Difficulty.neutral : wordUserStatus.difficulty,
                 optional: {
                     dateWordNew: wordUserStatus.optional.dateWordNew
                         ? wordUserStatus.optional.dateWordNew
@@ -119,7 +119,7 @@ export const addNewWord = async (
             };
         }
         if (isRightAnswer) {
-            if (wordUserStatus.difficulty === Difficulty.neutral && wordUserStatus.optional.rightAnswersSeries > 2) {
+            if (wordUserStatus.difficulty === Difficulty.neutral && wordUserStatus.optional.rightAnswersSeries >= 2) {
                 body = {
                     difficulty: Difficulty.learned,
                     optional: {
@@ -134,7 +134,7 @@ export const addNewWord = async (
                 };
             } else if (
                 wordUserStatus.difficulty === Difficulty.hard &&
-                wordUserStatus.optional.rightAnswersSeries > 4
+                wordUserStatus.optional.rightAnswersSeries >= 4
             ) {
                 body = {
                     difficulty: Difficulty.learned,
