@@ -34,7 +34,7 @@ export const getWord = async () => {
 const startGameCounter = async (counterWrapper: HTMLElement) => {
     const modal = document.querySelector('.modal');
     if (modal) modal.remove();
-    const { id, words, translateEqual } = await getWord();
+    const { words, translateEqual } = await getWord();
     wordsState.translateEqual = translateEqual;
     const buttonsContainer = renderButtonsContainer();
     words.append(buttonsContainer);

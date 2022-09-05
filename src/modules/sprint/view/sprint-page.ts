@@ -8,7 +8,7 @@ import mistake from '../../audiochallenge/assets/sounds/error.mp3';
 import { statistics } from '../services/statistics';
 import { levelSelectRender } from './level-select';
 import { renderCounter } from './render-counter';
-import { messageModal } from './message-modal-few';
+import { messageModal } from './modal-few-words';
 
 export function play(src: string) {
     const audio = new Audio(src);
@@ -48,7 +48,7 @@ const getMark = (translateEqual: boolean) => {
         play(mistake);
     }
 };
-const getPushResult = async (translateEqual: boolean) => {
+const getGameIterationResult = async (translateEqual: boolean) => {
     const buttonsContainer = document.querySelector('.buttons-container');
     if (buttonsContainer) {
         getMark(translateEqual);
@@ -70,10 +70,10 @@ const getPushResult = async (translateEqual: boolean) => {
 export const keyDirect = (e: KeyboardEvent) => {
     switch (e.code) {
         case 'ArrowRight':
-            getPushResult(wordsState.translateEqual);
+            getGameIterationResult(wordsState.translateEqual);
             break;
         case 'ArrowLeft':
-            getPushResult(!wordsState.translateEqual);
+            getGameIterationResult(!wordsState.translateEqual);
             break;
         default:
             null;
@@ -89,8 +89,8 @@ export const renderButtonsContainer = () => {
     wrong.className = 'wrong btn btn-danger';
     wrong.innerText = '< ЛОЖЬ';
     buttonsContainer.append(wrong, right);
-    right.addEventListener('click', async () => await getPushResult(wordsState.translateEqual));
-    wrong.addEventListener('click', async () => await getPushResult(!wordsState.translateEqual));
+    right.addEventListener('click', async () => await getGameIterationResult(wordsState.translateEqual));
+    wrong.addEventListener('click', async () => await getGameIterationResult(!wordsState.translateEqual));
     return buttonsContainer;
 };
 export const startGame = async () => {
