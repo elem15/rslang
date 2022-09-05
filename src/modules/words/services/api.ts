@@ -180,7 +180,7 @@ export const addStyleLearnedPages = async (pageLearned: pageLearnedPagesGroup[])
             previousGameStatistic = resultPreviousGame.optional.gameStatistics;
         }
 
-        const gameStatisticsAndPages = { previousGameStatistic, pages: Object.assign({}, pageLearned) };
+        const gameStatisticsAndPages = { gameStatistics: previousGameStatistic, pages: Object.assign({}, pageLearned) };
         resultPreviousGame.optional = gameStatisticsAndPages;
         updateSettings(resultPreviousGame);
     } else if (resultPreviousGame.optional.pages) {
