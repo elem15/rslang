@@ -19,6 +19,7 @@ import { renderPage } from '../../router/services/router';
 import { addNewWord, getCountNewWords } from '../../statistics/services/api';
 import { Dictionary } from '../../../types/textbook-types';
 import { loadWords } from '../services/words';
+import { endOfGame } from '../view/end';
 
 export default class Game {
     root: HTMLElement;
@@ -88,10 +89,7 @@ export default class Game {
                 this.container.append(this.next);
                 this.render();
             } else {
-                const route = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
-                localStorage.setItem('router', Router.MAIN);
-                document.location.hash = `#${Router.MAIN}`;
-                renderPage(Router.MAIN, route);
+                endOfGame();
             }
         } catch (Exception) {
             console.error(Exception);
