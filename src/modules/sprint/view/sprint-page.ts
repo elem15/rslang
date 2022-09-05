@@ -1,4 +1,4 @@
-import { removeFooter } from '../../main/view/main-page';
+import { removeFooter } from '../../main/view/footer';
 import { wordsState } from '../services/words-state';
 import { getWord, renderPreCounter } from './render-pre-counter';
 import '../scss/styles.scss';
@@ -7,6 +7,8 @@ import success from '../../audiochallenge/assets/sounds/success.wav';
 import mistake from '../../audiochallenge/assets/sounds/error.mp3';
 import { statistics } from '../services/statistics';
 import { levelSelectRender } from './level-select';
+import { renderCounter } from './render-counter';
+import { messageModal } from './message-modal-few';
 
 export function play(src: string) {
     const audio = new Audio(src);
@@ -15,8 +17,11 @@ export function play(src: string) {
 
 const getMark = (translateEqual: boolean) => {
     const modalTitle = document.querySelector('.modal-title');
+    const gameChecks = document.querySelectorAll('.game-check') as NodeListOf<HTMLElement>;
     if (translateEqual) {
         statistics.correct += 1;
+        statistics.correct3word += 1;
+        if (statistics.correct3word < 3) [...gameChecks][statistics.correct3word].innerHTML = '✅';
         statistics.correctWords.push(statistics.word);
         statistics.word = null;
         const rightAnswer = document.createElement('div');
@@ -29,6 +34,8 @@ const getMark = (translateEqual: boolean) => {
         play(success);
     } else {
         statistics.incorrect += 1;
+        statistics.correct3word = -1;
+        [...gameChecks].map((el) => (el.innerHTML = '░░'));
         statistics.incorrectWords.push(statistics.word);
         statistics.word = null;
         const wrongAnswer = document.createElement('div');
@@ -48,7 +55,15 @@ const getPushResult = async (translateEqual: boolean) => {
         const response = await getWord();
         wordsState.translateEqual = response.translateEqual;
         const { words } = response;
-        document.querySelector('.translate-word').remove();
+        const translateWord = document.querySelector('.translate-word');
+        if (translateWord) translateWord.remove();
+        if (response.id === '0') {
+            clearInterval(renderCounter.prototype.interval);
+            document.removeEventListener('keydown', keyDirect);
+            document.querySelector('.counter').innerHTML = '';
+            document.querySelector('.sprint-container').append(messageModal('Слова в разделе закончились'));
+            return;
+        }
         buttonsContainer.prepend(words);
     }
 };
@@ -91,15 +106,17 @@ export const renderSprintPage = async (fromBook: boolean) => {
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     removeFooter();
-    const sprint = document.createElement('section');
-    sprint.className = 'sprint-container container';
-    sprint.innerHTML = '<h1 class="text-center">SPRINT</h1>';
-    root.append(sprint);
-    const background = document.createElement('div');
-    background.innerHTML = `
-    <img class="background-sprint" src=${img}> 
-    `;
-    root.append(background);
+    if (!document.querySelector('.section')) {
+        const sprint = document.createElement('section');
+        sprint.className = 'sprint-container container';
+        sprint.innerHTML = '<h1 class="text-center">SPRINT</h1>';
+        root.append(sprint);
+        const background = document.createElement('div');
+        background.innerHTML = `
+        <img class="background-sprint" src=${img}> 
+        `;
+        root.append(background);
+    }
     wordsState.fromBook = fromBook;
     if (fromBook) startGame();
     else levelSelectRender();

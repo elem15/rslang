@@ -1,5 +1,5 @@
 import Game from '../core/game';
-import { removeFooter } from '../../main/view/main-page';
+import { removeFooter } from '../../main/view/footer';
 import '../assets/styles/main.scss';
 
 export const renderGame1Page = (fromBook = false) => {

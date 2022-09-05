@@ -1,4 +1,4 @@
-import { renderFooter } from '../../main/view/main-page';
+import { renderFooter } from '../../main/view/footer';
 import { getCountLearnedWords, getResultGame } from '../services/api';
 import { drawGraphics } from './drawGraphics';
 
