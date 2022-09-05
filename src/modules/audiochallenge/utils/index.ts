@@ -1,4 +1,5 @@
-import { Word } from '../../../types';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Dictionary } from '../../../types/textbook-types';
 
 export const shuffle = <T>(collection: T[]): T[] => {
     const arr = collection.slice();
@@ -17,8 +18,8 @@ export const clear = async (container: HTMLElement): Promise<void> => {
 
 export const getRandomNumber = (max: number): number => Math.floor(Math.random() * max);
 
-export const getRandomWords = async (excludeWord: Word, words: Word[]): Promise<Word[]> => {
-    const arr: Word[] = [];
+export const generateWords = async (excludeWord: Dictionary, words: Dictionary[]): Promise<Dictionary[]> => {
+    const arr: Dictionary[] = [];
     arr.push(excludeWord);
     const max = words.length < 5 ? words.length : 5;
     while (arr.length < max) {
@@ -29,8 +30,8 @@ export const getRandomWords = async (excludeWord: Word, words: Word[]): Promise<
     return shuffle(arr);
 };
 
-export const getRandomWord = async (selected: string[], words: Word[]): Promise<Word> => {
-    const filtered = words.filter((word) => !selected.includes(word.word));
+export const generateWord = async (selected: string[], words: Dictionary[]): Promise<Dictionary> => {
+    const filtered = words.filter((word) => !selected.includes(word.id));
     const index = getRandomNumber(words.length - selected.length);
 
     return filtered[index];
@@ -38,4 +39,8 @@ export const getRandomWord = async (selected: string[], words: Word[]): Promise<
 
 export const getElementsList = (selector: string): NodeListOf<HTMLElement> => {
     return document.querySelectorAll(selector);
+};
+
+export const formateDate = (date: Date): string => {
+    return date.toLocaleDateString('ru-RU');
 };

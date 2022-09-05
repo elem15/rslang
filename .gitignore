@@ -3,10 +3,12 @@
 
 # testing
 /coverage
-
+.vscode
+.netlify
 # production
 /build
 /dist
+
 
 # misc
 .DS_Store

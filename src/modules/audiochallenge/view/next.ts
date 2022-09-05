@@ -1,9 +1,9 @@
 import { soundIcon } from '../core/settings';
-import { Word } from '../../../types';
 import { clear } from '../utils';
 import { host } from '../../auth/controllers/hosts';
+import { Dictionary } from '../../../types/textbook-types';
 
-const drawAnswersItem = (card: HTMLElement, word: Word, index: number) => {
+const drawAnswersItem = (card: HTMLElement, word: Dictionary, index: number) => {
     const answerItem = document.createElement('label') as HTMLElement;
     answerItem.className = 'answers__item';
     answerItem.innerText = `${index + 1}. ${word.wordTranslate}`;
@@ -12,7 +12,7 @@ const drawAnswersItem = (card: HTMLElement, word: Word, index: number) => {
     card.append(answerItem);
 };
 
-export const nextWord = async (container: HTMLElement, word: Word, answers: Word[]): Promise<void> => {
+export const nextWord = async (container: HTMLElement, word: Dictionary, answers: Dictionary[]): Promise<void> => {
     await clear(container);
     const wordContainer = document.createElement('div') as HTMLElement;
     const wrapper = document.createElement('div') as HTMLElement;
