@@ -14,21 +14,21 @@ export const removeModal = (modal: HTMLElement) => {
     const secondary = document.querySelector('.to-main-page');
     const closeButtons = [close, primary] as HTMLButtonElement[];
     closeButtons.map((close: HTMLButtonElement) => {
-        close.addEventListener('click', () => {
+        close.addEventListener('click', async () => {
             modal.remove();
             close.removeEventListener('click', () => true);
             renderSprintPage(wordsState.fromBook);
-            wordsState.exit();
+            await wordsState.exit();
         });
     });
-    secondary.addEventListener('click', () => {
+    secondary.addEventListener('click', async () => {
         const header = document.querySelector('header');
         const links = header.querySelectorAll('button');
         modal.remove();
         localStorage.setItem('router', Router.MAIN);
         renderPage(Router.MAIN);
         links.forEach((link: HTMLButtonElement) => (link.disabled = false));
-        wordsState.exit();
+        await wordsState.exit();
     });
     const modalDialog = document.querySelector('.modal-dialog');
     modalDialog.addEventListener('click', (e) => {
@@ -36,7 +36,8 @@ export const removeModal = (modal: HTMLElement) => {
     });
 };
 
-export const messageModal = (message: string) => {
+export const messageModal = async (message: string) => {
+    await wordsState.addStats();
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';
