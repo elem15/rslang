@@ -120,6 +120,6 @@ export const renderStatisticsPage = async () => {
 
         drawGraphics();
     } else {
-        statistics.innerHTML = 'Статистика доступна только зарегистрированным пользователям';
+        statistics.innerHTML = '<h2 class="statistics__unauthorize">Статистика доступна только зарегистрированным пользователям</h2>';
     }
 };
