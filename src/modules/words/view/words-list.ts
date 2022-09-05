@@ -9,7 +9,6 @@ export const renderWordsList = async (): Promise<void> => {
         el.remove();
     });
 
-
     let isReload = false;
     document.querySelector('section') === null ? (isReload = true) : (isReload = false);
 

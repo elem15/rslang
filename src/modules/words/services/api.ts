@@ -218,7 +218,6 @@ export const addLearnedHardNeutralWord = async (wordId: string, difficulty: stri
                 },
             })
         ).json();
-        // return await response.json();
     } else if (wordUserStatus && !('optional' in wordUserStatus)) {
         (
             await fetch(`${host}/users/${userId}/words/${wordId}`, {

@@ -22,7 +22,7 @@ export const addAllLearnedMessage = (countHardAndLearnedWords = 0, group: number
         buttonGameSprint.disabled = true;
     } else if (containerData.innerHTML === '') {
         wrapper.style.backgroundColor = 'darkcyan';
-        wrapper.style.height = '100vh';
+        wrapper.style.height = '100%';
         messageModal('Отсутствуют слова из группы "Сложные слова".');
         buttonGameAudio.disabled = true;
         buttonGameSprint.disabled = true;
