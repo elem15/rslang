@@ -5,9 +5,8 @@ const closeDialog = (dialog: HTMLElement): void => {
     dialog.classList.remove('show');
     setTimeout(() => {
         document.body.removeChild(dialog);
-        const route = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
         localStorage.setItem('router', Router.MAIN);
-        renderPage(Router.MAIN, route);
+        renderPage(Router.MAIN);
     }, 200);
 };
 

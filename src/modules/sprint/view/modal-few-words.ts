@@ -14,31 +14,32 @@ export const removeModal = (modal: HTMLElement) => {
     const secondary = document.querySelector('.to-main-page');
     const counterWrapper = document.querySelector('.counter-wrapper');
     const closeButtons = [close, secondary] as HTMLButtonElement[];
-    const goToMain = () => {
+    const goToMain = async () => {
         const header = document.querySelector('header');
         const links = header.querySelectorAll('button');
         modal.remove();
         localStorage.setItem('router', Router.MAIN);
         renderPage(Router.MAIN);
         links.forEach((link: HTMLButtonElement) => (link.disabled = false));
-        wordsState.exit();
+        await wordsState.exit();
     };
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', goToMain);
     });
     const primary = document.querySelector('.new-game') as HTMLButtonElement;
-    primary.addEventListener('click', () => {
+    primary.addEventListener('click', async () => {
         modal.remove();
         close.removeEventListener('click', goToMain);
         secondary.removeEventListener('click', goToMain);
         counterWrapper.remove();
-        wordsState.exit();
+        await wordsState.exit();
         if (wordsState.fromBook) startGame();
         else levelSelectRender();
     });
 };
 
 export const messageModal = (message: string) => {
+    wordsState.addStats();
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';

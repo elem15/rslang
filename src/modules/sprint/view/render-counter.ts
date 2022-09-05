@@ -10,7 +10,7 @@ import { wordsState } from '../services/words-state';
 
 const GAME_TIME = 30;
 
-export const exitGame = (interval: NodeJS.Timer) => {
+export const exitGame = async (interval: NodeJS.Timer) => {
     const header = document.querySelector('header');
     const links = header.querySelectorAll('button');
     wordsState.group = 0;
@@ -19,7 +19,7 @@ export const exitGame = (interval: NodeJS.Timer) => {
     document.removeEventListener('keydown', keyDirect);
     renderPage(Router.MAIN);
     links.forEach((link: HTMLButtonElement) => (link.disabled = false));
-    wordsState.exit();
+    await wordsState.exit();
 };
 
 export function renderCounter() {

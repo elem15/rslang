@@ -2,8 +2,8 @@ import { wordsState } from '../services/words-state';
 import { removeModal } from './game-modal';
 import { startGame } from './sprint-page';
 
-export const levelSelectRender = () => {
-    wordsState.exit();
+export const levelSelectRender = async () => {
+    await wordsState.exit();
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';

@@ -8,7 +8,8 @@ import mistake from '../../audiochallenge/assets/sounds/error.mp3';
 import { statistics } from '../services/statistics';
 import { levelSelectRender } from './level-select';
 import { renderCounter } from './render-counter';
-import { messageModal } from './message-modal-few';
+import { messageModal } from './modal-few-words';
+import { addNewWord } from '../../statistics/services/api';
 
 export function play(src: string) {
     const audio = new Audio(src);
@@ -18,7 +19,10 @@ export function play(src: string) {
 const getMark = (translateEqual: boolean) => {
     const modalTitle = document.querySelector('.modal-title');
     const gameChecks = document.querySelectorAll('.game-check') as NodeListOf<HTMLElement>;
+    wordsState.newWords += 1;
     if (translateEqual) {
+        addNewWord(wordsState.currentWordId, 1, 0, wordsState.counter % 3 === 1 ? true : false);
+        wordsState.rightAnswers += 1;
         statistics.correct += 1;
         statistics.correct3word += 1;
         if (statistics.correct3word < 3) [...gameChecks][statistics.correct3word].innerHTML = '✅';
@@ -33,7 +37,12 @@ const getMark = (translateEqual: boolean) => {
         setTimeout(() => rightAnswer.remove(), 700);
         play(success);
     } else {
+        addNewWord(wordsState.currentWordId, 0, 1, false);
+        wordsState.wrongAnswers += 1;
         statistics.incorrect += 1;
+        if (wordsState.longestSeries < statistics.correct3word + 1) {
+            wordsState.longestSeries = statistics.correct3word + 1;
+        }
         statistics.correct3word = -1;
         [...gameChecks].map((el) => (el.innerHTML = '░░'));
         statistics.incorrectWords.push(statistics.word);
@@ -48,7 +57,7 @@ const getMark = (translateEqual: boolean) => {
         play(mistake);
     }
 };
-const getPushResult = async (translateEqual: boolean) => {
+const getGameIterationResult = async (translateEqual: boolean) => {
     const buttonsContainer = document.querySelector('.buttons-container');
     if (buttonsContainer) {
         getMark(translateEqual);
@@ -70,10 +79,10 @@ const getPushResult = async (translateEqual: boolean) => {
 export const keyDirect = (e: KeyboardEvent) => {
     switch (e.code) {
         case 'ArrowRight':
-            getPushResult(wordsState.translateEqual);
+            getGameIterationResult(wordsState.translateEqual);
             break;
         case 'ArrowLeft':
-            getPushResult(!wordsState.translateEqual);
+            getGameIterationResult(!wordsState.translateEqual);
             break;
         default:
             null;
@@ -89,8 +98,8 @@ export const renderButtonsContainer = () => {
     wrong.className = 'wrong btn btn-danger';
     wrong.innerText = '< ЛОЖЬ';
     buttonsContainer.append(wrong, right);
-    right.addEventListener('click', async () => await getPushResult(wordsState.translateEqual));
-    wrong.addEventListener('click', async () => await getPushResult(!wordsState.translateEqual));
+    right.addEventListener('click', async () => await getGameIterationResult(wordsState.translateEqual));
+    wrong.addEventListener('click', async () => await getGameIterationResult(!wordsState.translateEqual));
     return buttonsContainer;
 };
 export const startGame = async () => {

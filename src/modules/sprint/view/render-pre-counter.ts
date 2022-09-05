@@ -5,6 +5,7 @@ import { keyDirect, renderButtonsContainer } from './sprint-page';
 import wow from '../audio/Woosh-Mark_DiAngelo-4778593.mp3';
 import tick from '../audio/Button-SoundBible.com-1420500901.mp3';
 import { gameModal } from './game-modal';
+import { getCountNewWords } from '../../statistics/services/api';
 
 export function play(src: string) {
     const audio = new Audio(src);
@@ -32,9 +33,10 @@ export const getWord = async () => {
     };
 };
 const startGameCounter = async (counterWrapper: HTMLElement) => {
+    wordsState.prevNewWords = await getCountNewWords();
     const modal = document.querySelector('.modal');
     if (modal) modal.remove();
-    const { id, words, translateEqual } = await getWord();
+    const { words, translateEqual } = await getWord();
     wordsState.translateEqual = translateEqual;
     const buttonsContainer = renderButtonsContainer();
     words.append(buttonsContainer);
