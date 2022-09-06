@@ -18,13 +18,15 @@ export const wordsState = {
     page: 0 as number,
     counter: 0 as number,
     async addStats() {
-        await addResultGame(
-            'sprint',
-            this.prevNewWords + this.newWords,
-            this.rightAnswers,
-            this.wrongAnswers,
-            this.longestSeries
-        );
+        if (localStorage.getItem('data')) {
+            await addResultGame(
+                'sprint',
+                this.prevNewWords + this.newWords,
+                this.rightAnswers,
+                this.wrongAnswers,
+                this.longestSeries
+            );
+        }
         this.prevNewWords = 0;
         this.newWords = 0;
         this.rightAnswers = 0;
