@@ -27,7 +27,10 @@ export const pagination = (isAuthorization: boolean, page: number) => {
             draw(Number(pageTextbook.value), Number(groupTextbook.value), isAuthorization);
             drawPageNav(Number(pageTextbook.value), Number(groupTextbook.value), pageLearned, isAuthorization);
             pagination.style.display = 'flex';
-            localStorage.setItem('currentPageGroup', JSON.stringify({ page: Number(pageTextbook.value), group: groupTextbook.value }));
+            localStorage.setItem(
+                'currentPageGroup',
+                JSON.stringify({ page: Number(pageTextbook.value), group: groupTextbook.value })
+            );
         }
         if (Number(groupTextbook.value) === groupHardWordsNumber) {
             drawPageDifficultWords(isAuthorization);
@@ -65,7 +68,10 @@ export const pagination = (isAuthorization: boolean, page: number) => {
         if (currentPage !== 0) {
             btnLeft.classList.remove('disabled');
         }
-        localStorage.setItem('currentPageGroup', JSON.stringify({ page: pageTextbook.value, group: groupTextbook.value }));
+        localStorage.setItem(
+            'currentPageGroup',
+            JSON.stringify({ page: pageTextbook.value, group: groupTextbook.value })
+        );
     });
 
     const moveLeft = () => {
@@ -86,7 +92,7 @@ export const pagination = (isAuthorization: boolean, page: number) => {
         root.forEach((el) => {
             el.src = '';
             el.srcObject = null;
-            el.remove(); 
+            el.remove();
         });
         localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };
@@ -109,7 +115,7 @@ export const pagination = (isAuthorization: boolean, page: number) => {
         root.forEach((el) => {
             el.src = '';
             el.srcObject = null;
-            el.remove(); 
+            el.remove();
         });
         localStorage.setItem('currentPageGroup', JSON.stringify({ page: currentPage, group: currentGroup }));
     };

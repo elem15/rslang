@@ -1,11 +1,9 @@
-import { Router } from "../../../types/router-types";
-import { renderPage } from "../../router/services/router";
+import { Router } from '../../../types/router-types';
+import { renderPage } from '../../router/services/router';
 
 export const addListenerGameButton = () => {
     const buttonGameAudio = document.querySelector('.game__button-audio');
     const buttonGameSprint = document.querySelector('.game__button-sprint');
-    const game1Link = document.querySelector(`.${Router.GAME_1}`) as HTMLButtonElement;
-    const sprintLink = document.querySelector(`.${Router.SPRINT}`) as HTMLButtonElement;
 
     const root = document.querySelectorAll('audio');
     root.forEach((el) => {

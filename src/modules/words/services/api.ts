@@ -9,7 +9,6 @@ import {
 } from '../../../types/textbook-types';
 import { UserData } from '../../../types/user-types';
 import { host } from '../../auth/controllers/hosts';
-import { wordsState } from '../../sprint/services/words-state';
 
 export const getWords = async (page = 0, group = 0): Promise<Dictionary[]> => {
     const response = await fetch(`${host}/words?page=${page}&group=${group}`);

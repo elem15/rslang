@@ -1,4 +1,4 @@
-import { addLearnedHardNeutralWord, addWordToHardLearned } from '../services/api';
+import { addLearnedHardNeutralWord } from '../services/api';
 import { changePageIconDefault, changePageIconLearned, drawPageDifficultWords } from './draw';
 import { addAllLearnedMessage } from './messageAllLearned';
 
