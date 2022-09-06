@@ -7,7 +7,6 @@ import { wordsState } from '../services/words-state';
 const axios = a.default;
 
 const recursiveGetUserWords = async (page = 0, group = 0): Promise<DictionaryHardWord[]> => {
-    console.log(page)
     const inner = async (page: number, data: DictionaryHardWord[]): Promise<DictionaryHardWord[]> => {
         if (data.length >= 20) {
             while (data.length > 20) {

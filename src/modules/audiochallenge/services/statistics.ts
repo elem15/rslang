@@ -10,7 +10,6 @@ export type StatisticsType = {
 
 export const updateStatistics = async (user: UserData | null, statistics: StatisticsType): Promise<void> => {
     const { learnedWords, rightAnswers, wrongAnswers, longestSeries } = statistics;
-    console.log(statistics);
     if (user) {
         await addResultGame('audiochallenge', learnedWords, rightAnswers, wrongAnswers, longestSeries);
     } else {
