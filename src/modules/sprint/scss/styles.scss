@@ -13,6 +13,16 @@
 #message-modal-dialog {
     margin-top: 27vh;
 }
+.parrots-card {
+    width: 350px;
+    height: 50px;
+    position: absolute;
+    top: -60px;
+    left: -50px;
+}
+.parrot-container {
+    padding-left: 10px;
+}
 .game-checks {
     display: flex;
     justify-content: space-around;

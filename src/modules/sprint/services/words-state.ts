@@ -19,13 +19,7 @@ export const wordsState = {
     counter: 0 as number,
     async addStats() {
         if (localStorage.getItem('data')) {
-            await addResultGame(
-                'sprint',
-                this.prevNewWords + this.newWords,
-                this.rightAnswers,
-                this.wrongAnswers,
-                this.longestSeries
-            );
+            await addResultGame('sprint', this.newWords, this.rightAnswers, this.wrongAnswers, this.longestSeries);
         }
         this.prevNewWords = 0;
         this.newWords = 0;
