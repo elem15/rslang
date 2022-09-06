@@ -18,6 +18,9 @@ export const wordsState = {
     page: 0 as number,
     counter: 0 as number,
     async addStats() {
+        if (wordsState.longestSeries < statistics.correct3word) {
+            wordsState.longestSeries = statistics.correct3word + 1;
+        }
         if (localStorage.getItem('data')) {
             await addResultGame('sprint', this.newWords, this.rightAnswers, this.wrongAnswers, this.longestSeries);
         }

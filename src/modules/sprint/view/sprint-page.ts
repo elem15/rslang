@@ -53,7 +53,7 @@ const getMark = (translateEqual: boolean) => {
         }
         wordsState.wrongAnswers += 1;
         statistics.incorrect += 1;
-        if (wordsState.longestSeries < statistics.correct3word + 1) {
+        if (wordsState.longestSeries < statistics.correct3word) {
             wordsState.longestSeries = statistics.correct3word + 1;
         }
         statistics.correct3word = -1;
