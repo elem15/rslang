@@ -218,9 +218,11 @@ export const getCountNewWords = async () => {
             }
         );
         const words = await response.json();
-        return words[0].totalCount[0].count;
+        const count = words[0].totalCount[0].count
+        if (count) return count;
     } catch {
         console.log('Word not exist');
+        return 0;
     }
 };
 

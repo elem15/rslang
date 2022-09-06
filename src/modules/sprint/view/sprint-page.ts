@@ -21,7 +21,9 @@ const getMark = (translateEqual: boolean) => {
     const gameChecks = document.querySelectorAll('.game-check') as NodeListOf<HTMLElement>;
     wordsState.newWords += 1;
     if (translateEqual) {
-        addNewWord(wordsState.currentWordId, 1, 0, wordsState.counter % 3 === 1 ? true : false);
+        if (localStorage.getItem('data')) {
+            addNewWord(wordsState.currentWordId, 1, 0, wordsState.counter % 3 === 1 ? true : false);
+        }
         wordsState.rightAnswers += 1;
         statistics.correct += 1;
         statistics.correct3word += 1;
@@ -37,7 +39,9 @@ const getMark = (translateEqual: boolean) => {
         setTimeout(() => rightAnswer.remove(), 700);
         play(success);
     } else {
-        addNewWord(wordsState.currentWordId, 0, 1, false);
+        if (localStorage.getItem('data')) {
+            addNewWord(wordsState.currentWordId, 0, 1, false);
+        }
         wordsState.wrongAnswers += 1;
         statistics.incorrect += 1;
         if (wordsState.longestSeries < statistics.correct3word + 1) {
