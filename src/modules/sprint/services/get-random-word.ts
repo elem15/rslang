@@ -27,7 +27,9 @@ const getRandomList = (count: number) => {
 };
 export const getRandomWord = async (): Promise<sprintWords> => {
     if (!wordsState.data) wordsState.data = await getWords(wordsState.group);
+    console.log(wordsState.data);
     const { data } = wordsState;
+    console.log(data);
     const maxLength = data.length;
     if (!wordsState.randomList.length) wordsState.randomList = getRandomList(maxLength);
     const randomNum = wordsState.randomList[wordsState.counter];

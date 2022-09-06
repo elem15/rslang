@@ -6,7 +6,8 @@ import { wordsState } from '../services/words-state';
 
 const axios = a.default;
 
-const recursiveGetUserWords = async (page: number, group: number): Promise<DictionaryHardWord[]> => {
+const recursiveGetUserWords = async (page = 0, group = 0): Promise<DictionaryHardWord[]> => {
+    console.log(page)
     const inner = async (page: number, data: DictionaryHardWord[]): Promise<DictionaryHardWord[]> => {
         if (data.length >= 20) {
             while (data.length > 20) {
@@ -32,8 +33,13 @@ export const getWords = async (group = 0, page = Math.floor(Math.random() * 29))
     try {
         const wordsConfig = JSON.parse(localStorage.getItem('currentPageGroup'));
         if (wordsState.fromBook) {
-            group = wordsConfig.group;
-            page = wordsConfig.page;
+            if (wordsConfig) {
+                group = wordsConfig.group;
+                page = wordsConfig.page;
+            } else {
+                group = 0;
+                page = 0;
+            }
             if (group < 6) {
                 const data = await recursiveGetUserWords(page, group);
                 return data;
@@ -48,7 +54,13 @@ export const getWords = async (group = 0, page = Math.floor(Math.random() * 29))
         const { data } = response;
         return data;
     } catch (error) {
-        const message = error instanceof a.AxiosError ? error.message : 'unknown errors';
-        console.log('words download with ', message);
+        try {
+            const response = await axios.get(`${host}/words?group=${group}&page=0`);
+            const { data } = response;
+            return data;
+        } catch (error) {
+            const message = error instanceof a.AxiosError ? error.message : 'unknown errors';
+            console.log('words download with ', message);
+        }
     }
 };
