@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { clear, getElementsList, generateWord, generateWords } from '../utils';
+import { clear, getElementsList, generateWord, generateWords, getRandomNumber } from '../utils';
 import { drawLevels } from '../view/levels';
 import { nextWord as card } from '../view/next';
 import { progress } from '../view/progress';
@@ -48,7 +48,7 @@ export default class Game {
     maxInRow = 0;
     newWordsQty = 0;
 
-    constructor(root: HTMLElement, fromBook = false, group?: number, page?: number) {
+    constructor(root: HTMLElement, fromBook = false, group = 0, page = 0) {
         this.root = root;
         this.mute = mute();
         this.toolbar = toolbar(this.onClose);
@@ -59,8 +59,8 @@ export default class Game {
         this.isMute = false;
         this.selected = [];
         this.count = 0;
-        this.group = group || 0;
-        this.page = page ?? Math.floor(Math.random() * 30);
+        this.group = group;
+        this.page = page;
         this.isFromBook = fromBook;
     }
 
@@ -261,7 +261,6 @@ export default class Game {
         this.current = undefined;
         this.isRestartGame = true;
         this.count = this.maxInRow = this.inRow = 0;
-        //this.page = getRandomNumber(29);
     };
 
     isMuteOn = (): boolean => {
@@ -269,8 +268,10 @@ export default class Game {
     };
 
     beforeGame = async (): Promise<void> => {
-        if (!this.isRestartGame && !this.isFromBook) await this.showLevels();
-        else await this.onLevelSelect(this.group);
+        if (!this.isRestartGame && !this.isFromBook) {
+            this.page = getRandomNumber(30);
+            await this.showLevels();
+        } else await this.onLevelSelect(this.group);
         this.progress.classList.add('game__progress');
         this.container.className = 'game';
         this.next.classList.add('game__next_word');
