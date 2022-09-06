@@ -24,6 +24,7 @@ export const gameModal = () => {
     modal.style.backgroundColor = 'rgba(100,100,100,0.3)';
     modal.innerHTML = `
     <div class="modal-dialog" id="game-modal-dialog">
+    <div class="parrots-card"></div>
         <div class="modal-content">
         <div class="modal-header" id="modal-header">
         <h5 class="modal-title" id="example-modal-label"></h5>            

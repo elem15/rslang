@@ -27,7 +27,6 @@ const loadUserWords = async (page: number, group: number): Promise<Dictionary[]>
             else words.push(...previous);
         }
     }
-    console.log(words);
     return convertCollection(words);
 };
 

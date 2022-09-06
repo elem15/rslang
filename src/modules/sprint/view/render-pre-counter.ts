@@ -34,7 +34,6 @@ export const getWord = async () => {
 };
 const startGameCounter = async (counterWrapper: HTMLElement) => {
     if (localStorage.getItem('data')) wordsState.prevNewWords = await getCountNewWords();
-    console.log(wordsState.prevNewWords);
     const modal = document.querySelector('.modal');
     if (modal) modal.remove();
     const { words, translateEqual } = await getWord();

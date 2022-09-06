@@ -88,7 +88,7 @@ export const renderMainPage = () => {
     `;
     document.body.append(background);
     renderFooter();
-    const wordsLink = document.querySelector(`.textbook-link`) as HTMLButtonElement;    
+    const wordsLink = document.querySelector(`.textbook-link`) as HTMLButtonElement;
     wordsLink.addEventListener('click', () => {
         localStorage.setItem('router', Router.DICTIONARY);
         renderPage(Router.DICTIONARY);

@@ -37,7 +37,7 @@ export const removeModal = (modal: HTMLElement) => {
 };
 
 export const messageModal = async (message: string) => {
-    await wordsState.addStats();
+    await wordsState.addStats();   
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';

@@ -35,6 +35,9 @@ export const getRandomWord = async (): Promise<sprintWords> => {
     if (wordsState.counter > maxLength) {
         return { id: '0', word: 'word', wordTranslate: 'wordTranslate', wordWrongTranslate: '', translateEqual: true };
     }
+    if (!data[randomNum].userWord) {
+        wordsState.newWords += 1;
+    }
     const { word, wordTranslate } = data[randomNum];
     const id = data[randomNum].id ? data[randomNum].id : data[randomNum]._id;
     statistics.word = data[randomNum];

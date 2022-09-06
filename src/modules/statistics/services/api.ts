@@ -106,7 +106,8 @@ export const addNewWord = async (
         let body: UserWords;
         if (!isRightAnswer) {
             body = {
-                difficulty: wordUserStatus.difficulty === Difficulty.learned ? Difficulty.neutral : wordUserStatus.difficulty,
+                difficulty:
+                    wordUserStatus.difficulty === Difficulty.learned ? Difficulty.neutral : wordUserStatus.difficulty,
                 optional: {
                     dateWordNew: wordUserStatus.optional.dateWordNew
                         ? wordUserStatus.optional.dateWordNew
@@ -218,7 +219,7 @@ export const getCountNewWords = async () => {
             }
         );
         const words = await response.json();
-        const count = words[0].totalCount[0].count
+        const count = words[0].totalCount[0].count;
         if (count) return count;
     } catch {
         console.log('Word not exist');

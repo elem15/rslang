@@ -3,6 +3,7 @@ import { wordsState } from '../services/words-state';
 import { getWord, renderPreCounter } from './render-pre-counter';
 import '../scss/styles.scss';
 import img from '../../../images/palm.gif';
+import parrot from '../../../images/parrot.png';
 import success from '../../audiochallenge/assets/sounds/success.wav';
 import mistake from '../../audiochallenge/assets/sounds/error.mp3';
 import { statistics } from '../services/statistics';
@@ -17,16 +18,24 @@ export function play(src: string) {
 }
 
 const getMark = (translateEqual: boolean) => {
+    const parrotsCard = document.querySelector('.parrots-card');
     const modalTitle = document.querySelector('.modal-title');
     const gameChecks = document.querySelectorAll('.game-check') as NodeListOf<HTMLElement>;
-    wordsState.newWords += 1;
     if (translateEqual) {
-        if (localStorage.getItem('data')) {
-            addNewWord(wordsState.currentWordId, 1, 0, wordsState.counter % 3 === 1 ? true : false);
-        }
         wordsState.rightAnswers += 1;
         statistics.correct += 1;
         statistics.correct3word += 1;
+        if (localStorage.getItem('data')) {
+            addNewWord(
+                wordsState.currentWordId,
+                1,
+                0,
+                statistics.correct3word % 4 === 0 && statistics.correct3word > 1 ? true : false
+            );
+        }
+        if (statistics.correct3word % 4 === 0 && statistics.correct3word > 1) {
+            parrotsCard.insertAdjacentHTML('afterbegin', `<span class="parrot-container"><img src=${parrot}></span>`);
+        }
         if (statistics.correct3word < 3) [...gameChecks][statistics.correct3word].innerHTML = '✅';
         statistics.correctWords.push(statistics.word);
         statistics.word = null;
@@ -44,10 +53,13 @@ const getMark = (translateEqual: boolean) => {
         }
         wordsState.wrongAnswers += 1;
         statistics.incorrect += 1;
-        if (wordsState.longestSeries < statistics.correct3word + 1) {
+        if (wordsState.longestSeries < statistics.correct3word) {
             wordsState.longestSeries = statistics.correct3word + 1;
         }
         statistics.correct3word = -1;
+        while (parrotsCard.lastChild) {
+            parrotsCard.lastChild.remove();
+        }
         [...gameChecks].map((el) => (el.innerHTML = '░░'));
         statistics.incorrectWords.push(statistics.word);
         statistics.word = null;
