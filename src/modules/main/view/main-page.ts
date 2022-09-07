@@ -1,44 +1,11 @@
 import '../scss/styles.scss';
 import yuri from '../../../images/yuri.jpg';
+import denis from '../../../images/denis.jpg';
+import elem from '../../../images/elem.jpg';
 import img from '../../../images/DSC02301.jpg';
-import logoImage from '../../../images/rs_school_js.svg';
-import gitHubImage from '../../../images/git_hub.svg';
-
-export const removeFooter = () => {
-    const footer = document.querySelector('footer');
-    while (footer.lastChild) footer.lastChild.remove();
-};
-export const renderFooter = () => {
-    const footer = document.querySelector('footer');
-    removeFooter();
-    footer.innerHTML = `
-    <ul class="footer__list nav">
-    <li class="footer__list-item logo nav-item">
-      <a class="nav-link" href="https://rs.school/js/"><span 
-          alt="rs-school logo" class="logo_image">
-        </span></a>
-    </li>
-    <li class="footer__list-item nav-item">
-      <a class="git-link nav-link" href="https://github.com/dab10"><span class="git-hub_svg"></span>Bazhenov Denis</a>
-    </li>
-    <li class="footer__list-item nav-item">
-      <a class="git-link nav-link" href="https://github.com/labatsevich"><span class="git-hub_svg"></span>Yuri Labatsevich</a>
-    </li>
-    <li class="footer__list-item nav-item">
-      <a class="git-link nav-link" href="https://github.com/elem15"><span class="git-hub_svg"></span>Mikhail Dvorkin</a>
-    </li>
-    <li class="footer__list-item">
-      Year 2022
-    </li>
-  </ul>
-  `;
-    const RSSchoolLogo = document.querySelector('.logo_image') as HTMLElement;
-    RSSchoolLogo.innerHTML = logoImage;
-    const linksToGit = document.querySelectorAll('.git-hub_svg') as NodeListOf<HTMLElement>;
-    linksToGit.forEach((link) => {
-        link.insertAdjacentHTML('afterbegin', gitHubImage);
-    });
-};
+import { renderFooter } from './footer';
+import { Router } from '../../../types/router-types';
+import { renderPage } from '../../router/services/router';
 
 export const renderMainPage = () => {
     const root = document.getElementById('root');
@@ -61,32 +28,51 @@ export const renderMainPage = () => {
       </div>
       <br>
       <br>
-      <p class="about text-end">В приложени <strong>lexi</strong> вы можете изучачить 3600 часто употребляемых английских слов. <br>В этом вам поможет <strong>Учебник</strong> с ассоциативными карточками. А так же 2 замечательные игры <strong>Аудиовызов</strong> и <strong>Спринт</strong></p>
+      <p class="about text-end">В приложени <strong>lexi</strong> вы можете изучачить 3600 часто употребляемых английских слов. 
+      <br>В этом вам поможет <strong class="textbook-link">Учебник</strong> с ассоциативными карточками. 
+      А так же 2 замечательные игры <strong class="audio-challenge">Аудиовызов</strong> и <strong class="sprint-game">Спринт</strong></p>
     </div>
     <div class="container avatars">
+    <p class="text-center"><span class="h3">lέxi</span> создали для Вас:</p>
+    <br>
     <div class="row justify-content-between">  
       <ul class="main__list nav justify-content-evenly">     
         <li class="main__list-item nav-item">
           <a class="git-link nav-link" href="https://github.com/dab10">
           <figure class="figure denis">
-          <div class="avatar"></div>
-          <figcaption class="figure-caption text-center">Денис Баженов</figcaption>
+          <img src=${denis} class="figure-img avatar" alt="author's photo">
+          <figcaption class="figure-caption text-center">
+            <div><strong>Денис Баженов</strong></div>
+            <hr>
+            <li>учебник</li>
+            <li>статистика</li>
+          </figcaption>
           </figure>
           </a>
         </li>
         <li class="main__list-item nav-item">
           <a class="git-link nav-link" href="https://github.com/labatsevich">
           <figure class="figure yuri">
-            <img src=${yuri} class="figure-img avatar img-fluid" alt="...">
-            <figcaption class="figure-caption text-center">Юрий Лабацевич</figcaption>
+            <img src=${yuri} class="figure-img avatar img-fluid" alt="author's photo">
+            <figcaption class="figure-caption text-center">
+              <div><strong>Юрий Лабацевич</strong></div>
+              <hr>
+              <li>игра аудиовызов</li>
+            </figcaption>            
           </figure>
           </a>
         </li>
         <li class="main__list-item nav-item">
           <a class="git-link nav-link" href="https://github.com/elem15">          
           <figure class="figure mikhail">
-          <div class="avatar"></div>
-          <figcaption class="figure-caption text-center">Михаил Дворкин</figcaption>
+          <img src=${elem} class="figure-img avatar img-fluid" alt="author's photo">
+          <figcaption class="figure-caption text-center">
+          <div><strong>Михаил Дворкин</strong></div>
+            <hr>
+            <li>авторизация</li>
+            <li>домашняя страница</li>  
+            <li>игра спринт</li>  
+          </figcaption>
           </figure>
           </a>
         </li>    
@@ -100,6 +86,24 @@ export const renderMainPage = () => {
     background.innerHTML = `
         <img class="background" src=${img}> 
     `;
-    main.append(background);
+    document.body.append(background);
     renderFooter();
+    const wordsLink = document.querySelector(`.textbook-link`) as HTMLButtonElement;
+    wordsLink.addEventListener('click', () => {
+        localStorage.setItem('router', Router.DICTIONARY);
+        renderPage(Router.DICTIONARY);
+    });
+    const game1Link = document.querySelector(`.audio-challenge`) as HTMLButtonElement;
+    game1Link.addEventListener('click', () => {
+        localStorage.setItem('router', Router.GAME_1);
+        renderPage(Router.GAME_1);
+    });
+    const sprintLink = document.querySelector(`.sprint-game`) as HTMLButtonElement;
+    sprintLink.addEventListener('click', () => {
+        localStorage.setItem('router', Router.SPRINT);
+        renderPage(Router.SPRINT);
+    });
+    [wordsLink, game1Link, sprintLink].map((element: HTMLElement) => {
+        element.style.cursor = 'pointer';
+    });
 };

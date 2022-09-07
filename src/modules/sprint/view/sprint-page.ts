@@ -1,12 +1,16 @@
-import { removeFooter } from '../../main/view/main-page';
+import { removeFooter } from '../../main/view/footer';
 import { wordsState } from '../services/words-state';
 import { getWord, renderPreCounter } from './render-pre-counter';
 import '../scss/styles.scss';
 import img from '../../../images/palm.gif';
+import parrot from '../../../images/parrot.png';
 import success from '../../audiochallenge/assets/sounds/success.wav';
 import mistake from '../../audiochallenge/assets/sounds/error.mp3';
 import { statistics } from '../services/statistics';
 import { levelSelectRender } from './level-select';
+import { renderCounter } from './render-counter';
+import { messageModal } from './modal-few-words';
+import { addNewWord } from '../../statistics/services/api';
 
 export function play(src: string) {
     const audio = new Audio(src);
@@ -14,9 +18,25 @@ export function play(src: string) {
 }
 
 const getMark = (translateEqual: boolean) => {
+    const parrotsCard = document.querySelector('.parrots-card');
     const modalTitle = document.querySelector('.modal-title');
+    const gameChecks = document.querySelectorAll('.game-check') as NodeListOf<HTMLElement>;
     if (translateEqual) {
+        wordsState.rightAnswers += 1;
         statistics.correct += 1;
+        statistics.correct3word += 1;
+        if (localStorage.getItem('data')) {
+            addNewWord(
+                wordsState.currentWordId,
+                1,
+                0,
+                statistics.correct3word % 4 === 0 && statistics.correct3word > 1 ? true : false
+            );
+        }
+        if (statistics.correct3word % 4 === 0 && statistics.correct3word > 1) {
+            parrotsCard.insertAdjacentHTML('afterbegin', `<span class="parrot-container"><img src=${parrot}></span>`);
+        }
+        if (statistics.correct3word < 3) [...gameChecks][statistics.correct3word].innerHTML = '✅';
         statistics.correctWords.push(statistics.word);
         statistics.word = null;
         const rightAnswer = document.createElement('div');
@@ -28,7 +48,19 @@ const getMark = (translateEqual: boolean) => {
         setTimeout(() => rightAnswer.remove(), 700);
         play(success);
     } else {
+        if (localStorage.getItem('data')) {
+            addNewWord(wordsState.currentWordId, 0, 1, false);
+        }
+        wordsState.wrongAnswers += 1;
         statistics.incorrect += 1;
+        if (wordsState.longestSeries < statistics.correct3word) {
+            wordsState.longestSeries = statistics.correct3word + 1;
+        }
+        statistics.correct3word = -1;
+        while (parrotsCard.lastChild) {
+            parrotsCard.lastChild.remove();
+        }
+        [...gameChecks].map((el) => (el.innerHTML = '░░'));
         statistics.incorrectWords.push(statistics.word);
         statistics.word = null;
         const wrongAnswer = document.createElement('div');
@@ -41,24 +73,32 @@ const getMark = (translateEqual: boolean) => {
         play(mistake);
     }
 };
-const getPushResult = async (translateEqual: boolean) => {
+const getGameIterationResult = async (translateEqual: boolean) => {
     const buttonsContainer = document.querySelector('.buttons-container');
     if (buttonsContainer) {
         getMark(translateEqual);
         const response = await getWord();
         wordsState.translateEqual = response.translateEqual;
         const { words } = response;
-        document.querySelector('.translate-word').remove();
+        const translateWord = document.querySelector('.translate-word');
+        if (translateWord) translateWord.remove();
+        if (response.id === '0') {
+            clearInterval(renderCounter.prototype.interval);
+            document.removeEventListener('keydown', keyDirect);
+            document.querySelector('.counter').innerHTML = '';
+            document.querySelector('.sprint-container').append(messageModal('Слова в разделе закончились'));
+            return;
+        }
         buttonsContainer.prepend(words);
     }
 };
 export const keyDirect = (e: KeyboardEvent) => {
     switch (e.code) {
         case 'ArrowRight':
-            getPushResult(wordsState.translateEqual);
+            getGameIterationResult(wordsState.translateEqual);
             break;
         case 'ArrowLeft':
-            getPushResult(!wordsState.translateEqual);
+            getGameIterationResult(!wordsState.translateEqual);
             break;
         default:
             null;
@@ -74,8 +114,8 @@ export const renderButtonsContainer = () => {
     wrong.className = 'wrong btn btn-danger';
     wrong.innerText = '< ЛОЖЬ';
     buttonsContainer.append(wrong, right);
-    right.addEventListener('click', async () => await getPushResult(wordsState.translateEqual));
-    wrong.addEventListener('click', async () => await getPushResult(!wordsState.translateEqual));
+    right.addEventListener('click', async () => await getGameIterationResult(wordsState.translateEqual));
+    wrong.addEventListener('click', async () => await getGameIterationResult(!wordsState.translateEqual));
     return buttonsContainer;
 };
 export const startGame = async () => {
@@ -91,15 +131,17 @@ export const renderSprintPage = async (fromBook: boolean) => {
     const root = document.getElementById('root');
     while (root.lastChild) root.lastChild.remove();
     removeFooter();
-    const sprint = document.createElement('section');
-    sprint.className = 'sprint-container container';
-    sprint.innerHTML = '<h1 class="text-center">SPRINT</h1>';
-    root.append(sprint);
-    const background = document.createElement('div');
-    background.innerHTML = `
-    <img class="background-sprint" src=${img}> 
-    `;
-    root.append(background);
+    if (!document.querySelector('.section')) {
+        const sprint = document.createElement('section');
+        sprint.className = 'sprint-container container';
+        sprint.innerHTML = '<h1 class="text-center">SPRINT</h1>';
+        root.append(sprint);
+        const background = document.createElement('div');
+        background.innerHTML = `
+        <img class="background-sprint" src=${img}> 
+        `;
+        root.append(background);
+    }
     wordsState.fromBook = fromBook;
     if (fromBook) startGame();
     else levelSelectRender();

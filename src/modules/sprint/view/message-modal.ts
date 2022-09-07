@@ -9,23 +9,26 @@ import '../scss/styles.scss';
 export const soundIcon = `<svg class="sound" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path></svg>`;
 
 export const removeModal = (modal: HTMLElement) => {
-    const close = document.querySelector('.btn-close');
+    const close = document.querySelector('.close-modal-btn');
     const primary = document.querySelector('.new-game') as HTMLButtonElement;
     const secondary = document.querySelector('.to-main-page');
-    const closeButtons = [modal, close, primary] as HTMLButtonElement[];
+    const closeButtons = [close, primary] as HTMLButtonElement[];
     closeButtons.map((close: HTMLButtonElement) => {
-        close.addEventListener('click', () => {
-            if (!wordsState.fromBook) wordsState.data = null;
+        close.addEventListener('click', async () => {
             modal.remove();
             close.removeEventListener('click', () => true);
             renderSprintPage(wordsState.fromBook);
+            await wordsState.exit();
         });
     });
-    secondary.addEventListener('click', () => {
+    secondary.addEventListener('click', async () => {
+        const header = document.querySelector('header');
+        const links = header.querySelectorAll('button');
         modal.remove();
-        const mainLink = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
         localStorage.setItem('router', Router.MAIN);
-        renderPage(Router.MAIN, mainLink);
+        renderPage(Router.MAIN);
+        links.forEach((link: HTMLButtonElement) => (link.disabled = false));
+        await wordsState.exit();
     });
     const modalDialog = document.querySelector('.modal-dialog');
     modalDialog.addEventListener('click', (e) => {
@@ -33,7 +36,8 @@ export const removeModal = (modal: HTMLElement) => {
     });
 };
 
-export const messageModal = (message: string) => {
+export const messageModal = async (message: string) => {
+    await wordsState.addStats();   
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';
@@ -42,8 +46,8 @@ export const messageModal = (message: string) => {
     <div class="modal-dialog" id="message-modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">${message}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title" id="example-modal-label">${message}</h5>
+            <button type="button" class="btn-close close-modal-btn" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <h6>Результаты:</h6> 

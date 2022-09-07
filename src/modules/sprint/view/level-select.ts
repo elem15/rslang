@@ -2,8 +2,8 @@ import { wordsState } from '../services/words-state';
 import { removeModal } from './game-modal';
 import { startGame } from './sprint-page';
 
-export const levelSelectRender = () => {
-    wordsState.data = null;
+export const levelSelectRender = async () => {
+    await wordsState.exit();
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';
@@ -12,7 +12,7 @@ export const levelSelectRender = () => {
     <div class="modal-dialog" id="game-modal-dialog">
         <div class="modal-content">
         <div class="modal-header" id="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Выберите уровень сложности</h5>
+            <h5 class="modal-title" id="example-modal-label">Выберите уровень сложности</h5>
             <button type="button" class="btn-close sprint-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

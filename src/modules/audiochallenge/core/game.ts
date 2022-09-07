@@ -295,10 +295,9 @@ export default class Game {
     onClose = () => {
         this.resetGame();
         this.toggleListeners(false);
-        const route = document.querySelector(`.${Router.MAIN}`) as HTMLButtonElement;
         localStorage.setItem('router', Router.MAIN);
         document.location.hash = `#${Router.MAIN}`;
-        renderPage(Router.MAIN, route);
+        renderPage(Router.MAIN);
     };
 
     toggleListeners = (needToAdd = true): void => {

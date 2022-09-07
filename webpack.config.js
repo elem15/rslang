@@ -53,11 +53,6 @@ const baseConfig = {
                 test: /\.svg$/,
                 loader: 'svg-inline-loader',
             },
-            // {
-            //     test: /\.ico$/,
-            //     loader: 'url-loader',
-            //     query: { mimetype: 'image/x-icon' },
-            // },
         ],
     },
     resolve: {
@@ -70,7 +65,8 @@ const baseConfig = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html'),
-            favicon: './src/favicon-32x32.png',
+            // "https://www.flaticon.com/free-icons/brain"
+            favicon: './src/favicon.png',
             filename: 'index.html',
         }),
         new CleanWebpackPlugin(),
