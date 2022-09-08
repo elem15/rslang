@@ -38,43 +38,39 @@ export const renderMainPage = () => {
     <div class="row justify-content-between">  
       <ul class="main__list nav justify-content-evenly">     
         <li class="main__list-item nav-item">
-          <a class="git-link nav-link" href="https://github.com/dab10">
-          <figure class="figure denis">
-          <img src=${denis} class="figure-img avatar" alt="author's photo">
-          <figcaption class="figure-caption text-center">
-            <div><strong>Денис Баженов</strong></div>
+        <figure class="figure denis">
+        <img src=${denis} class="figure-img avatar" alt="author's photo">
+        <figcaption class="figure-caption text-center">
+         <div><a class="git-link nav-link" href="https://github.com/dab10">
+           <strong>Денис Баженов</strong>
+            </a></div>
             <hr>
             <li>учебник</li>
             <li>статистика</li>
           </figcaption>
           </figure>
-          </a>
         </li>
-        <li class="main__list-item nav-item">
-          <a class="git-link nav-link" href="https://github.com/labatsevich">
+        <li class="main__list-item nav-item">          
           <figure class="figure yuri">
             <img src=${yuri} class="figure-img avatar img-fluid" alt="author's photo">
             <figcaption class="figure-caption text-center">
-              <div><strong>Юрий Лабацевич</strong></div>
+              <div><a class="git-link nav-link" href="https://github.com/labatsevich"><strong>Юрий Лабацевич</strong></a></div>
               <hr>
               <li>игра аудиовызов</li>
             </figcaption>            
-          </figure>
-          </a>
+          </figure>        
         </li>
-        <li class="main__list-item nav-item">
-          <a class="git-link nav-link" href="https://github.com/elem15">          
+        <li class="main__list-item nav-item">                    
           <figure class="figure mikhail">
           <img src=${elem} class="figure-img avatar img-fluid" alt="author's photo">
           <figcaption class="figure-caption text-center">
-          <div><strong>Михаил Дворкин</strong></div>
+          <div><a class="git-link nav-link" href="https://github.com/elem15"><strong>Михаил Дворкин</strong></a></div>
             <hr>
             <li>авторизация</li>
             <li>домашняя страница</li>  
             <li>игра спринт</li>  
           </figcaption>
-          </figure>
-          </a>
+          </figure>          
         </li>    
       </ul>
     </div>
