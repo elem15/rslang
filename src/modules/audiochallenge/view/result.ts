@@ -7,7 +7,7 @@ const playAudio = async (e: MouseEvent): Promise<void> => {
     let target = e.target as HTMLElement;
     target = target.closest('.audio') as HTMLElement;
     const path = target.dataset.audio;
-    const audio = new Audio(`${host}${path}`);
+    const audio = new Audio(`${host}/${path}`);
     await audio.play();
 };
 
