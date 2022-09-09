@@ -3,13 +3,13 @@ import { addResultGame } from '../../statistics/services/api';
 import { statistics } from './statistics';
 
 export const wordsState = {
+    preTimer: false as boolean,
     currentWordId: '' as string,
     prevNewWords: 0 as number,
     newWords: 0 as number,
     rightAnswers: 0 as number,
     wrongAnswers: 0 as number,
     longestSeries: 0 as number,
-    usedWordsIds: [] as Array<number>,
     randomList: [] as Array<number>,
     data: null as DictionaryHardWord[],
     translateEqual: true as boolean,

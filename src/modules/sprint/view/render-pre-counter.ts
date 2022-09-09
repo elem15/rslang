@@ -47,24 +47,32 @@ const startGameCounter = async (counterWrapper: HTMLElement) => {
         '<div class="pre-timer">START</div>',
         words,
     ];
+    const renderTimeout = async (i: number) => {
+        if (!wordsState.preTimer) {
+            wordsState.group = 0;
+            document.removeEventListener('keydown', keyDirect);
+            wordsState.exit();
+            return;
+        }
+        if (typeof arr[i] === 'string' && i < 3) {
+            counterWrapper.innerHTML = arr[i] as string;
+            play(tick);
+        } else if (typeof arr[i] === 'string' && i === 3) {
+            counterWrapper.innerHTML = arr[i] as string;
+            play(wow);
+        } else {
+            counterWrapper.innerHTML = '';
+            const gameBody = document.createElement('div');
+            gameBody.append(arr[i] as HTMLElement);
+            gameModal();
+            counterWrapper.prepend(renderCounter());
+            document.querySelector('.modal-body').append(gameBody);
+            document.addEventListener('keydown', keyDirect);
+        }
+    };
+    wordsState.preTimer = true;
     for (let i = 0; i < arr.length; i++) {
-        setTimeout(async () => {
-            if (typeof arr[i] === 'string' && i < 3) {
-                counterWrapper.innerHTML = arr[i] as string;
-                play(tick);
-            } else if (typeof arr[i] === 'string' && i === 3) {
-                counterWrapper.innerHTML = arr[i] as string;
-                play(wow);
-            } else {
-                counterWrapper.innerHTML = '';
-                const gameBody = document.createElement('div');
-                gameBody.append(arr[i] as HTMLElement);
-                gameModal();
-                counterWrapper.prepend(renderCounter());
-                document.querySelector('.modal-body').append(gameBody);
-                document.addEventListener('keydown', keyDirect);
-            }
-        }, 1000 * i);
+        setTimeout(() => renderTimeout(i), 1000 * i);
     }
 };
 

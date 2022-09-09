@@ -5,6 +5,8 @@ import { renderMainPage } from '../../main/view/main-page';
 import { renderSprintPage } from '../../sprint/view/sprint-page';
 import { renderStatisticsPage } from '../../statistics/view/statistics-page';
 import { renderWordsList } from '../../words/view/words-list';
+import { wordsState } from '../../sprint/services/words-state';
+import { renderCounter } from '../../sprint/view/render-counter';
 
 const removeClassActive = () => {
     const links = document.querySelectorAll('.nav-link') as NodeListOf<HTMLElement>;
@@ -14,6 +16,8 @@ const removeClassActive = () => {
 };
 
 export const renderPage = (router: string, fromBook = false) => {
+    if (renderCounter.prototype.interval) clearInterval(renderCounter.prototype.interval);
+    wordsState.preTimer = false;
     router = router ? router : localStorage.getItem('router') ? localStorage.getItem('router') : Router.MAIN;
     const button = document.querySelector(`.${router}`) as HTMLElement;
     const email = localStorage.getItem('email');

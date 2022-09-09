@@ -16,13 +16,13 @@ export const renderFooter = () => {
         </span></a>
     </li>
     <li class="footer__list-item nav-item">
-      <a class="git-link nav-link" href="https://github.com/dab10"><span class="git-hub_svg"></span>Bazhenov Denis</a>
+      <a class="git-link nav-link" target="_blank" href="https://github.com/dab10"><span class="git-hub_svg"></span>Bazhenov Denis</a>
     </li>
     <li class="footer__list-item nav-item">
-      <a class="git-link nav-link" href="https://github.com/labatsevich"><span class="git-hub_svg"></span>Yuri Labatsevich</a>
+      <a class="git-link nav-link" target="_blank" href="https://github.com/labatsevich"><span class="git-hub_svg"></span>Yuri Labatsevich</a>
     </li>
     <li class="footer__list-item nav-item">
-      <a class="git-link nav-link" href="https://github.com/elem15"><span class="git-hub_svg"></span>Mikhail Dvorkin</a>
+      <a class="git-link nav-link" target="_blank" href="https://github.com/elem15"><span class="git-hub_svg"></span>Mikhail Dvorkin</a>
     </li>
     <li class="footer__list-item">
       Year 2022
