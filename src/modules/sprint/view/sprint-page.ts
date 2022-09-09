@@ -26,12 +26,7 @@ const getMark = (translateEqual: boolean) => {
         statistics.correct += 1;
         statistics.correct3word += 1;
         if (localStorage.getItem('data')) {
-            addNewWord(
-                wordsState.currentWordId,
-                1,
-                0,
-                statistics.correct3word % 4 === 0 && statistics.correct3word > 1 ? true : false
-            );
+            addNewWord(wordsState.currentWordId, 1, 0, true);
         }
         if (statistics.correct3word % 4 === 0 && statistics.correct3word > 1) {
             parrotsCard.insertAdjacentHTML('afterbegin', `<span class="parrot-container"><img src=${parrot}></span>`);
