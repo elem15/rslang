@@ -48,7 +48,12 @@ const startGameCounter = async (counterWrapper: HTMLElement) => {
         words,
     ];
     const renderTimeout = async (i: number) => {
-        if (!wordsState.preTimer) return;
+        if (!wordsState.preTimer) {
+            wordsState.group = 0;
+            document.removeEventListener('keydown', keyDirect);
+            wordsState.exit();
+            return;
+        }
         if (typeof arr[i] === 'string' && i < 3) {
             counterWrapper.innerHTML = arr[i] as string;
             play(tick);

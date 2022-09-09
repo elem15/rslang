@@ -53,7 +53,6 @@ export function renderCounter() {
         }
     }
     const close = document.querySelector('.sprint-close');
-    // const modal = document.querySelector('.modal');
     [close].map((el) =>
         el.addEventListener('click', () => {
             exitGame(renderCounter.prototype.interval);
