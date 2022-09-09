@@ -12,23 +12,20 @@ export const removeModal = (modal: HTMLElement) => {
     const close = document.querySelector('.close-modal-btn');
     const primary = document.querySelector('.new-game') as HTMLButtonElement;
     const secondary = document.querySelector('.to-main-page');
-    const closeButtons = [close, primary] as HTMLButtonElement[];
+    const closeButtons = [close, secondary] as HTMLButtonElement[];
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', async () => {
             modal.remove();
-            close.removeEventListener('click', () => true);
-            renderSprintPage(wordsState.fromBook);
-            await wordsState.exit();
+            localStorage.setItem('router', Router.MAIN);
+            renderPage(Router.MAIN);
+            wordsState.exit();
         });
     });
-    secondary.addEventListener('click', async () => {
-        const header = document.querySelector('header');
-        const links = header.querySelectorAll('button');
+    primary.addEventListener('click', async () => {
         modal.remove();
-        localStorage.setItem('router', Router.MAIN);
-        renderPage(Router.MAIN);
-        links.forEach((link: HTMLButtonElement) => (link.disabled = false));
-        await wordsState.exit();
+        close.removeEventListener('click', () => true);
+        renderSprintPage(wordsState.fromBook);
+        wordsState.exit();
     });
     const modalDialog = document.querySelector('.modal-dialog');
     modalDialog.addEventListener('click', (e) => {
@@ -37,11 +34,12 @@ export const removeModal = (modal: HTMLElement) => {
 };
 
 export const messageModal = async (message: string) => {
-    await wordsState.addStats();   
+    await wordsState.addStats();
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';
-    modal.style.backgroundColor = 'rgba(100,100,100,0.3)';
+    modal.style.backgroundColor = 'rgba(100,100,100,0)';
+    modal.style.marginTop = '200px';
     modal.innerHTML = `
     <div class="modal-dialog" id="message-modal-dialog">
         <div class="modal-content">

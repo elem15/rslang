@@ -11,15 +11,12 @@ import { wordsState } from '../services/words-state';
 const GAME_TIME = 30;
 
 export const exitGame = async (interval: NodeJS.Timer) => {
-    const header = document.querySelector('header');
-    const links = header.querySelectorAll('button');
     wordsState.group = 0;
     clearInterval(interval);
     localStorage.setItem('router', Router.MAIN);
     document.removeEventListener('keydown', keyDirect);
     renderPage(Router.MAIN);
-    links.forEach((link: HTMLButtonElement) => (link.disabled = false));
-    await wordsState.exit();
+    wordsState.exit();
 };
 
 export function renderCounter() {
@@ -30,8 +27,6 @@ export function renderCounter() {
     const counter = document.createElement('div');
     counter.className = 'counter';
     counter.innerHTML = '' + GAME_TIME;
-    const header = document.querySelector('header');
-    const links = header.querySelectorAll('button');
     let i = GAME_TIME;
     renderCounter.prototype.interval = setInterval(() => {
         i--;
@@ -46,7 +41,6 @@ export function renderCounter() {
             if (modal) modal.remove();
             document.removeEventListener('keydown', keyDirect);
             messageModal('Игра закончена');
-            links.forEach((link: HTMLButtonElement) => (link.disabled = false));
             counter.innerHTML = '';
             document.removeEventListener('keydown', exitGameKbd);
         }
@@ -58,9 +52,17 @@ export function renderCounter() {
             document.removeEventListener('keydown', exitGameKbd);
         }
     }
-    document.querySelector('.sprint-close').addEventListener('click', () => {
-        exitGame(renderCounter.prototype.interval);
-        document.removeEventListener('keydown', exitGameKbd);
+    const close = document.querySelector('.sprint-close');
+    // const modal = document.querySelector('.modal');
+    [close].map((el) =>
+        el.addEventListener('click', () => {
+            exitGame(renderCounter.prototype.interval);
+            document.removeEventListener('keydown', exitGameKbd);
+        })
+    );
+    const modalDialog = document.querySelector('.modal-dialog');
+    modalDialog.addEventListener('click', (e) => {
+        e.stopPropagation();
     });
     document.addEventListener('keydown', exitGameKbd);
 

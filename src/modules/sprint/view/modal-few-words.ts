@@ -15,13 +15,10 @@ export const removeModal = (modal: HTMLElement) => {
     const counterWrapper = document.querySelector('.counter-wrapper');
     const closeButtons = [close, secondary] as HTMLButtonElement[];
     const goToMain = async () => {
-        const header = document.querySelector('header');
-        const links = header.querySelectorAll('button');
         modal.remove();
         localStorage.setItem('router', Router.MAIN);
         renderPage(Router.MAIN);
-        links.forEach((link: HTMLButtonElement) => (link.disabled = false));
-        await wordsState.exit();
+        wordsState.exit();
     };
     closeButtons.map((close: HTMLButtonElement) => {
         close.addEventListener('click', goToMain);
@@ -32,18 +29,19 @@ export const removeModal = (modal: HTMLElement) => {
         close.removeEventListener('click', goToMain);
         secondary.removeEventListener('click', goToMain);
         counterWrapper.remove();
-        await wordsState.exit();
+        wordsState.exit();
         if (wordsState.fromBook) startGame();
         else levelSelectRender();
     });
 };
 
-export const messageModal = (message: string) => {
+export const messageModalFewWords = (message: string) => {
     wordsState.addStats();
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';
-    modal.style.backgroundColor = 'rgba(100,100,100,0.3)';
+    modal.style.backgroundColor = 'rgba(100,100,100,0)';
+    modal.style.marginTop = '200px';
     if (statistics.correctWords) {
         modal.innerHTML = `
         <div class="modal-dialog" id="message-modal-dialog">

@@ -9,7 +9,7 @@ import mistake from '../../audiochallenge/assets/sounds/error.mp3';
 import { statistics } from '../services/statistics';
 import { levelSelectRender } from './level-select';
 import { renderCounter } from './render-counter';
-import { messageModal } from './modal-few-words';
+import { messageModalFewWords } from './modal-few-words';
 import { addNewWord } from '../../statistics/services/api';
 
 export function play(src: string) {
@@ -86,7 +86,8 @@ const getGameIterationResult = async (translateEqual: boolean) => {
             clearInterval(renderCounter.prototype.interval);
             document.removeEventListener('keydown', keyDirect);
             document.querySelector('.counter').innerHTML = '';
-            document.querySelector('.sprint-container').append(messageModal('Слова в разделе закончились'));
+            document.querySelector('.modal').remove();
+            document.querySelector('.sprint-container').append(messageModalFewWords('Слова в разделе закончились'));
             return;
         }
         buttonsContainer.prepend(words);
@@ -120,9 +121,6 @@ export const renderButtonsContainer = () => {
 };
 export const startGame = async () => {
     const sprint = document.querySelector('.sprint-container');
-    const header = document.querySelector('header');
-    const links = header.querySelectorAll('button');
-    links.forEach((link: HTMLButtonElement) => (link.disabled = true));
     const counterWrapper = await renderPreCounter();
     sprint.append(counterWrapper);
 };

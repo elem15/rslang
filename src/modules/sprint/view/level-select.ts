@@ -1,13 +1,31 @@
 import { wordsState } from '../services/words-state';
-import { removeModal } from './game-modal';
 import { startGame } from './sprint-page';
+import { Router } from '../../../types/router-types';
+import { renderPage } from '../../router/services/router';
 
-export const levelSelectRender = async () => {
-    await wordsState.exit();
+export const removeModal = (modal: HTMLElement) => {
+    const close = document.querySelector('.btn-close');
+    const closeButtons = [close] as HTMLButtonElement[];
+    closeButtons.map((close: HTMLButtonElement) => {
+        close.addEventListener('click', () => {
+            modal.remove();
+            localStorage.setItem('router', Router.MAIN);
+            renderPage(Router.MAIN);
+        });
+    });
+    const modalDialog = document.querySelector('.modal-dialog');
+    modalDialog.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+};
+
+export const levelSelectRender = () => {
+    wordsState.exit();
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.style.display = 'flex';
-    modal.style.backgroundColor = 'rgba(100,100,100,0.3)';
+    modal.style.backgroundColor = 'rgba(100,100,100,0)';
+    modal.style.marginTop = '200px';
     modal.innerHTML = `
     <div class="modal-dialog" id="game-modal-dialog">
         <div class="modal-content">
