@@ -3,6 +3,7 @@ import { Dictionary, DictionaryHardWord } from '../../../types/textbook-types';
 import { host } from '../../auth/controllers/hosts';
 import { getAllHardWords, getUserWords } from '../../words/services/api';
 import { wordsState } from '../services/words-state';
+import { exitGame, renderCounter } from '../view/render-counter';
 
 const axios = a.default;
 
@@ -44,6 +45,7 @@ export const getWords = async (group = 0, page = Math.floor(Math.random() * 29))
                 return data;
             } else {
                 const data = await getAllHardWords('hard');
+                if (!data) return null;
                 return data[0].paginatedResults.filter(
                     (word: DictionaryHardWord) => !(word.userWord?.difficulty === 'learned')
                 );

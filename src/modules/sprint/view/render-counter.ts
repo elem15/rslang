@@ -12,7 +12,8 @@ const GAME_TIME = 30;
 
 export const exitGame = async (interval: NodeJS.Timer) => {
     wordsState.group = 0;
-    clearInterval(interval);
+    wordsState.preTimer = false;
+    if (interval) clearInterval(interval);
     localStorage.setItem('router', Router.MAIN);
     document.removeEventListener('keydown', keyDirect);
     renderPage(Router.MAIN);
@@ -53,12 +54,12 @@ export function renderCounter() {
         }
     }
     const close = document.querySelector('.sprint-close');
-    [close].map((el) =>
-        el.addEventListener('click', () => {
+    if (close) {
+        close.addEventListener('click', () => {
             exitGame(renderCounter.prototype.interval);
             document.removeEventListener('keydown', exitGameKbd);
-        })
-    );
+        });
+    }
     const modalDialog = document.querySelector('.modal-dialog');
     modalDialog.addEventListener('click', (e) => {
         e.stopPropagation();

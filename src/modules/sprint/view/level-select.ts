@@ -25,7 +25,7 @@ export const levelSelectRender = () => {
     modal.className = 'modal';
     modal.style.display = 'flex';
     modal.style.backgroundColor = 'rgba(100,100,100,0)';
-    modal.style.marginTop = '200px';
+    modal.style.marginTop = '17vh';
     modal.innerHTML = `
     <div class="modal-dialog" id="game-modal-dialog">
         <div class="modal-content">

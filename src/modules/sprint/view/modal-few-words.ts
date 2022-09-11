@@ -41,7 +41,7 @@ export const messageModalFewWords = (message: string) => {
     modal.className = 'modal';
     modal.style.display = 'flex';
     modal.style.backgroundColor = 'rgba(100,100,100,0)';
-    modal.style.marginTop = '200px';
+    modal.style.marginTop = '17vh';
     if (statistics.correctWords) {
         modal.innerHTML = `
         <div class="modal-dialog" id="message-modal-dialog">
@@ -81,7 +81,7 @@ export const messageModalFewWords = (message: string) => {
                         .join('')}</ul>         
                 </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-primary new-game">Играть еще</button>
+            <button type="button" autofocus="true" class="btn btn-primary new-game">Играть еще</button>
             <button type="button" class="btn btn-secondary to-main-page" data-dismiss="modal">На главную</button>
             </div>
         </div>
