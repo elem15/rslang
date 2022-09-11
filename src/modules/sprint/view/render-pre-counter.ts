@@ -6,6 +6,7 @@ import wow from '../audio/Woosh-Mark_DiAngelo-4778593.mp3';
 import tick from '../audio/Button-SoundBible.com-1420500901.mp3';
 import { gameModal } from './game-modal';
 import { getCountNewWords } from '../../statistics/services/api';
+import { getUserWords } from '../controllers/get-user-words';
 
 export function play(src: string) {
     const audio = new Audio(src);
@@ -34,6 +35,7 @@ export const getWord = async () => {
 };
 const startGameCounter = async (counterWrapper: HTMLElement): Promise<void> => {
     if (localStorage.getItem('data')) wordsState.prevNewWords = await getCountNewWords();
+    wordsState.userWords = await getUserWords();
     const modal = document.querySelector('.modal');
     if (modal) modal.remove();
     const data = await getWord();
