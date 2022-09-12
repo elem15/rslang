@@ -1,4 +1,5 @@
 import { getWords } from '../controllers/get-words';
+import { exitGame, renderCounter } from '../view/render-counter';
 import { statistics } from './statistics';
 import { wordsState } from './words-state';
 
@@ -27,13 +28,17 @@ const getRandomList = (count: number) => {
 };
 export const getRandomWord = async (): Promise<sprintWords> => {
     if (!wordsState.data) wordsState.data = await getWords(wordsState.group);
+    if (!wordsState.data.length) {
+        await exitGame(renderCounter.prototype.interval);
+        return { id: '0', word: 'word', wordTranslate: 'слово', wordWrongTranslate: '', translateEqual: true };
+    }
     const { data } = wordsState;
     const maxLength = data.length;
     if (!wordsState.randomList.length) wordsState.randomList = getRandomList(maxLength);
     const randomNum = wordsState.randomList[wordsState.counter];
     wordsState.counter++;
     if (wordsState.counter > maxLength) {
-        return { id: '0', word: 'word', wordTranslate: 'wordTranslate', wordWrongTranslate: '', translateEqual: true };
+        return { id: '0', word: 'word', wordTranslate: 'слово', wordWrongTranslate: '', translateEqual: true };
     }
     if (!data[randomNum].userWord) {
         wordsState.newWords += 1;

@@ -10,7 +10,7 @@ import { statistics } from '../services/statistics';
 import { levelSelectRender } from './level-select';
 import { renderCounter } from './render-counter';
 import { messageModalFewWords } from './modal-few-words';
-import { addNewWord } from '../../statistics/services/api';
+import { addNewWord } from '../controllers/add-to-stat';
 
 export function play(src: string) {
     const audio = new Audio(src);

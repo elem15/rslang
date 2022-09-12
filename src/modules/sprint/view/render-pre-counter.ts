@@ -1,11 +1,12 @@
 import { getRandomWord } from '../services/get-random-word';
 import { wordsState } from '../services/words-state';
-import { renderCounter } from './render-counter';
+import { exitGame, renderCounter } from './render-counter';
 import { keyDirect, renderButtonsContainer } from './sprint-page';
 import wow from '../audio/Woosh-Mark_DiAngelo-4778593.mp3';
 import tick from '../audio/Button-SoundBible.com-1420500901.mp3';
 import { gameModal } from './game-modal';
 import { getCountNewWords } from '../../statistics/services/api';
+import { getUserWords } from '../controllers/get-user-words';
 
 export function play(src: string) {
     const audio = new Audio(src);
@@ -32,11 +33,17 @@ export const getWord = async () => {
         id,
     };
 };
-const startGameCounter = async (counterWrapper: HTMLElement) => {
+const startGameCounter = async (counterWrapper: HTMLElement): Promise<void> => {
     if (localStorage.getItem('data')) wordsState.prevNewWords = await getCountNewWords();
+    if (localStorage.getItem('data')) wordsState.userWords = await getUserWords();
     const modal = document.querySelector('.modal');
     if (modal) modal.remove();
-    const { words, translateEqual } = await getWord();
+    const data = await getWord();
+    if (data.id === '0') {
+        exitGame(renderCounter.prototype.interval);
+        return null;
+    }
+    const { words, translateEqual } = data;
     wordsState.translateEqual = translateEqual;
     const buttonsContainer = renderButtonsContainer();
     words.append(buttonsContainer);
@@ -47,12 +54,12 @@ const startGameCounter = async (counterWrapper: HTMLElement) => {
         '<div class="pre-timer">START</div>',
         words,
     ];
-    const renderTimeout = async (i: number) => {
+    const renderTimeout = async (i: number): Promise<void> => {
         if (!wordsState.preTimer) {
             wordsState.group = 0;
             document.removeEventListener('keydown', keyDirect);
             wordsState.exit();
-            return;
+            return null;
         }
         if (typeof arr[i] === 'string' && i < 3) {
             counterWrapper.innerHTML = arr[i] as string;

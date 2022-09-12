@@ -1,8 +1,10 @@
 import { DictionaryHardWord } from '../../../types/textbook-types';
 import { addResultGame } from '../../statistics/services/api';
 import { statistics } from './statistics';
+import { UserWords } from '../../../types/textbook-types';
 
 export const wordsState = {
+    userWords: [] as UserWords[],
     preTimer: false as boolean,
     currentWordId: '' as string,
     prevNewWords: 0 as number,
@@ -34,5 +36,6 @@ export const wordsState = {
         this.counter = 0;
         statistics.correct3word = -1;
         this.randomList = [];
+        this.userWords = [];
     },
 };
