@@ -3,6 +3,7 @@ import '../assets/styles/statistic.css';
 import '../assets/styles/statistic.scss';
 import { Label, LineChart } from 'chartist';
 import { getNewLearnedWords } from '../services/api';
+import { removePreloader } from '../../router/services/router';
 
 export const drawGraphics = async () => {
     const allWordsForLongStatistic = await getNewLearnedWords();
@@ -37,4 +38,5 @@ export const drawGraphics = async () => {
             },
         }
     );
+    removePreloader();
 };

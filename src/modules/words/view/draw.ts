@@ -20,6 +20,7 @@ import { host } from '../../auth/controllers/hosts';
 import { addAllLearnedMessage } from './messageAllLearned';
 import audioImage from '../assets/images/volume.svg';
 import { addListenerGameButton } from './drawGamesButton';
+import { removePreloader, renderPreloader } from '../../router/services/router';
 
 const groupTextbookColor = ['&#x1f534;', '&#x1f7e0;', '&#x1f7e1;', '&#x1f7e2;', '&#x1f535;', '&#x1f7e3;', '&#x1f7e4;'];
 const quantityGroups = 5;
@@ -35,6 +36,7 @@ function setLocalStoragePageLearned() {
 window.addEventListener('beforeunload', setLocalStoragePageLearned);
 
 export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promise<void> => {
+    renderPreloader();
     let countHardAndLearnedWords = 0;
     let wordsHardForPage: UserWords[];
     let wordsLearned: UserWords[];
@@ -164,9 +166,12 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
         addWordsForHardWordsPage();
         addLearnedWords();
     }
+    removePreloader();
+
 };
 
 export const drawPageDifficultWords = async (isAuthorization: boolean): Promise<void> => {
+    renderPreloader();
     const wordsUsersForPageResponse = await getAllHardWords('hard');
     const wordsUsersForPage = wordsUsersForPageResponse[0].paginatedResults;
 
@@ -241,6 +246,7 @@ export const drawPageDifficultWords = async (isAuthorization: boolean): Promise<
         }
 
         fragment.append(goodsClone);
+        removePreloader();
     });
 
     containerData.innerHTML = '';

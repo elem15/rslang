@@ -1,6 +1,7 @@
 import Game from '../core/game';
 import { removeFooter } from '../../main/view/footer';
 import '../assets/styles/main.scss';
+import { removePreloader } from '../../router/services/router';
 
 export const renderGame1Page = (fromBook = false) => {
     const root = document.getElementById('root');
@@ -14,4 +15,5 @@ export const renderGame1Page = (fromBook = false) => {
     root?.append(game1);
     const audioChallenge = new Game(game1, fromBook, group, page);
     audioChallenge.start();
+    removePreloader();
 };

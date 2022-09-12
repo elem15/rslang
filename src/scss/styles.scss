@@ -40,3 +40,32 @@ ul {
     height: 20px;
     width: 60px;
 }
+#preloader {
+    position: fixed;
+    top: calc(15%);
+    left: calc(50% - 100px);
+    width: 200px;
+    height: 200px;
+    display: flex;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    z-index: 1100;
+}
+#preloader.hide-preloader {
+    animation: hidePreloader 1s;
+}
+
+#preloader.preloader-hidden {
+    display: none;
+}
+
+@keyframes hidePreloader {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

@@ -7,6 +7,28 @@ import { renderStatisticsPage } from '../../statistics/view/statistics-page';
 import { renderWordsList } from '../../words/view/words-list';
 import { wordsState } from '../../sprint/services/words-state';
 import { renderCounter } from '../../sprint/view/render-counter';
+import preloader from '../../../images/preloader.gif';
+
+export const renderPreloader = () => {
+    const preloaderNode = document.querySelector('#preloader');
+    if (preloaderNode) preloaderNode.remove();
+    document.body.insertAdjacentHTML(
+        'afterbegin',
+        `
+        <img src=${preloader} id="preloader" alt="">    
+        `
+    );
+};
+export const removePreloader = () => {
+    const preloader = document.getElementById('preloader');
+    preloader.classList.add('hide-preloader');
+    setInterval(() => {
+        preloader.classList.add('preloader-hidden');
+    }, 990);
+    setInterval(() => {
+        preloader.remove();
+    }, 1990);
+};
 
 const removeClassActive = () => {
     const links = document.querySelectorAll('.nav-link') as NodeListOf<HTMLElement>;
@@ -16,6 +38,7 @@ const removeClassActive = () => {
 };
 
 export const renderPage = (router: string, fromBook = false) => {
+    renderPreloader();
     if (renderCounter.prototype.interval) clearInterval(renderCounter.prototype.interval);
     wordsState.preTimer = false;
     router = router ? router : localStorage.getItem('router') ? localStorage.getItem('router') : Router.MAIN;
@@ -26,7 +49,6 @@ export const renderPage = (router: string, fromBook = false) => {
     button.classList.add('active');
     const background = document.querySelector('.background');
     if (background) background.remove();
-
     switch (router) {
         case Router.MAIN:
             renderMainPage();
