@@ -14,8 +14,7 @@ export const logIn = async (user: User): Promise<a.AxiosResponse> => {
         const e = error as a.AxiosError;
         const status = e.response.status;
         if (status == 404) {
-            const message = e.response.data as string;
-            renderErrorMessage(message);
+            renderErrorMessage(`user ${user.email} not exist`);
         } else {
             renderErrorMessage('incorrect e-mail or password');
         }
