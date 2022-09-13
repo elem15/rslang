@@ -10,24 +10,29 @@ import { renderCounter } from '../../sprint/view/render-counter';
 import preloader from '../../../images/preloader.gif';
 
 export const renderPreloader = () => {
-    const preloaderNode = document.querySelector('#preloader');
-    if (preloaderNode) preloaderNode.remove();
+    const preloaderWrapper = document.querySelector('.preloader-wrapper');
+    if (preloaderWrapper) preloaderWrapper.remove();
     document.body.insertAdjacentHTML(
         'afterbegin',
         `
-        <img src=${preloader} id="preloader" alt="">    
+        <div class="preloader-wrapper">
+        <div id="preloader" class="loadingio-spinner-ball-5jmm12p86s5">
+            <div class="ldio-r8ntrjn4vc8">
+                <div>
+            </div>
+        </div>
+        </div>
+        </div>
         `
     );
 };
 export const removePreloader = () => {
-    const preloader = document.getElementById('preloader');
-    preloader.classList.add('hide-preloader');
-    setInterval(() => {
-        preloader.classList.add('preloader-hidden');
-    }, 990);
-    setInterval(() => {
-        preloader.remove();
-    }, 1990);
+    const preloader = document.querySelector('#preloader');
+    if (preloader) preloader.classList.add('hide-preloader');
+    setTimeout(() => {
+        const preloaderWrapper = document.querySelector('.preloader-wrapper');
+        if (preloaderWrapper) preloaderWrapper.remove();
+    }, 1000);
 };
 
 const removeClassActive = () => {
