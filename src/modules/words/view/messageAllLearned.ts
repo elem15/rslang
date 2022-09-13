@@ -1,4 +1,5 @@
 import { messageModal } from '../../auth/view/message-modal';
+import { removePreloader } from '../../router/services/router';
 
 export const addAllLearnedMessage = (countHardAndLearnedWords = 0, group: number) => {
     const containerData = document.querySelector('.items-container') as HTMLDivElement;
@@ -24,6 +25,7 @@ export const addAllLearnedMessage = (countHardAndLearnedWords = 0, group: number
         wrapper.style.backgroundColor = 'darkcyan';
         wrapper.style.height = '100%';
         messageModal('Отсутствуют слова из группы "Сложные слова".');
+        removePreloader();
         buttonGameAudio.disabled = true;
         buttonGameSprint.disabled = true;
     } else {

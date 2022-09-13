@@ -7,6 +7,33 @@ import { renderStatisticsPage } from '../../statistics/view/statistics-page';
 import { renderWordsList } from '../../words/view/words-list';
 import { wordsState } from '../../sprint/services/words-state';
 import { renderCounter } from '../../sprint/view/render-counter';
+import preloader from '../../../images/preloader.gif';
+
+export const renderPreloader = () => {
+    const preloaderWrapper = document.querySelector('.preloader-wrapper');
+    if (preloaderWrapper) preloaderWrapper.remove();
+    document.body.insertAdjacentHTML(
+        'afterbegin',
+        `
+        <div class="preloader-wrapper">
+        <div id="preloader" class="loadingio-spinner-ball-5jmm12p86s5">
+            <div class="ldio-r8ntrjn4vc8">
+                <div>
+            </div>
+        </div>
+        </div>
+        </div>
+        `
+    );
+};
+export const removePreloader = () => {
+    const preloader = document.querySelector('#preloader');
+    if (preloader) preloader.classList.add('hide-preloader');
+    setTimeout(() => {
+        const preloaderWrapper = document.querySelector('.preloader-wrapper');
+        if (preloaderWrapper) preloaderWrapper.remove();
+    }, 1000);
+};
 
 const removeClassActive = () => {
     const links = document.querySelectorAll('.nav-link') as NodeListOf<HTMLElement>;
@@ -16,6 +43,7 @@ const removeClassActive = () => {
 };
 
 export const renderPage = (router: string, fromBook = false) => {
+    renderPreloader();
     if (renderCounter.prototype.interval) clearInterval(renderCounter.prototype.interval);
     wordsState.preTimer = false;
     router = router ? router : localStorage.getItem('router') ? localStorage.getItem('router') : Router.MAIN;
@@ -26,7 +54,6 @@ export const renderPage = (router: string, fromBook = false) => {
     button.classList.add('active');
     const background = document.querySelector('.background');
     if (background) background.remove();
-
     switch (router) {
         case Router.MAIN:
             renderMainPage();

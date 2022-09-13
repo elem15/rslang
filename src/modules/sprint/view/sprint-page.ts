@@ -11,6 +11,7 @@ import { levelSelectRender } from './level-select';
 import { renderCounter } from './render-counter';
 import { messageModalFewWords } from './modal-few-words';
 import { addNewWord } from '../controllers/add-to-stat';
+import { removePreloader } from '../../router/services/router';
 
 export function play(src: string) {
     const audio = new Audio(src);
@@ -138,4 +139,5 @@ export const renderSprintPage = async (fromBook: boolean) => {
     wordsState.fromBook = fromBook;
     if (fromBook) startGame();
     else levelSelectRender();
+    removePreloader();
 };
