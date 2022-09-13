@@ -11,6 +11,13 @@ export const logIn = async (user: User): Promise<a.AxiosResponse> => {
         localStorage.setItem('data', JSON.stringify(data));
         return response;
     } catch (error) {
-        renderErrorMessage('Incorrect e-mail or password');
+        const e = error as a.AxiosError;
+        const status = e.response.status;
+        if (status == 404) {
+            const message = e.response.data as string;
+            renderErrorMessage(message);
+        } else {
+            renderErrorMessage('incorrect e-mail or password');
+        }
     }
 };
