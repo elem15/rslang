@@ -1,4 +1,5 @@
 import * as a from 'axios';
+import { AxiosError } from 'axios';
 import { renderErrorMessage } from '../view/error-message';
 
 const axios = a.default;
@@ -15,6 +16,8 @@ export const createUser = async (user: User): Promise<a.AxiosResponse> => {
         const response = await axios.post(`${host}/users`, user);
         return response;
     } catch (error) {
-        renderErrorMessage('Incorrect e-mail or password');
+        const e = error as AxiosError;
+        const message = e.response.data as string;
+        renderErrorMessage(message);
     }
 };

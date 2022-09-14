@@ -1,4 +1,5 @@
 import { renderFooter } from '../../main/view/footer';
+import { removePreloader } from '../../router/services/router';
 import { getCountLearnedWords, getResultGame } from '../services/api';
 import { drawGraphics } from './drawGraphics';
 
@@ -122,5 +123,6 @@ export const renderStatisticsPage = async () => {
     } else {
         statistics.innerHTML =
             '<h2 class="statistics__unauthorize">Статистика доступна только зарегистрированным пользователям</h2>';
+        removePreloader();
     }
 };
