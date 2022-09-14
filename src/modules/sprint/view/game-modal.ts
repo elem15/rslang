@@ -20,6 +20,6 @@ export const gameModal = () => {
         <div class="modal-body"></div>
     </div>
   `;
-    const container = document.querySelector('.sprint-container')
+    const container = document.querySelector('.sprint-container');
     if (container) container.append(modal);
 };
