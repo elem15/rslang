@@ -21,11 +21,11 @@ export const getRandomNumber = (max: number): number => Math.floor(Math.random()
 export const generateWords = async (excludeWord: Dictionary, words: Dictionary[]): Promise<Dictionary[]> => {
     const arr: Dictionary[] = [];
     arr.push(excludeWord);
-    const max = words.length < 5 ? words.length : 5;
-    while (arr.length < max) {
+    //const max = words.length < 5 ? words.length : 5; // todo: delete after approve
+    while (arr.length < 5) {
         const index = getRandomNumber(Math.random() * words.length);
         const next = words[index];
-        if (!arr.includes(next)) arr.push(next);
+        if (!arr.filter((item) => item.id === next.id).length) arr.push(next);
     }
     return shuffle(arr);
 };

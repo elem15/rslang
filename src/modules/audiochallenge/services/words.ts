@@ -4,11 +4,18 @@ import { getAllHardWords, getUserWords, getWords } from '../../words/services/ap
 import { getRandomNumber } from '../utils';
 import { isAuthenticated } from './auth';
 
-export const loadWords = async (group: number, currentPage: number): Promise<Dictionary[]> => {
+export const loadWords = async (
+    group: number,
+    currentPage: number,
+    isVariantsTranslation = false
+): Promise<Dictionary[]> => {
     if (!isAuthenticated()) {
         return await getWords(currentPage, group);
     } else {
-        if (group < 6) return await loadUserWords(currentPage, group);
+        if (group < 6)
+            return !isVariantsTranslation
+                ? await loadUserWords(currentPage, group)
+                : await getWords(currentPage, group);
         else return await loadHardWords();
     }
 };

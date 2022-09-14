@@ -31,6 +31,7 @@ export default class Game {
     toolbar: HTMLElement;
 
     words: Dictionary[] = [];
+    translations: Dictionary[] = [];
     group: number;
     page: number;
     current: Dictionary | undefined;
@@ -79,10 +80,11 @@ export default class Game {
         this.group = level;
         try {
             const words = await loadWords(this.group, this.page);
-            if (words.length !== 0) {
+            this.translations = await loadWords(this.group, this.page, true);
+            if (words.length) {
                 this.words = words;
                 this.current = await generateWord(this.selected, this.words);
-                const variants = await generateWords(this.current, this.words);
+                const variants = await generateWords(this.current, this.translations);
                 this.selected.push(this.current.id);
                 this.progress.append(...progress(this.words.length));
                 await card(this.container, this.current, variants);
@@ -139,10 +141,10 @@ export default class Game {
         ++this.count;
         if (this.count !== this.words.length) {
             this.current = await generateWord(this.selected, this.words);
-            const translationVariants = await generateWords(this.current, this.words);
+            const variants = await generateWords(this.current, this.translations);
             this.selected.push(this.current.id);
 
-            await card(this.container, this.current, translationVariants);
+            await card(this.container, this.current, variants);
             this.container.append(this.next);
             this.render();
         } else {
