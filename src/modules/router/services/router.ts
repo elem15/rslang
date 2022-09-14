@@ -7,7 +7,6 @@ import { renderStatisticsPage } from '../../statistics/view/statistics-page';
 import { renderWordsList } from '../../words/view/words-list';
 import { wordsState } from '../../sprint/services/words-state';
 import { renderCounter } from '../../sprint/view/render-counter';
-import preloader from '../../../images/preloader.gif';
 
 export const renderPreloader = () => {
     const preloaderWrapper = document.querySelector('.preloader-wrapper');

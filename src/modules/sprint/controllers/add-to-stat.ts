@@ -63,7 +63,7 @@ export const addNewWord = async (
             if (!isRightAnswer) {
                 body = {
                     difficulty:
-                        wordUserStatus.difficulty === Difficulty.learned 
+                        wordUserStatus.difficulty === Difficulty.learned
                             ? Difficulty.neutral
                             : wordUserStatus.difficulty,
                     optional: {
