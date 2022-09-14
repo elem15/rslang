@@ -3,7 +3,6 @@ import { Dictionary, DictionaryHardWord } from '../../../types/textbook-types';
 import { host } from '../../auth/controllers/hosts';
 import { getAllHardWords, getUserWords } from '../../words/services/api';
 import { wordsState } from '../services/words-state';
-import { exitGame, renderCounter } from '../view/render-counter';
 
 const axios = a.default;
 

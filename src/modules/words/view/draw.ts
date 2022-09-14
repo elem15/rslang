@@ -167,7 +167,6 @@ export const draw = async (page = 0, group = 0, isAuthorization: boolean): Promi
         addLearnedWords();
     }
     removePreloader();
-
 };
 
 export const drawPageDifficultWords = async (isAuthorization: boolean): Promise<void> => {
