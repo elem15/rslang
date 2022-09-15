@@ -81,6 +81,7 @@ export default class Game {
         try {
             const words = await loadWords(this.group, this.page);
             this.translations = await loadWords(this.group, this.page, true);
+            console.log(words, this.translations);
             if (words.length) {
                 this.words = words;
                 this.current = await generateWord(this.selected, this.words);
@@ -298,7 +299,6 @@ export default class Game {
         this.resetGame();
         this.toggleListeners(false);
         localStorage.setItem('router', Router.MAIN);
-        document.location.hash = `#${Router.MAIN}`;
         renderPage(Router.MAIN);
     };
 
