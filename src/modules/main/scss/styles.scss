@@ -16,7 +16,7 @@
     height: 150%;
     position: absolute;
     z-index: -1;
-    opacity: 0.35;
+    opacity: 0.39;
 }
 .avatar {
     border-radius: 50%;
@@ -28,4 +28,8 @@
 }
 .avatars {
     margin-top: 50px;
+}
+.site-parts {
+    padding-left: 0;
+    color: rgb(73, 43, 226);
 }

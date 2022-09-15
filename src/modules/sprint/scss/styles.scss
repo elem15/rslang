@@ -5,7 +5,12 @@
     height: 100vh;
     position: absolute;
     z-index: -1;
-    opacity: 0.5;
+    opacity: 0.9;
+}
+h1.text-center{
+    -webkit-text-stroke: 2px orangered; 
+    color: white;
+    font-weight: 900;
 }
 #game-modal-dialog {
     margin-top: 20vh;

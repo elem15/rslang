@@ -51,8 +51,6 @@ export const renderPage = (router: string, fromBook = false) => {
     if (email) addUserSymbol(email);
     removeClassActive();
     button.classList.add('active');
-    const background = document.querySelector('.background');
-    if (background) background.remove();
     switch (router) {
         case Router.MAIN:
             renderMainPage();
