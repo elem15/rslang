@@ -45,8 +45,10 @@ export const renderMainPage = () => {
             <strong>Денис Баженов</strong>
               </a></div>
               <hr>
+              <ul class="site-parts">
               <li>учебник</li>
               <li>статистика</li>
+              </ul>
             </figcaption>
             </figure>
           </li>
@@ -56,7 +58,9 @@ export const renderMainPage = () => {
               <figcaption class="figure-caption text-center">
                 <div><a class="git-link nav-link" target="_blank" href="https://github.com/labatsevich"><strong>Юрий Лабацевич</strong></a></div>
                 <hr>
+                <ul class="site-parts">
                 <li>игра аудиовызов</li>
+                </ul>
               </figcaption>            
             </figure>        
           </li>
@@ -66,9 +70,11 @@ export const renderMainPage = () => {
             <figcaption class="figure-caption text-center">
             <div><a class="git-link nav-link" target="_blank"href="https://github.com/elem15"><strong>Михаил Дворкин</strong></a></div>
               <hr>
+              <ul class="site-parts">
               <li>авторизация</li>
               <li>домашняя страница</li>  
-              <li>игра спринт</li>  
+              <li>игра спринт</li>
+              </ul>
             </figcaption>
             </figure>          
           </li>    
@@ -78,11 +84,10 @@ export const renderMainPage = () => {
       </div>
       `;
     root.append(main);
-    const background = document.createElement('div');
-    background.innerHTML = `
-          <img class="background" src=${img}> 
-      `;
-    document.body.append(background);
+    const background = document.createElement('img');
+    background.className = 'background';
+    background.src = img;
+    root.append(background);
     renderFooter();
     const wordsLink = document.querySelector(`.textbook-link`) as HTMLButtonElement;
     wordsLink.addEventListener('click', () => {
