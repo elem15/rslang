@@ -23,14 +23,6 @@ const baseConfig = {
                         loader: 'css-loader',
                     },
                     {
-                        loader: 'postcss-loader',
-                        options: {
-                            postcssOptions: {
-                                plugins: () => [require('autoprefixer')],
-                            },
-                        },
-                    },
-                    {
                         loader: 'sass-loader',
                     },
                 ],
