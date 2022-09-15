@@ -25,7 +25,7 @@ export const generateWords = async (excludeWord: Dictionary, words: Dictionary[]
     while (arr.length < max) {
         const index = getRandomNumber(Math.random() * words.length);
         const next = words[index];
-        if (!arr.includes(next)) arr.push(next);
+        if (!arr.filter((item) => item.id === next.id).length) arr.push(next);
     }
     return shuffle(arr);
 };

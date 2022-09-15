@@ -25,12 +25,14 @@ export default class Game {
     root: HTMLElement;
     mute: HTMLElement;
     progress: HTMLElement;
+    bar: HTMLElement;
     container: HTMLElement;
     next: HTMLButtonElement;
     audio: HTMLAudioElement;
     toolbar: HTMLElement;
 
     words: Dictionary[] = [];
+    translations: Dictionary[] = [];
     group: number;
     page: number;
     current: Dictionary | undefined;
@@ -53,7 +55,8 @@ export default class Game {
         this.mute = mute();
         this.toolbar = toolbar(this.onClose);
         this.container = <HTMLElement>document.createElement('div');
-        this.progress = <HTMLElement>document.createElement('div');
+        this.progress = progress();
+        this.bar = this.progress.querySelector('.progress-bar');
         this.next = <HTMLButtonElement>document.createElement('button');
         this.audio = new Audio();
         this.isMute = false;
@@ -74,17 +77,18 @@ export default class Game {
         this.toggleListeners();
         this.toolbar.prepend(this.mute);
         this.root.prepend(this.toolbar);
+        this.root.prepend(this.progress);
         await clear(this.container);
 
         this.group = level;
         try {
             const words = await loadWords(this.group, this.page);
-            if (words.length !== 0) {
+            this.translations = await loadWords(this.group, this.page, true);
+            if (words.length) {
                 this.words = words;
                 this.current = await generateWord(this.selected, this.words);
-                const variants = await generateWords(this.current, this.words);
+                const variants = await generateWords(this.current, this.translations);
                 this.selected.push(this.current.id);
-                this.progress.append(...progress(this.words.length));
                 await card(this.container, this.current, variants);
                 this.container.append(this.next);
                 this.render();
@@ -139,10 +143,10 @@ export default class Game {
         ++this.count;
         if (this.count !== this.words.length) {
             this.current = await generateWord(this.selected, this.words);
-            const translationVariants = await generateWords(this.current, this.words);
+            const variants = await generateWords(this.current, this.translations);
             this.selected.push(this.current.id);
 
-            await card(this.container, this.current, translationVariants);
+            await card(this.container, this.current, variants);
             this.container.append(this.next);
             this.render();
         } else {
@@ -209,13 +213,13 @@ export default class Game {
     };
 
     render = async (): Promise<void> => {
-        this.root.append(this.progress, this.container);
+        this.root.append(this.container);
         this.next.innerText = nextDefaultText;
         getElementsList('.answers__item').forEach((item) => item.addEventListener('click', this.onSelectVariant));
     };
 
     updateProgress = () => {
-        this.progress.querySelector(`[data-count="${this.count}"]`)?.classList.add('marked');
+        this.bar.style.width = `${(this.selected.length / this.words.length) * 100}%`;
     };
 
     updateMaxInRow = (): void => {
@@ -252,7 +256,7 @@ export default class Game {
     };
 
     resetGame = (): void => {
-        this.progress.querySelectorAll('.game__progress_item').forEach((item) => item.remove());
+        this.bar.style.width = '0%';
         this.next.disabled = false;
         this.selected.length = 0;
         this.words.length = 0;
@@ -272,7 +276,6 @@ export default class Game {
             this.page = getRandomNumber(30);
             await this.showLevels();
         } else await this.onLevelSelect(this.group);
-        this.progress.classList.add('game__progress');
         this.container.className = 'game';
         this.next.classList.add('game__next_word');
         this.next.innerText = nextDefaultText;
@@ -296,7 +299,6 @@ export default class Game {
         this.resetGame();
         this.toggleListeners(false);
         localStorage.setItem('router', Router.MAIN);
-        document.location.hash = `#${Router.MAIN}`;
         renderPage(Router.MAIN);
     };
 

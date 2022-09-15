@@ -4,12 +4,20 @@ import { getAllHardWords, getUserWords, getWords } from '../../words/services/ap
 import { getRandomNumber } from '../utils';
 import { isAuthenticated } from './auth';
 
-export const loadWords = async (group: number, currentPage: number): Promise<Dictionary[]> => {
+export const loadWords = async (
+    group: number,
+    currentPage: number,
+    isVariantsTranslation = false
+): Promise<Dictionary[]> => {
     if (!isAuthenticated()) {
         return await getWords(currentPage, group);
     } else {
-        if (group < 6) return await loadUserWords(currentPage, group);
-        else return await loadHardWords();
+        if (group < 6) {
+            return !isVariantsTranslation
+                ? await loadUserWords(currentPage, group)
+                : await getWords(currentPage, group);
+        }
+        return !isVariantsTranslation ? await loadHardWords() : await getWords();
     }
 };
 
@@ -32,8 +40,7 @@ const loadUserWords = async (page: number, group: number): Promise<Dictionary[]>
 
 const loadHardWords = async (): Promise<Dictionary[]> => {
     const { paginatedResults, totalCount } = (await getAllHardWords(Difficulty.hard))[0];
-    const total = totalCount[0].count;
-
+    const total: number = totalCount.length ? totalCount[0].count : 0;
     if (total > 20) {
         const words: DictionaryHardWord[] = [];
 
@@ -44,7 +51,7 @@ const loadHardWords = async (): Promise<Dictionary[]> => {
         }
         return convertCollection(words);
     }
-    return convertCollection(paginatedResults);
+    return total ? convertCollection(paginatedResults) : [];
 };
 
 const convertCollection = (words: any[]): any[] => {

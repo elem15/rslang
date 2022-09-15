@@ -1,10 +1,11 @@
-export const progress = (length = 20): HTMLElement[] => {
-    return Array(length)
-        .fill('')
-        .map((_, index) => {
-            const span = document.createElement('span');
-            span.classList.add('game__progress_item');
-            span.dataset.count = `${index}`;
-            return span;
-        });
+export const progress = (): HTMLElement => {
+    const container = document.createElement('div');
+    const bar = document.createElement('div');
+
+    container.className = 'progress w-100';
+    bar.className = 'progress-bar';
+    bar.ariaRoleDescription = 'progressbar';
+    container.append(bar);
+
+    return container;
 };
