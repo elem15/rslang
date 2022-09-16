@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RS-lang</title>
+</head>
+
+<body class="card">
+  <header class="container card-header" id="card-header">
+    <div class="row justify-content-between">
+      <div class="col-6">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active main" id="home-tab" data-toggle="tab" role="tab" aria-controls="home"
+              aria-selected="true">Главная</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link dictionary" id="contact-tab" data-toggle="tab" role="tab"
+              aria-controls="contact" aria-selected="false">Учебник</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link challenge" id="profile-tab" data-toggle="tab" role="tab"
+              aria-controls="profile" aria-selected="false">Аудиовызов</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link sprint" id="profile-tab" data-toggle="tab" role="tab"
+              aria-controls="profile" aria-selected="false">Спринт</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link statistics" id="profile-tab" data-toggle="tab" role="tab"
+              aria-controls="profile" aria-selected="false">Статистика</button>
+          </li>
+        </ul>
+      </div>
+      <div class="col-4">
+        <button class="sign-up btn btn-primary" style="width:85px; margin-bottom: 3px;">sign up</button>
+        <button class="sign-in btn btn-success" style="width:85px; margin-bottom: 3px;">sign in</button>
+        <button class="sign-out btn btn-danger" style="width:85px; margin-bottom: 3px;">sign out</button>
+        <span class="user">_</span>
+      </div>
+    </div>
+  </header>
+  <div class="tab-content" id="myTabContent">
+    <div id="root" class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    </div>
+  </div>
+  <footer class="footer"></footer> 
+</body>
+</html>

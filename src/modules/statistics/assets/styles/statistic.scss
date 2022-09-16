@@ -1,0 +1,47 @@
+.wrapper-statistic,
+.wrapper-table,
+.statistics__unauthorize  {
+
+    margin: 0 auto;
+        @media screen and (min-width: 576px) {
+            max-width: 520px;
+        }
+        @media screen and (min-width: 768px) {
+            max-width: 720px;
+        }
+        @media screen and (min-width: 992px) {
+            max-width: 960px;
+        }
+        @media screen and (min-width: 1200px) {
+            max-width: 1140px;
+        }
+
+        @media screen and (min-width: 1400px) {
+            max-width: 1320px;
+        }
+}
+
+.table-games,
+.table-words,
+.statistic__short-audio-challenge,
+.statistic__short-sprint,
+.wrapper-statistic__header {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 40px;
+}
+
+.statistic__short-audio-challenge,
+.statistic__short-sprint {
+    height: 300px;
+}
+
+.statistic__short-sprint {
+    padding-bottom: 50px;
+}
+
+.statistics__unauthorize {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+}
