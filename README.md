@@ -22,4 +22,4 @@
 
 ### Deploy: 
 
-[https://lexi-rs.herokuapp.com/](https://lexi-rss.netlify.app)https://lexi-rss.netlify.app
+https://kanban-rss.netlify.app/
